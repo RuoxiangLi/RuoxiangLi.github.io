@@ -268,7 +268,7 @@ https://blog.csdn.net/crazy_scott/article/details/79342303
 
 **注意：在当前设备上进行所有操作之前，一定要现将本地的配置文件（包括添加的新博文、修改内容样式等等）进行更新，因为在此之前另一台设备可能向GitHub推送了更新，但是本地的内容还是旧版，若不更新进行操作，之后提交的会是旧版的内容修改后的效果。**
 
-> 所有操作前的操作：git pull origin hexo --allow-unrelated-histories
+> 所有操作前的操作：git pull origin hexo 
 
 本地对博客进行修改（添加新博文、修改样式等等）后，通过下面的流程进行管理： 
 
