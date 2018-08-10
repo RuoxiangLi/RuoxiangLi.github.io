@@ -170,7 +170,7 @@ npm install hexo-deployer-git --save
 ~~~shell
 hexo clean
 hexo generate
-hexo deploy
+hexo deploy #可以使用hexo g -d命令代替上面两个命令
 ~~~
 
 在浏览器输入`yourname.github.io`就可以访问的自己的博客啦。
@@ -264,9 +264,16 @@ https://blog.csdn.net/crazy_scott/article/details/79342303
    git config --global user.eamil "email@example.com" #981968690@qq.com
    ~~~
 
-   ​
+### 新旧设备的日常维护
 
+**注意：在当前设备上进行所有操作之前，一定要现将本地的配置文件（包括添加的新博文、修改内容样式等等）进行更新，因为在此之前另一台设备可能向GitHub推送了更新，但是本地的内容还是旧版，若不更新进行操作，之后提交的会是旧版的内容修改后的效果。**
 
+> 所有操作前的操作：git pull origin hexo --allow-unrelated-histories
+
+本地对博客进行修改（添加新博文、修改样式等等）后，通过下面的流程进行管理： 
+
+1. 配置文件的更新：依次执行`git add .`、`git commit -m “…”`、`git push origin hexo`指令将改动推送到GitHub（此时当前分支应为hexo） 
+2. 静态网页的更新：执行`hexo g -d`发布网站到master分支上
 
 参考文章：https://www.jianshu.com/p/6fb0b287f950
 
