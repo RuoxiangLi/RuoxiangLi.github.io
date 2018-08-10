@@ -205,25 +205,46 @@ Typora的Markdown语法的学习可以参考[博客](http://blog.csdn.net/tzs_10
 
 ## 方案一（不好用）
 
-使用坚果云同步hexo文件夹文件。
+使用坚果云同步hexo文件夹文件。坚果云同步hexo中文件时，有些文件会一直处于分析状态，上传不上去，影响其他文件的上传，so放弃坚果云。
 
 ## 方案二
-
-参考文章：https://www.jianshu.com/p/6fb0b287f950
-
-https://blog.csdn.net/crazy_scott/article/details/79342303
 
 使用GitHub进行同步
 
 ### 旧设备操作
 
+> 假设已经按照前面的步骤在旧设备上搭建好了Hexo并部署到了GitHub。
 
+在旧设备部署博客到Github以后，我们可以在Github仓库的master分支上看到上传的博客文件。但是这个博客文件不包含hexo配置文件，所以需要新建分支，使用git指令将带hexo的配置文件上传到新建的分支上。在本地博客根目录下使用git指令上传项目到GitHub，按如下进行操作：
+
+~~~
+// git初始化 
+git init 
+// 添加仓库地址 
+git remote add origin https://github.com/用户名/仓库名.git 
+// 新建分支hexo并切换到新建的分支 
+git checkout -b hexo 
+// 添加所有本地文件到git
+git add . 
+// git提交 
+git commit -m "" 
+// 文件推送到hexo分支 
+git push origin hexo
+~~~
+
+至此，旧设备上需要进行的操作完成。
 
 ### 新设备操作
 
-1. 安装Git、Node.js
+1. Github上新建的分支的文件git clone到本地
 
-2. 安装依赖库
+   ~~~
+   git clone -b hexo https://github.com/用户名/仓库名.git
+   ~~~
+
+2. 安装Git、Node.js
+
+3. 安装依赖库
 
    ~~~
    #hexo-renderer-kramed markdown渲染引擎
@@ -237,8 +258,7 @@ https://blog.csdn.net/crazy_scott/article/details/79342303
 
    安装过程中会提示没有/home/eric/package.json文件的提示（但应该已经安装完成了），不过对后面的过程没有影响。
 
-
-3. 安装hexo（到git clone的目录下操作命令）
+4. 安装hexo（到git clone的目录下操作命令）
 
    ~~~
    npm install -g hexo-cli
@@ -248,31 +268,64 @@ https://blog.csdn.net/crazy_scott/article/details/79342303
 
    这个过程应该会在当前目录下产生`package.json`文件，执行`hexo clean`，应该可以顺利执行，说明配置成功。
 
+5. 添加SSH key
 
-4. 添加SSH key
+   - 命令行输入`ssh-keygen -t rsa -C “邮箱地址”`
 
-   命令行输入`ssh-keygen -t rsa -C “邮箱地址”`
+   - 执行`hexo g`、`hexo d`命令生成静态网页、部署到github。按三次回车（密码为空），生成密匙。 在`home/username/.ssh`目录下找到`id_rsa.pub`，打开复制内容到GitHub添加新的SSH key。
 
-   执行`hexo g`、`hexo d`命令生成静态网页、部署到github。按三次回车（密码为空），生成密匙。 在`home/username/.ssh`目录下找到`id_rsa.pub`，打开复制内容到GitHub添加新的SSH key。
+   - 终端输入`ssh - T git@github.com`回车，提示认证成功即可。
 
-   终端输入`ssh - T git@github.com`回车，提示认证成功即可。
+   - 在终端输入命令(和旧设备中的相同)：
 
-   在终端输入命令(和旧设备中的相同)：
+     ~~~
+     git config --global user.name "username" #ruoxiangli
+     git config --global user.eamil "email@example.com" #981968690@qq.com
+     ~~~
 
-   ~~~
-   git config --global user.name "username" #ruoxiangli
-   git config --global user.eamil "email@example.com" #981968690@qq.com
-   ~~~
+     执行`hexo g -d`，顺利执行则说明配置成功。
+
 
 ### 新旧设备的日常维护
 
 **注意：在当前设备上进行所有操作之前，一定要现将本地的配置文件（包括添加的新博文、修改内容样式等等）进行更新，因为在此之前另一台设备可能向GitHub推送了更新，但是本地的内容还是旧版，若不更新进行操作，之后提交的会是旧版的内容修改后的效果。**
 
-> 所有操作前的操作：git pull origin hexo 
+> 为了保证本地内容为最新，所有操作前的操作：git pull origin hexo 
 
 本地对博客进行修改（添加新博文、修改样式等等）后，通过下面的流程进行管理： 
 
 1. 配置文件的更新：依次执行`git add .`、`git commit -m “…”`、`git push origin hexo`指令将改动推送到GitHub（此时当前分支应为hexo） 
+
+   **补充：**如果不想每次push都输入用户名和密码。查看到传输协议，终端执行：
+
+   ~~~
+   git remote -v
+   ~~~
+
+   可以看到：
+
+   ~~~
+   origin	https://github.com/ruoxiangli/ruoxiangli.github.io.git (fetch)
+   origin	https://github.com/ruoxiangli/ruoxiangli.github.io.git (push)
+   ~~~
+
+   重新设置成ssh的方式：
+
+   ~~~
+   git remote rm origin
+   git remote add origin git@github.com:username/repository.git
+   git push -u origin master
+   ~~~
+
+   再查看当前传输协议：
+
+   ~~~
+   origin	git@github.com:ruoxiangli/ruoxiangli.github.io.git (fetch)
+   origin	git@github.com:ruoxiangli/ruoxiangli.github.io.git (push)
+   ~~~
+
+   到此操作成功。
+
 2. 静态网页的更新：执行`hexo g -d`发布网站到master分支
 
 参考文章：https://www.jianshu.com/p/6fb0b287f950
