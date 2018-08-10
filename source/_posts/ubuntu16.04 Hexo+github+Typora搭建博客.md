@@ -273,7 +273,7 @@ https://blog.csdn.net/crazy_scott/article/details/79342303
 本地对博客进行修改（添加新博文、修改样式等等）后，通过下面的流程进行管理： 
 
 1. 配置文件的更新：依次执行`git add .`、`git commit -m “…”`、`git push origin hexo`指令将改动推送到GitHub（此时当前分支应为hexo） 
-2. 静态网页的更新：执行`hexo g -d`发布网站到master分支上
+2. 静态网页的更新：执行`hexo g -d`发布网站到master分支
 
 参考文章：https://www.jianshu.com/p/6fb0b287f950
 
