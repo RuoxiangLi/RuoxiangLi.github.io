@@ -111,6 +111,8 @@ hexo s
 
 目前使用的是next主题，完整的安装配置过程可以参考[这里](http://theme-next.iissnan.com/getting-started.html)。
 
+next主题优化推荐文章：https://www.jianshu.com/p/1f8107a8778c
+
 # **部署到github**
 
 - 首先到github上面注册自己的账号。
@@ -132,9 +134,7 @@ git config --global --replace-all user.name “username”
 git config --global --replace-all user.email “email@example.com”
 ~~~
 
-- 创建公钥
-
-命令行输入命令：
+- 创建公钥，命令行输入命令：
 
 ~~~shell
 ssh-keygen -C 'you email address@gmail.com' -t rsa
@@ -144,19 +144,13 @@ ssh-keygen -C 'you email address@gmail.com' -t rsa
 
 之后用户目录` ~/.ssh/ `下建立了相应的密钥文件`id_rsa.pub `，打开该文件。
 
-- 添加公钥
+- 添加公钥：github首页右上角点击头像，选择`Settings`，再选择`New SSH KEY`，把上一步`id_rsa.pub`文件的秘钥复制进去生成公钥。
 
-github首页右上角点击头像，选择`Settings`，再选择`New SSH KEY`，把上一步`id_rsa.pub`文件的秘钥复制进去生成公钥。
 
-- 创建项目仓库
+- 创建项目仓库：github首页点击右上角的`+`，选择`New repository`。在页面里输入`username.github.io`，必须这么写。填完后点击`Create repository`。
 
-github首页点击右上角的`+`，选择`New repository`。在页面里输入`username.github.io`，必须这么写。填完后点击`Create repository`。
 
-- 部署博客
-
-修改hexo目录下的`_config.yml`文件：
-
-最后面修改为：
+- 部署博客：修改hexo目录下的`_config.yml`文件，最后面修改为：
 
 ~~~yaml
 deploy:
@@ -205,13 +199,78 @@ sudo apt-get install typora
 
 Typora的Markdown语法的学习可以参考[博客](http://blog.csdn.net/tzs_1041218129/article/details/54728799)。
 
+配置Hexo渲染MathJax数学公式，推荐文章：https://www.jianshu.com/p/7ab21c7f0674
+
 # 多机更新
+
+## 方案一（不好用）
 
 使用坚果云同步hexo文件夹文件。
 
+## 方案二
+
+参考文章：https://www.jianshu.com/p/6fb0b287f950
+
+https://blog.csdn.net/crazy_scott/article/details/79342303
+
+使用GitHub进行同步
+
+### 旧设备操作
 
 
 
+### 新设备操作
+
+1. 安装Git、Node.js
+
+2. 安装依赖库
+
+   ~~~
+   #hexo-renderer-kramed markdown渲染引擎
+   npm uninstall hexo-renderer-marked --save
+   npm install hexo-renderer-kramed --save
+   #rss
+   npm install --save hexo-generator-feed
+   #hexo-word count
+   npm install hexo-wordcount --save
+   ~~~
+
+   安装过程中会提示没有/home/eric/package.json文件的提示（但应该已经安装完成了），不过对后面的过程没有影响。
+
+
+3. 安装hexo（到git clone的目录下操作命令）
+
+   ~~~
+   npm install -g hexo-cli
+   npm install
+   npm install hexo-deployer-git
+   ~~~
+
+   这个过程应该会在当前目录下产生`package.json`文件，执行`hexo clean`，应该可以顺利执行，说明配置成功。
+
+
+4. 添加SSH key
+
+   命令行输入`ssh-keygen -t rsa -C “邮箱地址”`
+
+   执行`hexo g`、`hexo d`命令生成静态网页、部署到github。按三次回车（密码为空），生成密匙。 在`home/username/.ssh`目录下找到`id_rsa.pub`，打开复制内容到GitHub添加新的SSH key。
+
+   终端输入`ssh - T git@github.com`回车，提示认证成功即可。
+
+   在终端输入命令(和旧设备中的相同)：
+
+   ~~~
+   git config --global user.name "username" #ruoxiangli
+   git config --global user.eamil "email@example.com" #981968690@qq.com
+   ~~~
+
+   ​
+
+
+
+参考文章：https://www.jianshu.com/p/6fb0b287f950
+
+https://blog.csdn.net/crazy_scott/article/details/79342303
 
 # 遇到的错误解决方法
 
