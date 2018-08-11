@@ -8,6 +8,10 @@ categories: CMake
 
 -----
 
+这篇文章是有关CMake编译调试相关指令的内容。
+
+<!--more--->
+
 CMake编译时如果需要选择c++编译器版本，需要添加：`add_compile_options(-std=c++11)`。
 
 如果需要编译出共享库而不是静态库，执行`cmake`命令时使用`cmake .. -DBUILD_SHARED_LIBS=ON`。

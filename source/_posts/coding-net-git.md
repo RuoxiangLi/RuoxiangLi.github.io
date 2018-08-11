@@ -2,9 +2,13 @@
 title: coding.net git
 date: 2018-08-02 16:50:09
 tags:
+   - Git
+categories: 工具
 ---
 
 -----
+
+这篇文章是有关git相关指令的内容。
 
 <!--more--->
 

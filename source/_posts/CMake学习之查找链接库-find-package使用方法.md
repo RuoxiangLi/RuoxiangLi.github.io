@@ -8,9 +8,11 @@ categories: CMake
 
 ------
 
-**如果编译软件使用了外部库，事先并不知道它的头文件和链接库的位置。得在编译命令中加上包含它们的查找路径。CMake使用`find_package`命令来解决这个问题。本文讨论了如何在CMake项目中使用外部库，即`find_package()`的工作原理。**
+这篇文章是有关CMake中使用find_package指令的内容。
 
 <!--more--->
+
+**如果编译软件使用了外部库，事先并不知道它的头文件和链接库的位置。得在编译命令中加上包含它们的查找路径。CMake使用`find_package`命令来解决这个问题。本文讨论了如何在CMake项目中使用外部库，即`find_package()`的工作原理。**
 
 ## FIND_PACKAGE
 

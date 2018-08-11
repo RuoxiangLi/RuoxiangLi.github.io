@@ -8,6 +8,10 @@ categories: ROS
 
 -----
 
+这篇文章是有关ROS中actionlib使用的学习内容。
+
+<!--more-->
+
 这一节接着上一节的内容，默认已经创建好程序包（和上一节公用一个程序包，即`actionlib_tutorials`），这里将讲述如何使用目标回调方法(Goal Callback Method)编写一个简单的行为服务器。
 
 # 创建行为消息

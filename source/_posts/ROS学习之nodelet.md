@@ -8,6 +8,10 @@ categories: ROS
 
 -----
 
+这篇文章是有关ROS中nodelet使用的学习内容。
+
+<!--more--->
+
 nodelet包提供了一种可在同一进程中运行多个算法，并在算法之间进行零拷贝传输的方法。该包提供了实现nodelet所需的nodelet基类以及用于实例化nodelet的NodeletLoader类。
 
 #　Threading Model

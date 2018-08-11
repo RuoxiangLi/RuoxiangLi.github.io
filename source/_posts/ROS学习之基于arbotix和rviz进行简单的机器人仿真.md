@@ -8,13 +8,17 @@ tags:
 categories: ROS
 ---
 
+---
+
+这篇文章是有关ROS中基于arbotix和rviz进行简单的机器人仿真的内容。
+
+<!--more-->
+
 在学习古月居大神关于ROS的博客时，参考他安装模拟器arbotix的方式总是连接超时，找到了如下源码安装方式。
 
 ### 本人的环境
 
 ubuntu16.04+ROS(kinetic)
-
-<!--more--->
 
 ### 首先安装rbx1
 

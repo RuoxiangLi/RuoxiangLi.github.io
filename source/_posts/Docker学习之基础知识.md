@@ -8,6 +8,10 @@ categories: Docker
 
 -----
 
+这篇文章是有关Docker基础知识的内容。
+
+<!--more--->
+
 官方文档：https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
 学习到这啦：Containers share your image：https://docs.docker.com/get-started/part2/#share-your-image
@@ -17,8 +21,6 @@ Dockerfile：https://docs.docker.com/engine/reference/builder/#usage
 Docker在乌班图系统上支持overlay2和aufs两种存储驱动。并且默认使用overlay2，如果需要使用aufs，需要手动配置。
 
 Docker是一个为开发者和系统管理员提供的平台，允许使用容器来开发、部署、运行应用。
-
-<!--more--->
 
 Docker的文件系统分为两层：bootfs和rootfs。
 

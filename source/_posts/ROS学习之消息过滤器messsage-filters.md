@@ -9,9 +9,11 @@ categories: ROS
 
 -----
 
-这篇文章是有关ROS中roslaunch使用的学习内容。
+这篇文章是有关ROS中messsage_filters使用的学习内容。
 
 <!--more-->
+
+这篇文章是有关ROS中roslaunch使用的学习内容。
 
 https://blog.csdn.net/Start_From_Scratch/article/details/52337689?locationNum=10&fps=1
 

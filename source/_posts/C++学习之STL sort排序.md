@@ -9,6 +9,10 @@ categories: C++
 
 -----
 
+这篇文章是有关C++ STL sort的学习内容。
+
+<!--more--->
+
 `std::sort`函数是C++ STL中自带的排序函数，该函数对给定区间所有元素进行排序。函数原型为：
 
 ~~~c++
@@ -19,8 +23,6 @@ template <class RandomAccessIterator>
 template <class RandomAccessIterator, class Compare>
   void sort (RandomAccessIterator first, RandomAccessIterator last, Compare comp);
 ~~~
-
-<!--more--->
 
 ## 用法
 

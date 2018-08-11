@@ -8,11 +8,13 @@ categories: ROS
 
 -----
 
-# **ROS命令**
-
-`source /devel/setup.bash`：刷新`setup.bash`文件，这个自动生成的脚本文件设置了若干环境变量，从而使ROS能够找到创建的功能包和新生成的可执行文件，类似与下面所述的全局脚本文件，但该文件是专门为自己的工作区量身定做的。
+这篇文章是有关ROS中基本概念和命令的学习内容。
 
 <!--more--->
+
+# ROS命令**
+
+`source /devel/setup.bash`：刷新`setup.bash`文件，这个自动生成的脚本文件设置了若干环境变量，从而使ROS能够找到创建的功能包和新生成的可执行文件，类似与下面所述的全局脚本文件，但该文件是专门为自己的工作区量身定做的。
 
 `source /opt/ros/kinetic/setup.bash`：全局的脚本文件
 

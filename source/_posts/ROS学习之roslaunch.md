@@ -8,8 +8,6 @@ categories: ROS
 
 -----
 
----
-
 这篇文章是有关ROS中roslaunch使用的学习内容。
 
 <!--more--->

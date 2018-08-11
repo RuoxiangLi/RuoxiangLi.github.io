@@ -2,13 +2,13 @@
 title: ROS学习之Timer类
 date: 2018-03-29 10:46:28
 tags:
-  - ROS Timer
+  - ROS
 categories: ROS
 ---
 
+----
 
-
-使用定时器类`Timer`类。
+这篇文章是有关ROS 定时器类`Timer`类的内容。
 
 <!--more--->
 

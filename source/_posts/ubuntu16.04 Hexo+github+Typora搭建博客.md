@@ -6,18 +6,20 @@ tags:
   - Hexo 
   - Github
   - Typora
-categories: Hexo
+categories: 工具
 ---
 
 ------
 
-# **预备知识**
+这篇文章是Hexo博客搭建有关的内容。
+
+<!--more-->
+
+# 预备知识
 
 Hexo是一个基于Node.js的静态博客程序，可以方便的生成静态网页托管在github、gitcafe和Heroku上。博客存放的不只是文章内容，还有文章列表、分类、标签、翻页等动态内容，hexo所做的就是将这些md文件都放在本地，更新博文目录和相关链接信息，每次写完文章后调用写好的命令来批量完成相关页面的生成，然后再将有改动的页面提交到github。
 
 Hexo依赖Node.js和Git。nvm（node version manager）是nodejs版本管理工具，管理nodejs和npm的版本；npm是随同nodeJs一起安装的包管理工具，npm管理对应nodeJs的第三方插件；nvm管理构建nodejs和对应的npm，npm管理对应的nodejs的第三方插件。
-
-<!--more-->
 
 # **本地搭建**
 

@@ -8,9 +8,11 @@ categories: ROS
 
 -----
 
-本例程并没有创建`.action`文件生成消息，在安装ROS时，在`opt/ros/kinetic/`路径中已经包含了我们需要的文件，其实就是一个依赖库`turtle_actionlib`。这一点不同就需要在`CMakeList.txt`和`package.xml`文件中手动添加一些信息，后续的内容会提到。
+这篇文章是有关ROS中actionlib使用的学习内容。
 
 <!--more-->
+
+本例程并没有创建`.action`文件生成消息，在安装ROS时，在`opt/ros/kinetic/`路径中已经包含了我们需要的文件，其实就是一个依赖库`turtle_actionlib`。这一点不同就需要在`CMakeList.txt`和`package.xml`文件中手动添加一些信息，后续的内容会提到。
 
 # 创建行为服务器
 

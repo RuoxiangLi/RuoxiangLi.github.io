@@ -6,11 +6,13 @@ tags:
 categories: ROS
 ---
 -----
+这篇文章是有关ROS中actionlib使用的学习内容。
+
+<!--more-->
+
 # 创建行为消息
 
 行为消息自动从`.action`文件生成，该文件放置在程序包的`action`目录下，它定义行为消息的目标、结果和行为反馈话题的类型和格式。下面是一个例子。
-
-<!--more-->
 
 在程序包中创建文件`actionlib_tutorials/action/Fibonacci.action`：
 

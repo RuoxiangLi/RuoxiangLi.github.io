@@ -8,6 +8,8 @@ categories: ubuntu
 
 -----
 
+这篇文章是有关ubuntu下一些常用命令行指令的内容。
+
 <!--more--->
 
 ### 查看opencv的版本

@@ -9,6 +9,10 @@ categories: ROS
 
 ***
 
+这篇文章是有关ROS中catkin CMakeLists.txt使用的内容。
+
+<!--more-->
+
 ​	本文翻译自ROS官网关于catkin CMakeList.txt的介绍，**[官网原文链接](http://wiki.ros.org/catkin/CMakeLists.txt)**，由于直接阅读英文文档感觉自己理解不透彻、收获不多，所以决定一边翻译一边学习。其中零星的加入了一些译者个人使用过程中的体会以及在阅读《机器人操作系统（ROS）浅析》（Jason M.O’Kane著 肖军浩译）一书时学习到的内容，帮助自己更好地理解catkin编译生成的过程，留作今后复习完善。
 
 ## 概况
@@ -16,7 +20,6 @@ categories: ROS
 ​	CMakeList.txt文件是CMake编译系统编译软件包过程的输入文件。任何CMake兼容包都包含一个或多个CMakeLists.txt文件，这些文件描述了如何编译代码以及将其安装到哪里。将CMakeLists.txt文件应用于一个catkin项目时，它就作为**一个标准的附带一些限制条件的vanilla CMakeLists.txt文件。**使用CMake编译程序时，`cmake`指令依据CMakeLists.txt 文件生成makefiles文件，`make`命令再依据makefiles文件编译链接生成可执行文件。
 
 ​	catkin是ROS官方的一个编译构建系统，是原本的ROS的编译构建系统rosbuild的发展。`catkin_make`是将`cmake`与`make`的编译方式做了一个封装的指令工具，规范了工作路径与生成文件路径。
-<!--more-->
  ## 总体结构和顺序
 
 ​	CMakeList.txt文件必须遵循如下的格式，不然就无法正确地编译（译者遇到一些编译ros软件包时提示“ros未定义的引用”的错误，原因就是CMakeList.txt文件中命令顺序不正确）。

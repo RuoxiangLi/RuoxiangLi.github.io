@@ -11,6 +11,10 @@ categories: ROS
 
 -----
 
+这篇文章是有关ROS中服务器和客户端的学习内容。
+
+<!--more--->
+
 **写在篇头：**
 
 ROS程序包中一般包含`msg`、`src`、`srv`、`scripts`目录，分别存放`msg`消息文件、C++源文件（`.cpp`）、`srv`服务文件、Python源文件（`.py`），执行`catkin_make`命令编译完成后，`.msg`文件、`srv`文件都会转换为ROS所支持的源代码，并生成C++可执行文件。
