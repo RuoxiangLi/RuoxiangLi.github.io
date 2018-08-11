@@ -20,6 +20,9 @@ categories: ROS
 ​	CMakeList.txt文件是CMake编译系统编译软件包过程的输入文件。任何CMake兼容包都包含一个或多个CMakeLists.txt文件，这些文件描述了如何编译代码以及将其安装到哪里。将CMakeLists.txt文件应用于一个catkin项目时，它就作为**一个标准的附带一些限制条件的vanilla CMakeLists.txt文件。**使用CMake编译程序时，`cmake`指令依据CMakeLists.txt 文件生成makefiles文件，`make`命令再依据makefiles文件编译链接生成可执行文件。
 
 ​	catkin是ROS官方的一个编译构建系统，是原本的ROS的编译构建系统rosbuild的发展。`catkin_make`是将`cmake`与`make`的编译方式做了一个封装的指令工具，规范了工作路径与生成文件路径。
+
+
+
  ## 总体结构和顺序
 
 ​	CMakeList.txt文件必须遵循如下的格式，不然就无法正确地编译（译者遇到一些编译ros软件包时提示“ros未定义的引用”的错误，原因就是CMakeList.txt文件中命令顺序不正确）。
@@ -412,6 +415,8 @@ install(DIRECTORY launch/
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch  
         PATTERN ".svn" EXCLUDE)
 ~~~
+## CMakeLists.txt文件书写模板
+
 ~~~cmake
 cmake_minimum_required(VERSION 2.8.3)
 project(my_p)
@@ -613,4 +618,6 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 ~~~
+
+
 
