@@ -4,14 +4,18 @@ date: 2018-05-23 09:20:12
 tags:
   - C++
   - YAML
+  - ROS
+  - OpenCV
 categories: YAML
 ---
 
 -----
 
-这篇文章是有关C++中使用YAML语言的学习内容。
+这篇文章是有关C++中使用YAML语言的基础，以及在结合ROS和OpenCV使用的学习内容。
 
 <!--more--->
+
+## YAML语言使用基础
 
 YAML语言在C++中，可以用于应用程序相关配置文件的保存，可读性、可修改性比较好。直接贴代码。
 
@@ -352,7 +356,41 @@ add_executable(test main.cpp)
 target_link_libraries(test ${LIBS})
 ~~~
 
-参考链接：
+## 结合ROS+OpenCV的使用
+
+在许多ROS项目中使用YAML文件作为配置文件可以简化程序、提高代码的可读性和可修改性，在结合OpenCV的一些API，可以很方便地对配置信息进行修改，而不需要修改程序。下面是结合ROS+OpenCV读取YAML文件的一小段示例代码（未运行）。
+
+~~~c++
+#include <ros/ros.h>
+#include <ros/package.h> 		//ros::packgae
+#include <opencv2/opencv.hpp> 	//cv::FileStorage
+
+int main(int argc, char** argv)
+{
+    ros::init(argc, argv, "node_name");
+    string packagePath = ros::package::getPath("package_name");		//使用ROS包名读取包的地址
+    string configPath = packagePath + "//config//config_name.yaml";	//YAML文件
+    cv::FileStorage fsSettings(configPath, cv::FileStorage::READ);	//cv::FileStorage适用于XML/YAML/JSON文件
+    if(!fsSettings.isOpened())
+    {
+        cerr << "ERROR: Wrong path to settings" << endl;
+        return -1;
+    }
+    string config_variable_name = fsSettings["config_variable_name"];
+    //...
+	return 0;
+}
+~~~
+
+YAML文件：
+
+~~~yaml
+config_variable_name: value
+str_name: "value"
+...
+~~~
+
+## 参考资料
 
 https://github.com/jbeder/yaml-cpp/wiki/Tutorial
 
