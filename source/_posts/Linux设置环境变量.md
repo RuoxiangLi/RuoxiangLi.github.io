@@ -8,11 +8,9 @@ categories: ubuntu
 
 ---
 
-这篇文章是Linux设置环境变量相关的内容。
+这篇文章是有关Linux中环境变量设置的学习内容。
 
 <!--more--->
-
-这篇文章是有关Linux中环境变量设置的学习内容。
 
 `export PATH=$PATH:/home/..... `(路径目录)：此方法只在当前终端有效 	
 
