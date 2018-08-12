@@ -22,14 +22,14 @@ SLAM中的位姿有6个自由度，即**位置和姿态**，其变换过程包�
 
 ### 位置表示
 
-> 准确地说应该是机器人运动过程中的位置变化表示。
+> 准确地说应该是机器人运动过程中位置变化的表示。
 
 在一个三维空间中，建立三维坐标系之后，就可以用一个三维坐标来表示机器人的位置。
 对于机器人的位置变换，可以用一个三维的平移向量来表示，比如机器人从初始位置为$(x_0,y_0,z_0)$经过一个平移向量$t=(a,b,c)$，可以得到平移后的位置$(x_0+a,y_0+b,z_0+c)$。相对来说，机器人的位置表达比较简单，只需要一个平移向量即可。
 
 ### 姿态表示
 
-> 准确地说应该是机器人运动过程中的姿态变化表示。
+> 准确地说应该是机器人运动过程中姿态变化的表示。
 
 在一个三维空间中，通常用一个三维向量来表示机器人的姿态。更直观的讲，机器人的姿态可以想象成机器人自带一个坐标系，这个坐标系的原点就是机器人，z轴表示机器人面向的方向，这样的一个坐标系可以通过表示机器人姿态的三维向量来构造。
 
@@ -46,7 +46,7 @@ $\left[ \begin{matrix}e1&e2&e3\end{matrix} \right] \left[ \begin{matrix}a1\\a2\\
 
 在等式的左右同时左乘$\left[ \begin{matrix}a^T_1\\a^T_2\\a^T_3\\\end{matrix} \right]$，可得
 
-$\left[ \begin{matrix}a1\\a2\\a3\\\end{matrix} \right]=\left[ \begin{matrix}e^T_1e′_1 & e^T_1e′_2 &e^T_1e′_3\\ e^T_2e′_1 &  e^T_2e′_2 & e^T_2e′_3 \\e^T_3e′_1&e^T_3e′_2&e^T_3e′_3  \end{matrix} \right]\left [\begin{matrix}a′_1\\a′_2\\a′_3\\\end{matrix} \right]=Ra′$
+$\left[ \begin{matrix}a1\\a2\\a3\\\end{matrix} \right]=\left[ \begin{matrix}e^T_1e′_1 & e^T_1e′_2 &e^T_1e′_3\\ e^T_2e′_1 &  e^T_2e′_2 & e^T_2e′_3 \\e^T_3e′_1&e^T_3e′_2&e^T_3e′_3  \end{matrix} \right]\left [\begin{matrix}a′_1\\a′_2\\a′_3\\\end{matrix} \right]=Ra′​$
 
 矩阵$R$即为旋转矩阵。旋转矩阵是一个行列式为1的正交矩阵。同样所有行列式为1的正交矩阵都是旋转矩阵，因此可以把旋转矩阵做如下定义：
 
@@ -150,6 +150,7 @@ $SE(3)=\{T=\left[ \begin{matrix}R&t\\0^T&1\end{matrix} \right]ϵℝ^{4×4}∣Rϵ
 >
 > 
 >
+> 
 
 ## 旋转向量
 

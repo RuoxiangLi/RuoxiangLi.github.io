@@ -1,19 +1,19 @@
 ---
-title: ORBSLAM2学习之运行ROS模块
+title: ORB_SLAM2学习之运行ROS模块
 date: 2018-08-12 10:05:55
 tags: 
-  - ORBSLAM2
-categories: ORBSLAM2
+  - ORB_SLAM2
+categories: ORB_SLAM2
 
 ---
 
 ---
 
-这篇文章是有关运行ORBSLAM2系统ROS模块，包括单目和双目部分的学习内容。
+这篇文章是有关运行ORB_SLAM2系统ROS模块，包括单目和双目部分的学习内容。
 
 <!--more-->
 
-ORBSLAM2运行ROS模块需要从相应的话题接收图像用于SLAM系统，对于我这种不方便使用相机进行实时采集图像的渣渣来说，使用数据集图像是很好的选择。因此需要从本地数据集中获取图像，再利用ROS中的话题进行图像的发布和接收。下面的内容将介绍利用ROS进行简单的图像发布和接收操作，以及ORBSLAM2系统ROS模块运行起来的整个过程。
+ORB_SLAM2运行ROS模块需要从相应的话题接收图像用于SLAM系统，对于我这种不方便使用相机进行实时采集图像的渣渣来说，使用数据集图像是很好的选择。因此需要从本地数据集中获取图像，再利用ROS中的话题进行图像的发布和接收。下面的内容将介绍利用ROS进行简单的图像发布和接收操作，以及ORB_SLAM2系统ROS模块运行起来的整个过程。
 
 > 系统环境
 >
@@ -205,7 +205,7 @@ rosrun rqt_graph rqt_graph
 
 可以执行`rosnode kill`命令关闭相关节点。
 
-## ORBSLAM2 ROS模块结点的编译
+## ORB_SLAM2 ROS模块结点的编译
 
 在环境变量`ROS_PACKAGE_PATH`中添加`Examples/ROS/ORB_SLAM2`的路径：
 
@@ -577,7 +577,7 @@ target_link_libraries(stereo_right_kitti ${LIBS})
 bagPath: "/media/eric/linux/DATA/KITTI/odometry/data_odometry_gray/sequences/03"
 ~~~
 
-这里需要启动三个节点，每个单独启动会比较麻烦，所以使用ROS Launch文件，同时启动左、右图像发布节点和ORBSLAM2 Stereo_eric节点。在`my_image_transport/launch`目录下添加ROS节点启动文件`stereo_image_transport.yaml`，
+这里需要启动三个节点，每个单独启动会比较麻烦，所以使用ROS Launch文件，同时启动左、右图像发布节点和ORB_SLAM2 Stereo_eric节点。在`my_image_transport/launch`目录下添加ROS节点启动文件`stereo_image_transport.yaml`：
 
 ~~~xml
 <launch>
@@ -590,7 +590,7 @@ bagPath: "/media/eric/linux/DATA/KITTI/odometry/data_odometry_gray/sequences/03"
 </launch>
 ~~~
 
-修改ORBSLAM2的`ros_stereo.cc`文件，新建为`ros_stereo_eric.cc`：
+修改ORB_SLAM2的`ros_stereo.cc`文件，新建为`ros_stereo_eric.cc`：
 
 ~~~c++
 #include<iostream>
