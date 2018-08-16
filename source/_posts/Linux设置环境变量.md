@@ -8,7 +8,7 @@ categories: ubuntu
 
 ---
 
-这篇文章是有关Linux中环境变量设置的学习内容。
+这篇文章是有关Linux中环境变量设置的内容记录。
 
 <!--more--->
 
@@ -31,7 +31,7 @@ echo "source ~/slam/ORB_SLAM2/Examples/ROS/ORB_SLAM2/build/devel/setup.sh" >> ~/
 
 `export PATH=$PATH:/home/..... `，只在当前终端有效，source ~/.bashrc也不行，如何永久有效？？？
 
-export之后编译程序包，就会产生setup.sh文件，再执行如下命令即可：
+`export`之后编译程序包，就会产生setup.sh文件，再执行如下命令即可：
 
 echo "source ~/slam/ORB_SLAM2/Examples/ROS/ORB_SLAM2/build/devel/setup.sh" >> ~/.bashrc
 
