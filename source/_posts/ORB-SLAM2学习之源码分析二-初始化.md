@@ -88,7 +88,7 @@ void Frame::ExtractORB(int flag, const cv::Mat &im)
 
 ## 初始化比较
 
-单目初始化的特点是双目、RGD-D初始化过程不具备的。（废话么这不是）
+单目初始化的特点是双目、RGD-D初始化过程不具备的。（废话么这不是()> _ <) ）
 
 ## 参考资料
 
