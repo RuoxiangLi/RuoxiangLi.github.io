@@ -20,6 +20,10 @@ ORB-SLAM2系统追踪、局部建图、回环检测、可视化四个线程，�
 
 {% asset_img Track.png %}
 
+{% asset_img Tracking跟踪模型.png %}
+
+上图是参考资料1中的流程图，介绍的比较详细，可供参考。
+
 ## 初始追踪
 
 初始化完成后，对于相机获取当前图像`mCurrentFrame`，通过跟踪匹配上一帧`mLastFrame`特征点的方式，可以获取一个相机位姿的初始值；为了兼顾计算量和跟踪鲁棒性，追踪部分主要用了三种模型：运动模型（TrackWithMotionModel）、关键帧（TrackReferenceKeyFrame）和重定位（Relocalization）。三种跟踪模型都是为了获取相机位姿一个粗略的初值，后面会通过跟踪局部地图TrackLocalMap对位姿进行BundleAdjustment（捆集调整），进一步优化位姿。

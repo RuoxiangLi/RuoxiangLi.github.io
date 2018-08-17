@@ -56,7 +56,7 @@ void Frame::ExtractORB(int flag, const cv::Mat &im)
 
 ## 单目初始化
 
-单目初始化调用`Tracking::MonocularInitialization()`函数。
+单目SLAM地图初始化的目标是构建初始的三维点云。由于不能仅仅从单帧得到深度信息，因此需要从图像序列中选取两帧以上的图像，估计摄像机姿态并重建出初始的三维点云。单目初始化调用Tracking::MonocularInitialization()函数。
 
 {% asset_img 单目初始化.png %}
 
