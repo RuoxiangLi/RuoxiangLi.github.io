@@ -110,7 +110,7 @@ $\left\{ \begin{array}{ll} x_k=f(x_{k-1},u_k,\omega_k)\\ z_{k,j}=h(y_j,x_k,\upsi
 3. 深度学习与SLAM结合，与新的传感器进行融合
 4. 应用领域：自动驾驶、AR、VR、无人机、无人车、扫地机器人
 
-## 热门公司
+## 热门公司和部门
 
 1. 商汤科技
 2. Momenta
@@ -119,6 +119,7 @@ $\left\{ \begin{array}{ll} x_k=f(x_{k-1},u_k,\omega_k)\\ z_{k,j}=h(y_j,x_k,\upsi
 5. 纵目科技
 6. 地平线
 7. 旷视科技
+8. [阿里巴巴达摩院AI Labs](https://zhuanlan.zhihu.com/p/41101700)
 
 ## 参考资料
 

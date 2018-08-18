@@ -1,5 +1,5 @@
 ---
-title: ORB_SLAM2学习之源码分析一-Tracking
+title: ORB_SLAM2学习之源码分析一-追踪
 date: 2018-08-12 20:01:21
 tags: 
   - ORB_SLAM2
@@ -50,7 +50,9 @@ ORB-SLAM2系统追踪、局部建图、回环检测、可视化四个线程，�
 
 ## TrackLocalMap
 
-一旦我们通过上面三种模型获取了初始的相机位姿和初始的特征匹配，就可以将完整的地图（地图点）投影到当前帧中，去搜索更多的匹配。但是投影完整的地图，在large scale的场景中是很耗计算而且也没有必要的，因此，这里使用了局部地图LocalMap来进行投影匹配。对局部地图的更新包括对局部关键帧和局部地图点的更新。**局部地图包含**：与当前帧相连的关键帧K1（所有能观察到当前帧对应地图点的的关键帧），以及与K1相连的关键帧K2（一级二级相连关键帧），并且限制了关键数量不超过80；K1、K2对应的地图点；参考关键帧Kf。
+一旦我们通过上面三种模型获取了初始的相机位姿和初始的特征匹配，就可以将完整的地图（地图点）投影到当前帧中，去搜索更多的匹配。但是投影完整的地图，在large scale的场景中是很耗计算而且也没有必要的，因此，这里使用了局部地图LocalMap来进行投影匹配。对局部地图的更新包括对局部关键帧和局部地图点的更新。**局部地图包含**：与当前帧相连的关键帧K1（所有能观察到当前帧对应地图点的关键帧，图中Pos2），以及与K1相连的关键帧K2（一级二级相连关键帧，图中Pos1），并且限制了关键数量不超过80；K1、K2对应的地图点（图中X1，貌似X0不包括在内，为啥？？）；参考关键帧Kf。[下图](http://www.cnblogs.com/luyb/p/5447497.html)局部地图就是红色椭圆圈出的部分，参与局部优化，其中红色代表取值会被优化，灰色代表取值保持不变。
+
+![img](https://images2015.cnblogs.com/blog/879417/201605/879417-20160529210611194-1582716555.png)
 
 匹配过程如下：　　
 
@@ -87,6 +89,21 @@ ORB-SLAM2系统追踪、局部建图、回环检测、可视化四个线程，�
 {% asset_img Tracking重点环节.png %}
 
 追踪模块是实现SLAM框架中视觉里程计模块的主体部分，其主要过程包括：初始化、初始追踪（初始位姿估计）、局部地图追踪（进一步的位姿估计）、局部优化、决定是否创建新的关键帧等。初始位姿估计仅仅完成了视觉里程计中的帧间追踪，该过程要么选择上一帧，要么选择参考关键帧，要么从全局关键帧数据库中选取候选关键帧与当前帧进行特征匹配，分别进行恒速运动模型、参考关键帧追踪模型、重定位模型。此外，还需要进行局部地图的追踪，提高精度。
+
+后续再深入学习其他内容：
+
+- [ORB特征提取（Fast关键点、rBRIEF描述子、SIFT特征）](https://blog.csdn.net/c602273091/article/details/56008370)
+- [Fast源码分析](https://blog.csdn.net/zhaocj/article/details/40301561)
+- [Fast API](http://opencv.jp/opencv-2.2_org/cpp/features2d_feature_detection_and_description.html?highlight=fast#StarDetector)
+- [DBoW2](https://blog.csdn.net/u010821666/article/details/52915238?locationNum=1&fps=1)
+- [尺度金字塔、变化尺度（尺度因子）](http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/imgproc/pyramids/pyramids.html)
+- 畸变校正（双目矫正）
+- [以上在ORB_SLAM中的应用](https://blog.csdn.net/c602273091/article/details/54955663)
+- BoW向量
+- 地图点投影（匹配）、三角测量【视觉slam十四讲P53、计算机视觉算法与应用P264】
+- 三角剖分
+- [双目立体成像](https://www.cnblogs.com/german-iris/p/4937712.html)
+- [对极几何（本质矩阵 单应矩阵）](https://www.cnblogs.com/shang-slam/p/6496411.html)视觉slam十四讲P141
 
 ## 参考资料
 
