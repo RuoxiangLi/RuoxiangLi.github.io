@@ -5,7 +5,9 @@ tags:
   - SLAM基础
   - 读书笔记
 mathjax: true
-categories: SLAM
+categories: 
+  - SLAM
+  - 读书笔记
 ---
 
 -----

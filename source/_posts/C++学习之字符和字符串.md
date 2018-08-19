@@ -6,7 +6,9 @@ tags:
   - C++
   - 字符和字符串
   - 面试
-categories: C++
+categories: 
+  - 语言
+  - C++
 ---
 
 -----

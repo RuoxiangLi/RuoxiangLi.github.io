@@ -3,7 +3,9 @@ title: ROS学习之pluginlib
 date: 2018-04-03 19:23:25
 tags:
   - ROS pluginlib
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 -----

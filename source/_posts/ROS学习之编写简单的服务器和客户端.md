@@ -6,7 +6,9 @@ tags:
   - catkin
   - ROS服务器
   - ROS客户端
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 -----

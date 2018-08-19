@@ -5,7 +5,9 @@ tags:
   - C++
   - const
   - 面试
-categories: C++
+categories: 
+  - 语言
+  - C++
 ---
 
 ------

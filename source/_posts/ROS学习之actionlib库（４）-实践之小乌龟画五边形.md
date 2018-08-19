@@ -3,7 +3,9 @@ title: ROS学习之actionlib库（４）-实践之小乌龟画五边形
 date: 2018-03-31 11:19:47
 tags:
   - ROS actionlib
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 -----

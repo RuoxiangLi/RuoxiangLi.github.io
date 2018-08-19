@@ -4,8 +4,8 @@ date: 2018-08-19 13:21:54
 tags: 
   - ORB_SLAM2
 categories: 
-  - ORB_SLAM2
   - SLAM
+  - ORB_SLAM2
 ---
 
 ---

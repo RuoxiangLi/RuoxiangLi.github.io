@@ -3,7 +3,9 @@ title: ROS学习之actionlib库（１）-actionlib库的介绍
 date: 2018-03-29 22:42:46
 tags:
   - ROS actionlib
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 ------

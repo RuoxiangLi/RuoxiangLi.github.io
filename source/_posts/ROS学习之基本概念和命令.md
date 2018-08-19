@@ -3,7 +3,9 @@ title: ROS学习之基本概念和命令
 date: 2018-03-22 13:27:48
 tags:
   - ROS
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 -----

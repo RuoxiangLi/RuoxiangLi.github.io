@@ -4,7 +4,9 @@ date: 2018-03-21 22:04:00
 tags: 
   - ROS 
   - CMake
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 ***

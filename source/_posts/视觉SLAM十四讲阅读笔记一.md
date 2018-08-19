@@ -5,7 +5,9 @@ tags:
   - SLAM基础
   - 读书笔记
 mathjax: true
-categories: SLAM
+categories: 
+  - SLAM
+  - 读书笔记
 ---
 
 -----
@@ -151,6 +153,7 @@ $SE(3)=\{T=\left[ \begin{matrix}R&t\\0^T&1\end{matrix} \right]ϵℝ^{4×4}∣Rϵ
 > 
 >
 > 
+>
 
 ## 旋转向量
 

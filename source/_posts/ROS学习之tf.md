@@ -3,7 +3,9 @@ title: ROS学习之tf
 date: 2018-04-04 15:05:37
 tags:
   - ROS tf
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 -----

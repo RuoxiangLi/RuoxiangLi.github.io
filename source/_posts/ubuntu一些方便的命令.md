@@ -3,7 +3,9 @@ title: ubuntu一些方便的命令
 date: 2018-04-21 11:12:32
 tags:
   - ubuntu
-categories: ubuntu
+categories: 
+  - 系统
+  - ubuntu
 ---
 
 -----

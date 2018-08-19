@@ -3,7 +3,9 @@ title: ROS学习之工作空间、软件包的创建和编译
 date: 2018-05-10 21:42:22
 tags:
   - ROS 
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 -----

@@ -4,7 +4,9 @@ date: 2018-04-12 11:41:08
 tags:
   - STL
   - sort
-categories: C++
+categories: 
+  - 语言
+  - C++
 ---
 
 -----

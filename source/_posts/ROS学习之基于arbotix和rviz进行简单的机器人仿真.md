@@ -5,7 +5,9 @@ tags:
   - ROS
   - arbotix
   - rviz
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 ---

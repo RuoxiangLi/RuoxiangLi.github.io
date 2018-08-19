@@ -3,7 +3,9 @@ title: ubuntu学习之update和upgrade
 date: 2018-03-27 12:07:48
 tags:
   - ubuntu
-categories: ubuntu
+categories: 
+  - 系统
+  - ubuntu
 ---
 
 -----

@@ -3,7 +3,9 @@ title: ORB_SLAM2学习之源码分析一-追踪
 date: 2018-08-12 20:01:21
 tags: 
   - ORB_SLAM2
-categories: ORB_SLAM2
+categories: 
+  - SLAM
+  - ORB_SLAM2
 ---
 
 ---

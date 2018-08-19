@@ -3,7 +3,9 @@ title: ROS学习之Timer类
 date: 2018-03-29 10:46:28
 tags:
   - ROS
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 ----

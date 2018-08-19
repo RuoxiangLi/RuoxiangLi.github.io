@@ -3,7 +3,9 @@ title: Linux设置环境变量
 date: 2018-08-07 16:03:24
 tags:
   - ubuntu
-categories: ubuntu
+categories: 
+  - 系统
+  - ubuntu
 ---
 
 ---

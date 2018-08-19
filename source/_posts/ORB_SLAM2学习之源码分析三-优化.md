@@ -3,7 +3,9 @@ title: ORB_SLAM2学习之源码分析三-优化
 date: 2018-08-18 17:19:59
 tags: 
   - ORB_SLAM2
-categories: ORB_SLAM2
+categories: 
+  - SLAM
+  - ORB_SLAM2
 ---
 
 ----

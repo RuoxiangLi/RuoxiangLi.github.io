@@ -3,7 +3,9 @@ title: ROS学习之nodelet
 date: 2018-04-04 10:37:16
 tags:
   - ROS nodelet
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 -----

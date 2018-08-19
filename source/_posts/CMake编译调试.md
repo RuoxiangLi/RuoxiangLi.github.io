@@ -3,7 +3,9 @@ title: CMake编译调试
 date: 2018-04-29 14:50:40
 tags:
    - CMake
-categories: CMake
+categories: 
+  - 工具
+  - CMake
 ---
 
 -----

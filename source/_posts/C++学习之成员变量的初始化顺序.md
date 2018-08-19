@@ -5,7 +5,9 @@ tags:
   - C++
   - 成员变量
   - 面试
-categories: C++
+categories: 
+  - 语言
+  - C++
 ---
 
 -----

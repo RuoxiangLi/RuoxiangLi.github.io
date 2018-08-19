@@ -4,7 +4,9 @@ date: 2018-05-09 10:58:38
 tags:
   - C++
   - explicit
-categories: C++
+categories: 
+  - 语言
+  - C++
 ---
 
 -----

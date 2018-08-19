@@ -3,7 +3,9 @@ title: ROS学习之roslaunch
 date: 2018-05-24 20:43:34
 tags:
   - roslaunch
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 -----

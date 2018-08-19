@@ -3,7 +3,9 @@ title: ORB_SLAM2学习之源码分析二-初始化
 date: 2018-08-16 15:37:48
 tags: 
   - ORB_SLAM2
-categories: ORB_SLAM2
+categories: 
+  - SLAM
+  - ORB_SLAM2
 ---
 
 ----

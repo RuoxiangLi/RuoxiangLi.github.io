@@ -3,7 +3,9 @@ title: CMake学习之查找链接库--find_package使用方法
 date: 2018-08-03 21:38:19
 tags:
    - CMake
-categories: CMake
+categories: 
+  - 工具
+  - CMake
 ---
 
 ------

@@ -3,7 +3,9 @@ title: ROS学习之actionlib库（２）-使用Execute Callback编写一个简�
 date: 2018-03-30 10:42:46
 tags:
   - ROS actionlib
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 -----
 这篇文章是有关ROS中actionlib使用的学习内容。

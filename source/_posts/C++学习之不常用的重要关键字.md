@@ -3,7 +3,9 @@ title: C++学习之不常用的重要关键字
 date: 2018-03-29 11:02:39
 tags:
   - C++关键字
-categories: C++
+categories: 
+  - 语言
+  - C++
 ---
 
 -----

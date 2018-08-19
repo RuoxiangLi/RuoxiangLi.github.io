@@ -7,7 +7,9 @@ tags:
   - catkin
   - ROS消息发布器
   - ROS消息订阅器
-categories: ROS
+categories: 
+  - 机器人
+  - ROS
 ---
 
 -----
