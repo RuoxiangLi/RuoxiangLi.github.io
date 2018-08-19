@@ -20,7 +20,7 @@ SLAM过程初始化的目的是创建3d地图点，为后续跟踪提供初值�
 
 在进行初始化之前都要将彩色图像（3或4通道图像）处理成灰度图像（无论图片是RGB、BGR， 还是RGBA、BGRA，均转化为灰度图，放弃彩色信息），继而将图片封装成帧（`Frame`类对象）。下面介绍下图像帧的创建过程，三者初始化分别调用重载的`Frame`类构造函数。
 
-单目创建图像帧函数调用：
+单目创建图像帧函数调用：	
 
 ~~~c++
 mCurrentFrame = Frame(mImGray, timestamp, mpIniORBextractor, mpORBextractor, mpORBVocabulary, mK, mDistCoef, mbf, mThDepth);
@@ -52,7 +52,7 @@ void Frame::ExtractORB(int flag, const cv::Mat &im)
 
 {% asset_img ExtractORB.png %}
 
-创建图像帧的关键一步是进行ORB特征提取，`ExtractORB()`调用了`ORBextractor`类中的重载操作符`void operator()`，完成特征提取，提取结果被保存在`Frame`类的成员变量`std::vector<cv:KeyPoint> mvKeys`和`cv:Mat mDescriptors`中。
+创建图像帧的关键一步是进行ORB特征提取，`ExtractORB()`调用了`ORBextractor`类中的重载操作符`void operator()`，完成特征提取，提取结果被保存在`Frame`类的成员变量`std::vector<cv:KeyPoint> mvKeys`和`cv:Mat mDescriptors`中，即提取出特征的关键点和描述子。关于ORB特征及其提取、匹配，会在后续继续学习。
 
 ## 单目初始化
 

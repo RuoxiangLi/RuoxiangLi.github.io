@@ -90,20 +90,49 @@ ORB-SLAM2系统追踪、局部建图、回环检测、可视化四个线程，�
 
 追踪模块是实现SLAM框架中视觉里程计模块的主体部分，其主要过程包括：初始化、初始追踪（初始位姿估计）、局部地图追踪（进一步的位姿估计）、局部优化、决定是否创建新的关键帧等。初始位姿估计仅仅完成了视觉里程计中的帧间追踪，该过程要么选择上一帧，要么选择参考关键帧，要么从全局关键帧数据库中选取候选关键帧与当前帧进行特征匹配，分别进行恒速运动模型、参考关键帧追踪模型、重定位模型。此外，还需要进行局部地图的追踪，提高精度。
 
-后续再深入学习其他内容：
+## 后续再深入学习其他内容
 
-- [ORB特征提取（Fast关键点、rBRIEF描述子、SIFT特征）](https://blog.csdn.net/c602273091/article/details/56008370)
-- [Fast源码分析](https://blog.csdn.net/zhaocj/article/details/40301561)
-- [Fast API](http://opencv.jp/opencv-2.2_org/cpp/features2d_feature_detection_and_description.html?highlight=fast#StarDetector)
-- [DBoW2](https://blog.csdn.net/u010821666/article/details/52915238?locationNum=1&fps=1)
-- [尺度金字塔、变化尺度（尺度因子）](http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/imgproc/pyramids/pyramids.html)
-- 畸变校正（双目矫正）
-- [以上在ORB_SLAM中的应用](https://blog.csdn.net/c602273091/article/details/54955663)
-- BoW向量
-- 地图点投影（匹配）、三角测量【视觉slam十四讲P53、计算机视觉算法与应用P264】
-- 三角剖分
-- [双目立体成像](https://www.cnblogs.com/german-iris/p/4937712.html)
-- [对极几何（本质矩阵 单应矩阵）](https://www.cnblogs.com/shang-slam/p/6496411.html)视觉slam十四讲P141
+### ORB特征提取（涉及到Fast关键点检测、rBRIEF描述子、SIFT特征）
+
+### 尺度空间、金字塔、变化尺度（尺度因子）
+
+### [DBoW2](https://blog.csdn.net/u010821666/article/details/52915238?locationNum=1&fps=1)、BoW向量
+
+
+
+### [以上在ORB_SLAM中的应用](https://blog.csdn.net/c602273091/article/details/54955663)
+
+
+
+### 相机运动估计
+
+#### 地图点投影（匹配）、三角测量
+
+### 
+
+####  [对极几何（本质矩阵 单应矩阵）](https://www.cnblogs.com/shang-slam/p/6496411.html)
+
+
+
+#### 参考资料
+
+1. 视觉slam十四讲P153
+2. 计算机视觉算法与应用P264
+3. 视觉slam十四讲P141
+
+
+
+### 
+
+
+
+### [双目立体成像](https://www.cnblogs.com/german-iris/p/4937712.html)与畸变校正（双目矫正）
+
+
+
+### 三角剖分
+
+
 
 ## 参考资料
 
