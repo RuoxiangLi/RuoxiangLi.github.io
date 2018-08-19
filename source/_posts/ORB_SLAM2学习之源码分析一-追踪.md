@@ -98,21 +98,15 @@ ORB-SLAM2系统追踪、局部建图、回环检测、可视化四个线程，�
 
 ### [DBoW2](https://blog.csdn.net/u010821666/article/details/52915238?locationNum=1&fps=1)、BoW向量
 
-
-
 ### [以上在ORB_SLAM中的应用](https://blog.csdn.net/c602273091/article/details/54955663)
-
-
 
 ### 相机运动估计
 
 #### 地图点投影（匹配）、三角测量
 
-### 
+####  [2D-2D：对极几何（本质矩阵 单应矩阵）](https://www.cnblogs.com/shang-slam/p/6496411.html)
 
-####  [对极几何（本质矩阵 单应矩阵）](https://www.cnblogs.com/shang-slam/p/6496411.html)
-
-
+http://zhehangt.win/2017/03/05/SLAM/EpipolarGeometry/
 
 #### 参考资料
 
@@ -121,18 +115,9 @@ ORB-SLAM2系统追踪、局部建图、回环检测、可视化四个线程，�
 3. 视觉slam十四讲P141
 
 
-
-### 
-
-
-
 ### [双目立体成像](https://www.cnblogs.com/german-iris/p/4937712.html)与畸变校正（双目矫正）
 
-
-
 ### 三角剖分
-
-
 
 ## 参考资料
 
