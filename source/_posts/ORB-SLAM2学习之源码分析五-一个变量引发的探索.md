@@ -3,6 +3,7 @@ title: ORB-SLAM2学习之源码分析五-一个变量引发的探索
 date: 2018-08-20 17:12:28
 tags: 
   - ORB_SLAM2
+mathjax: true
 categories: 
   - SLAM
   - ORB_SLAM2
