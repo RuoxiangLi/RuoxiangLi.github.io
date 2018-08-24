@@ -26,16 +26,16 @@ LocalClosing模块是SLAM系统非常重要的一部分，由于VO过程存在�
 
 对应`LoopClosing::DetectLoop()`函数。检测回环候选（在`KeyFrameDataBase`中找到与`mlpLoopKeyFrameQueue`相似的闭环候选帧）并检查共视关系（检查候选帧连续性），函数会将所有通过一致性检测的候选关键帧统一放到集合`mvpEnoughConsistentCandidates`中，由下一步最终确定闭环帧。主要过程如下：
 
-1. 计算当前帧`mpCurrentKF`和每一个与当前帧有共视关系的关键帧的Bow得分，得到最小得分**`minScore`** ；
+1. 计算当前帧`mpCurrentKF`和所有与当前帧有共视关系的关键帧的Bow得分，得到最小得分**`minScore`** ；
 
 2. 根据这个最小得分`minScore` 从`mpKeyFrameDB`（关键帧库）中找出候选的关键帧集合**`vpCandidateKFs`**；
 
    > 使用`KeyFrameDatabase::DetectLoopCandidates`完成候选帧的筛选，具体过程：
    >
-   > 1. Bow得分>minScore；
-   > 2. 统计满足1的关键帧中有共同单词最多的单词数maxcommonwords；
-   > 3. 筛选出共同单词数大于mincommons(=0.8*maxcommons)的关键帧；
-   > 4. 相连的关键帧分为一组，计算组得分（总分），得到最大总分bestAccScore，筛选出总分大于minScoreToRetain(=0.75*bestAccScore)的组，用组中得分最高的候选帧lAccScoreAndMatch代表该组。计算组得分的目的是剔除单独一帧得分较高，但是没有共视关键帧，作为闭环来说不够鲁棒。
+   > - Bow得分>minScore；
+   > - 统计满足1的关键帧中有共同单词最多的单词数maxcommonwords；
+   > - 筛选出共同单词数大于mincommons(=0.8*maxcommons)的关键帧；*
+   > - *相连的关键帧分为一组，计算组得分（总分），得到最大总分bestAccScore，筛选出总分大于minScoreToRetain(=0.75*bestAccScore)的组，用组中得分最高的候选帧lAccScoreAndMatch代表该组。计算组得分的目的是剔除单独一帧得分较高，但是没有共视关键帧，作为闭环来说不够鲁棒。
 
 3. 对于**`vpCandidateKFs`**里面的每一个关键帧，作为当前关键帧。找出其有共视关系的关键帧组成一个当前集合**`spCandidateGroup`。如果当前关键帧是`vpCandidateKFs`中第一帧的话，直接把这个`spCandidateGroup`集合，以分数0直接放到`mvConsistentGroups`中。**如果不是第一帧的话，就从**`mvConsistentGroups`**中依次取出里面的元素`pair<set<KeyFrame*>,int>`的`first`，这些元素也是关键帧们组成**以前集合`sPreviousGroup`**。只要是当前集合中的任意一个关键帧能在以前集合里面找到，就要将当前集合的得分加1，并把当前集合放到`mvConsistentGroups`里面**。**如果当前集合的得分大于3（`mnCovisibilityConsistencyTh`）的话**，当前帧就通过了一致性检测**，把当前帧放到**`mvpEnoughConsistentCandidates`，最后会找到很多候选的关键帧。下一步用sim3找出闭环帧。**
 
