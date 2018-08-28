@@ -50,3 +50,10 @@ uname -a
 cat /proc/version
 ~~~
 
+### 查看nvidia显卡信息
+
+~~~
+nvidia-smi
+nvidia-settings
+~~~
+
