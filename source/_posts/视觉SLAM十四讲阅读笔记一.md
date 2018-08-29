@@ -44,9 +44,9 @@ SLAM中的位姿有6个自由度，即**位置和姿态**，其变换过程包�
 
 根据坐标的定义有：
 
-$\left[ \begin{matrix}e1&e2&e3\end{matrix} \right] \left[ \begin{matrix}a1\\a2\\a3\\\end{matrix} \right]=[e′_1 e′_2 e′_3]\left [\begin{matrix}a′_1\\a′_2\\a′_3\\\end{matrix} \right]$
+$\left[ \begin{matrix}e_1&e_2&e_3\end{matrix} \right] \left[ \begin{matrix}a_1\\a_2\\a_3\\\end{matrix} \right]=[e′_1 e′_2 e′_3]\left [\begin{matrix}a′_1\\a′_2\\a′_3\\\end{matrix} \right]$
 
-在等式的左右同时左乘$\left[ \begin{matrix}a^T_1\\a^T_2\\a^T_3\\\end{matrix} \right]$，可得
+在等式的左右同时左乘$\left[ \begin{matrix}a^T_1\\a^T_2\\a^T_3\\\end{matrix} \right]​$，可得
 
 $\left[ \begin{matrix}a1\\a2\\a3\\\end{matrix} \right]=\left[ \begin{matrix}e^T_1e′_1 & e^T_1e′_2 &e^T_1e′_3\\ e^T_2e′_1 &  e^T_2e′_2 & e^T_2e′_3 \\e^T_3e′_1&e^T_3e′_2&e^T_3e′_3  \end{matrix} \right]\left [\begin{matrix}a′_1\\a′_2\\a′_3\\\end{matrix} \right]=Ra′​$
 
@@ -128,27 +128,28 @@ $SE(3)=\{T=\left[ \begin{matrix}R&t\\0^T&1\end{matrix} \right]ϵℝ^{4×4}∣Rϵ
 >    w \\
 >    \end{matrix} \right] = 
 >    \left[ \begin{matrix}
->
+>    
 >    kx \\
 >    ky  \\
 >    kw \\
->
+>    
 >    \end{matrix} \right] \Rightarrow
 >    \left[ \begin{matrix}
->
+>    
 >    \frac{kx}{kw}  \\
 >    \frac{ky}{kw}  \\
->
+>    
 >    \end{matrix} \right] =
 >    \left[ \begin{matrix}
->
+>    
 >    \frac {x}{w}\ \\
 >    \frac{y}{w}  \\
->
+>    
 >    \end{matrix} \right]
 >    $$
 >
 >
+> 
 >
 > 
 >

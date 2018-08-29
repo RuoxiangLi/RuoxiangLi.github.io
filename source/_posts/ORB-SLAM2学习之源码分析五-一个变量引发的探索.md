@@ -17,6 +17,8 @@ categories:
 
 ## 问题的引出
 
+
+{% fold +点击查看 %}
 ~~~c++
 void MapPoint::AddObservation(KeyFrame* pKF, size_t idx)
 {
@@ -31,6 +33,8 @@ void MapPoint::AddObservation(KeyFrame* pKF, size_t idx)
         nObs++;//观测到该地图点的关键帧数目
 }
 ~~~
+{% endfold %}
+
 
 在阅读`MapPoint::AddObservation`函数时，注意到`mvuRight`这个变量，程序中通过判断其值对`nObs`变量进行相关操作。一直没搞明白它的意思。终于在[知乎这个问题](https://www.zhihu.com/question/280964049/answer/418426500)找到了答案。这里稍微整理一下内容，并记录下自己由此理解的一些东西。
 
