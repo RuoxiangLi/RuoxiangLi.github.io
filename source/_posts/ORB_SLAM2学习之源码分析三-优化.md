@@ -186,7 +186,6 @@ int Optimizer::PoseOptimization(Frame *pFrame)
 
 - 只优化当前帧pose，地图点固定。
 - 用于LocalTracking中运动模型跟踪、参考帧跟踪、地图跟踪TrackLocalMap、重定位，每进行过一次PnP投影操作将地图点投影到当前平面上之后，都会进行一次`PoseOptimization`位姿优化，通过BA优化重投影误差。
-- 。
 
 ## ORB-SLAM2中的图
 
