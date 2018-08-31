@@ -68,7 +68,7 @@ ORB-SLAM中关键帧和地图点的加入和删除秉承的是送入严出的标
 
 ### Local Bundle Adjustment
 
-对应`Optimizer::LocalBundleAdjustment()`函数。这里优化的是当前帧，以及与当前帧在covisibility graph里面有连接关系的那些关键帧的位姿，以及这些帧看到的地图点，其实就是对局部地图进行优化。
+对应`Optimizer::LocalBundleAdjustment()`函数。这里优化的是当前帧，以及与当前帧在covisibility graph里面有连接关系的那些关键帧的位姿，以及这些帧看到的地图点，其实就是对局部地图进行优化。详细分析参见优化部分博客。
 
 ### 冗余关键帧剔除
 
