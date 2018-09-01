@@ -49,9 +49,9 @@ LocalClosing模块是SLAM系统非常重要的一部分，由于VO过程存在�
 
 1. 通过`SearchByBow`，搜索当前关键帧中和候选帧匹配的地图点，当匹配的数目超过20，就为该候选帧和当前帧构造一个`sim3Solver`，即相似求解器；
 
-2. 用相似求解器`Sim3Solver`求解出位姿`Scm`，这里使用RANSAC方法；
+2. 用相似求解器`Sim3Solver`求解出候选帧与当前帧之间的相似变换`Scm`，这里使用RANSAC方法；
 
-3. 根据计算出的位姿，通过相似变化求找出更多的匹配地图点（`SearchBySim3`），更新`vpMapPointMatches`；
+3. 根据计算出的位姿，通过相似变换求找出更多的匹配地图点（`SearchBySim3`），更新`vpMapPointMatches`；
 
 4. 使用更新后的匹配，使用g2o**优化Sim3位姿**（`OptimizeSim3`），优化的结果足够好的话（内点数nInliers>20）就把候选的关键帧作为当前帧的闭环帧`mpMatchedKF`，break，跳过对其他候选闭环帧的判断，同时也得到了`mScw`；
 
