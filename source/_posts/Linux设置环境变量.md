@@ -29,6 +29,14 @@ echo "source ~/slam/ORB_SLAM2/Examples/ROS/ORB_SLAM2/build/devel/setup.sh" >> ~/
 
 
 
+1. `source /devel/setup.bash`
+
+   将当前工作空间加入环境变量，只对当前终端有效。
+
+2. 
+
+
+
 下面这些命令都是什么作用：
 
 `export PATH=$PATH:/home/..... `，只在当前终端有效，source ~/.bashrc也不行，如何永久有效？？？
@@ -36,8 +44,6 @@ echo "source ~/slam/ORB_SLAM2/Examples/ROS/ORB_SLAM2/build/devel/setup.sh" >> ~/
 `export`之后编译程序包，就会产生setup.sh文件，再执行如下命令即可：
 
 echo "source ~/slam/ORB_SLAM2/Examples/ROS/ORB_SLAM2/build/devel/setup.sh" >> ~/.bashrc
-
-`source /devel/setup.bash`
 
 `source /opt/ros/kinetic/setup.bash`
 

@@ -3,7 +3,9 @@ title: Caffe的CPU模式安装
 date: 2018-04-21 15:20:24
 tags:
   - Caffe
-categories: Caffe
+categories: 
+  - 深度学习
+  - Caffe
 ---
 
 -----
