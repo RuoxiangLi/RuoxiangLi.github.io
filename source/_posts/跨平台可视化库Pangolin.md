@@ -4,6 +4,7 @@ date: 2018-09-05 19:30:48
 tags: 
   - Pangolin
 categories: 
+  - 机器人
   - SLAM
   - 可视化库
 ---

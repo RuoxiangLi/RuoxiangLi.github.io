@@ -3,7 +3,8 @@ title: ORB_SLAM2学习之运行ROS模块
 date: 2018-08-12 10:05:55
 tags: 
   - ORB_SLAM2
-categories: 
+categories:
+  - 机器人 
   - SLAM
   - ORB_SLAM2
 ---

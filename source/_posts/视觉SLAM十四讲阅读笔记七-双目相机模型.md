@@ -7,6 +7,7 @@ tags:
   - 双目
 mathjax: true
 categories: 
+  - 机器人
   - SLAM
   - 读书笔记
 ---

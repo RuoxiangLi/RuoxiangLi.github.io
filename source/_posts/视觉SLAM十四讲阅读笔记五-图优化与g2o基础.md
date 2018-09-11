@@ -8,6 +8,7 @@ tags:
   - g2o
 mathjax: true
 categories: 
+  - 机器人
   - SLAM
   - 读书笔记
 ---

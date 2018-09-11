@@ -6,7 +6,9 @@ tags:
   - YAML
   - ROS
   - OpenCV
-categories: YAML
+categories: 
+  - 语言
+  - YAML
 ---
 
 -----

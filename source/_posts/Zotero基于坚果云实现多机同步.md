@@ -23,6 +23,10 @@ categories: 工具
 3. 命令行执行：`ln -s /home/usrname/Zotero /home/usrname/work/zotero`，会在`Zotero`下面会出现软链接目录`storage`；
 4. 等待坚果云同步完成，再回到zotero里面点击同步按钮。
 
+> 提示：如果work目录已经创建好，里面同步了数据，这时候就可以直接将zotero下的storage删除，执行命令：
+>
+> `ln -s /home/eric/work/zotero/storage /home/eric/Zotero`创建软链接到zotero下即可。
+
 ## win设置方法
 
 1. 由于前面在ubuntu系统已经设置过，进入windows后，坚果云会提示同步`work`目录（联网状态），这时选择同步到自己想要放置的磁盘，如`D:\work`。zotero默认安装在C盘，`storage`目录地址是`C:\User\user\Zotero\storage`；

@@ -229,7 +229,7 @@ git checkout -b hexo
 // 添加所有本地文件到git
 git add . 
 // git提交 
-git commit -m "" 
+git commit -m "..." 
 // 文件推送到hexo分支 
 git push origin hexo
 ~~~
@@ -274,18 +274,20 @@ git push origin hexo
 
    - 命令行输入`ssh-keygen -t rsa -C “邮箱地址”`
 
-   - 执行`hexo g`、`hexo d`命令生成静态网页、部署到github。按三次回车（密码为空），生成密匙。 在`home/username/.ssh`目录下找到`id_rsa.pub`，打开复制内容到GitHub添加新的SSH key。
+   - 按三次回车（密码为空），生成密匙。 在`home/username/.ssh`目录下找到`id_rsa.pub`，打开复制内容到GitHub添加新的SSH key。
 
    - 终端输入`ssh - T git@github.com`回车，提示认证成功即可。
 
    - 在终端输入命令(和旧设备中的相同)：
 
-     ~~~
+     ```
      git config --global user.name "username" #ruoxiangli
      git config --global user.eamil "email@example.com" #981968690@qq.com
-     ~~~
+     ```
 
      执行`hexo g -d`，顺利执行则说明配置成功。
+
+6. [配置Hexo渲染MathJax数学公式](https://www.jianshu.com/p/7ab21c7f0674)
 
 
 ### 新旧设备的日常维护

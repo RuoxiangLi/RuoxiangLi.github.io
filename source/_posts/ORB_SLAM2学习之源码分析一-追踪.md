@@ -4,6 +4,7 @@ date: 2018-08-12 20:01:21
 tags: 
   - ORB_SLAM2
 categories: 
+  - 机器人
   - SLAM
   - ORB_SLAM2
 ---

@@ -5,6 +5,7 @@ tags:
   - lightweight_mapping
   - Delaunay三角剖分
 categories: 
+  - 机器人
   - SLAM
   - navigation
 ---

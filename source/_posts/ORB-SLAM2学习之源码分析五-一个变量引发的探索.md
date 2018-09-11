@@ -5,6 +5,7 @@ tags:
   - ORB_SLAM2
 mathjax: true
 categories: 
+  - 机器人
   - SLAM
   - ORB_SLAM2
 ---

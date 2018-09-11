@@ -4,6 +4,7 @@ date: 2018-09-06 18:27:55
 tags: 
   - lightweight_mapping
 categories: 
+  - 机器人
   - SLAM
   - navigation
 ---

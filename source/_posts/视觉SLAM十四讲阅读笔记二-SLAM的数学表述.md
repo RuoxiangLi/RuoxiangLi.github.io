@@ -6,6 +6,7 @@ tags:
   - 读书笔记
 mathjax: true
 categories: 
+  - 机器人
   - SLAM
   - 读书笔记
 ---

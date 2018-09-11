@@ -213,9 +213,13 @@ cuDNN的全称为NVIDIA CUDA® Deep Neural Network library，是NVIDIA专门针�
    make
    ~~~
 
-   > **make过程中出现找不到lhdf5_hl和lhdf5的错误**
+   > #### make过程中出现找不到lhdf5_hl和lhdf5的错误
    >
    > 解决方案：在计算机中搜索`libhdf5_serial.so.10.1.0`，找到后右键点击打开项目位置。该目录下空白处右键点击在终端打开，打开新终端输入   `sudo ln libhdf5_serial.so.10.1.0 libhdf5.so`   `sudo ln libhdf5_serial_hl.so.10.0.2 libhdf5_hl.so` 。最后在终端输入`sudo ldconfig`使链接生效，原终端中输入`make clean`清除第一次编译结果，再重新编译。
+   >
+   > #### 出现`nvcc fatal   : Unsupported gpu architecture 'compute_20'`的错误
+   >
+   > 将Makefile.config文件中`CUDA_ARCH :=`包含`compute_20`的两项删除即可。
 
    ##### 终端输入：
 
@@ -237,6 +241,15 @@ cuDNN的全称为NVIDIA CUDA® Deep Neural Network library，是NVIDIA专门针�
    ~~~
 
    如果不报错就说明编译成功。
+
+   > #### 提示
+   >
+   > 如果执行`import caffe`，出现错误`ImportError: No module named skimage.io`，可以进行如下操作：
+   >
+   > - `sudo apt-get install python-skimage`
+   > - `sudo apt-get install python-numpy python-scipy python-matplotlib python-sklearn python-skimage python-h5py python-protobuf python-leveldb python-networkx python-nose python-pandas python-glags ipython`
+   > - `sudo apt-get update`
+   > - caffe目录下：`make pycaffe`
 
 ## 参考资料
 
