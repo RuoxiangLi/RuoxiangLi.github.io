@@ -78,7 +78,7 @@ roslaunch [package] [filename.launch]
   > - name是节点名字，不能包含namespace，可以任意给出的，它覆盖了原有文件中ros::init指定的node name；
   > - 在默认状态下，从启动文件启动节点的标准输出被重定向到一个日志文件中，而不是像 `rosrun` 命令那样，将 **log** 信息显示在终端(**console**)。该日志文件的名称是：` ~/.ros/log/run_id/node_name-number-stout.log` 其中，run_id 是节点管理器（master）启动时生成的一个唯一标示符；
   > - 如果需要将标准输出信息输出到终端，使用属性`output`，即`output=screen`；
-  > - 其他属性：args（将参数传递给节点）、ns（节点定义为某个namespace下）等。
+  > - 其他属性：args（可以通过命令行启动参数赋值，将参数传递给节点）、ns（节点定义为某个namespace下）等。
 
 - `<param .../>`：定义一个设置在参数服务器中的参数，该标记可以放在`<node .../>`标记内部，作为私有参数。格式：
 
@@ -159,7 +159,13 @@ roslaunch [package] [filename.launch]
   通过启动文件的方式，只需在启动文件内使用重映射（remap）元素即可：
 
   ~~~xml
-  <remap from=”turtle1/pose”to ”tim”/>
+  <remap from=”turtle1/pose” to ”tim”/>
+  ~~~
+
+  例如，节点`mono`订阅了`/camera/image_raw`话题，但是现在只有`/camera_node/image_raw`话题在发布和`/camera/image_raw`话题一样的数据，可以使用重映射完成数据的订阅，这样就可以使得节点`mono`能够订阅`/camera_node/image_raw`话题的数据：
+
+  ~~~xml
+  <remap from="/camera/image_raw" to="/camera_node/image_raw"/>
   ~~~
 
 - `<group> ... </group>`：可以将指定的nodes组织起来，只能使用ns、if、unless三个属性。group有两个作用/好处：

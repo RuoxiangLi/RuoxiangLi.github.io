@@ -2,7 +2,7 @@
 title: ROS学习之actionlib库（３）-使用目标回调方法编写一个简单的行为服务器
 date: 2018-03-30 19:06:02
 tags:
-  - ROS actionlib
+  - ROS
 categories: 
   - 机器人
   - ROS

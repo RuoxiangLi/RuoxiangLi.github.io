@@ -89,14 +89,14 @@ $SE(3)=\{T=\left[ \begin{matrix}R&t\\0^T&1\end{matrix} \right]ϵℝ^{4×4}∣Rϵ
 >
 > 透视变换是非线性变换，可以通过引入齐次坐标以线性表示透视变换。齐次坐标是在普通坐标上增加一维（值为1）后的坐标表示。在是三维向量的末尾添加1，将其变成了四维向量，多了一个自由度，允许把变换写成线性的形式。对于四维向量，就可以把平移和旋转写在一个矩阵里面，使得整个关系变成线性关系。
 >
-> 1. 将普通坐标转换为齐次坐标：增加一维坐标，值为1。 ​
+> 1. 将普通坐标转换为齐次坐标：增加一维坐标，值为1。 
 >
 >    $$
 >    (x,y) \Rightarrow \left[ \begin{matrix}
 >    a \\
 >    b  \\
 >    1 \\
->    \end{matrix} \right] (像点齐次坐标)​
+>    \end{matrix} \right] (像点齐次坐标)
 >    $$
 >    $$
 >    (x,y,z) \Rightarrow \left[ \begin{matrix}
@@ -150,13 +150,6 @@ $SE(3)=\{T=\left[ \begin{matrix}R&t\\0^T&1\end{matrix} \right]ϵℝ^{4×4}∣Rϵ
 >    $$
 >
 >
->
->
->
->
->
->
->
 
 ## 旋转向量
 
@@ -199,7 +192,7 @@ $q=q_0+q_1i+q_2j+q_3k$
 
 其中：
 
-$\left\{ \begin{array}{ll} i^2=j^2=k^2=−1\\ ij=k,ji=−k \\jk=i,kj=−i,ki=j,ik=−j\end{array} \right.$
+$\left\{ \begin{array}{ll} i^2=j^2=k^2=−1\\ ij=k,ji=−k \\jk=i,kj=−i,ki=j,ik=−j\end{array} \right.​$
 
 > 我们可以用单位四元数表示三维空间中的任意一个旋转。
 

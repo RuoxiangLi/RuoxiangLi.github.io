@@ -2,7 +2,7 @@
 title: ROS学习之OpenCV图像、ROS Image转换接口cv_bridge
 date: 2018-08-11 21:32:14
 tags:
-  - ROS cvbridge
+  - ROS
 categories: 
   - 机器人
   - ROS

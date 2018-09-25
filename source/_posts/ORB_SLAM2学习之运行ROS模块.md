@@ -212,7 +212,7 @@ rosrun rqt_graph rqt_graph
 在环境变量`ROS_PACKAGE_PATH`中添加`Examples/ROS/ORB_SLAM2`的路径：
 
 ~~~shell
-echo "source ~/slam/ORB_SLAM2/Examples/ROS/ORB_SLAM2/build/devel/tup.sh" >> ~/.bashrc
+echo "source ~/slam/ORB_SLAM2/Examples/ROS/ORB_SLAM2/build/devel/setup.sh" >> ~/.bashrc
 ~~~
 
 在`~/slam/ORB_SLAM2`目录下执行：

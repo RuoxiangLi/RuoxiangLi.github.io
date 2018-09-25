@@ -3,7 +3,6 @@ title: C++学习之explicit关键字详解
 date: 2018-05-09 10:58:38
 tags:
   - C++
-  - explicit
 categories: 
   - 语言
   - C++

@@ -3,7 +3,6 @@ title: ROS学习之基于arbotix和rviz进行简单的机器人仿真
 date: 2018-03-27 18:36:25
 tags:
   - ROS
-  - arbotix
   - rviz
 categories: 
   - 机器人
