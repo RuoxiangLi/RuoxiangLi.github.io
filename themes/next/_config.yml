@@ -132,6 +132,7 @@ social: # 添加你的社交账号
   QQ: 896928771 || qq
   Wechat: 15116319671 || weixin
   CSDN: https://blog.csdn.net/wentanxing2182 || copyright
+  知乎: https://www.zhihu.com/people/loveyoupumy/activities|| zhihu
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
   #FB Page: https://www.facebook.com/yourname || facebook
@@ -150,6 +151,7 @@ social_icons:
   QQ: qq
   Wechat: weixin
   CSDN: copyright
+  知乎: bell-o
 
 # Blog rolls 推荐阅读
 links_icon: link
@@ -161,11 +163,12 @@ links:
   童博士: http://zhehangt.win
   小怪兽哦: http://www.cnblogs.com/mybrave
   DarrenChan陈驰: http://www.cnblogs.com/DarrenChan/
+  祁旭翔师兄: https://blog.csdn.net/xiangxianghehe
 
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
 # in site  directory(source/uploads): /uploads/avatar.gif
-avatar: /images/wo.png
+avatar: /images/hexo.jpg
 
 # Table Of Contents in the Sidebar
 toc:

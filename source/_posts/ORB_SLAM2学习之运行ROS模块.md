@@ -454,8 +454,6 @@ void LoadImages(const string &strPathToSequence,
 }
 ~~~
 
-
-
 右相机节点`stereo_right_kitti`：
 
 ~~~c++

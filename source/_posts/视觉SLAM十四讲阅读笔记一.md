@@ -150,6 +150,7 @@ $SE(3)=\{T=\left[ \begin{matrix}R&t\\0^T&1\end{matrix} \right]ϵℝ^{4×4}∣Rϵ
 >    $$
 >
 >
+>
 
 ## 旋转向量
 
@@ -264,7 +265,7 @@ $q_0=\frac{\sqrt{tr(R)+1}}{2},q_1=\frac{m_{23}-m_{32}}{4q_0},q_2=\frac{m_{31}-m_
 
 |              |                     旋转向量  **$θn$**                     |
 | :----------: | :--------------------------------------------------------: |
-| **旋转矩阵** |            $R=cosθI+(1−cosθ)nn^T+sinθ[n]^\wedge            |
+| **旋转矩阵** |           $R=cosθI+(1−cosθ)nn^T+sinθ[n]^\wedge$            |
 |  **欧拉角**  |                             -                              |
 |  **四元数**  | $q=[cos\fracθ2,n_xsin\fracθ2,n_ysin\fracθ2,n_zsin\fracθ2]$ |
 
