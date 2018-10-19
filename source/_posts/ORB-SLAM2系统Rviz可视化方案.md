@@ -80,3 +80,68 @@ ORB_SLAM2中的世界坐标系z轴是朝前的，Rviz坐标系z轴是朝上的�
 
 {% asset_img 运行结果.png %}
 
+## 使用PCL库显示地图点
+
+目前我的课题考虑基于ORB_SLAM2生成的点云数据生成二维栅格地图再结合Cartographer的地图，调研后发现可以有两种方案。
+
+- 方案一：使用`pointcloud_to_laserscan`包将点云数据转成模拟激光扫描数据，进而可以作为gmapping的输入数据生成二维栅格地图，然后与Cartographer的地图融合。
+
+- 方案二：使用文章[1]中提出的方法直接将点云数据生成二维栅格地图，融合Cartographer的地图。
+
+### 方案一实施
+
+注意：ORB_SLAM2系统`Map`类中的地图点是世界坐标系中的所有地图点，而不是每个关键
+
+ROS`pointcloud_to_laserscan`包`pointcloud_to_laserscan_node`节点将点云`PointCloud`转成2D激光扫描
+
+- 订阅节点：`cloud_in(sensor_msgs/PointCloud2)`
+- 发布节点：`scan(sensor_msg/LaserScan)`
+
+参考[here1](https://www.ncnynl.com/archives/201701/1224.html)和[here2](https://www.cnblogs.com/zxouxuewei/p/5307736.html)配置好ROS程序包，在`MapPulisher`类中稍作修改，参照如下内容：
+
+~~~c++
+#include<ros/ros.h>
+#include<pcl/point_cloud.h>
+#include<pcl_conversions/pcl_conversions.h>
+#include<sensor_msgs/PointCloud2.h>
+
+main (int argc, char **argv)
+{
+  ros::init (argc, argv, "pcl_create");
+  ros::NodeHandle nh;
+  ros::Publisher pcl_pub = nh.advertise<sensor_msgs::PointCloud2> ("pcl_output", 1);
+  pcl::PointCloud<pcl::PointXYZ> cloud;
+  sensor_msgs::PointCloud2 output;
+  // Fill in the cloud data
+  cloud.width = 100;
+  cloud.height = 1;
+  cloud.points.resize(cloud.width * cloud.height);
+  for (size_t i = 0; i < cloud.points.size(); ++i)
+  {
+    cloud.points[i].x = 1024 * rand () / (RAND_MAX + 1.0f);
+    cloud.points[i].y = 1024 * rand () / (RAND_MAX + 1.0f);
+    cloud.points[i].z = 1024 * rand () / (RAND_MAX + 1.0f);
+  }
+
+  //Convert the cloud to ROS message
+  pcl::toROSMsg(cloud, output);
+  output.header.frame_id = "odom";//this has been done in order to be able to visualize our PointCloud2 message on the RViz visualizer
+  ros::Rate loop_rate(1);
+  while (ros::ok())
+  {
+    pcl_pub.publish(output);
+    ros::spinOnce();
+    loop_rate.sleep();
+  }
+  return 0;
+}
+~~~
+
+展示效果：
+
+{% asset_img pcl点云显示.png %}
+
+## 参考资料
+
+[1] 2D Grid Mapping and Navigation with ORB SLAM. Abhineet Kumar Singh, Ali Jahani Amiri.
+

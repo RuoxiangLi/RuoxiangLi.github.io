@@ -1,36 +1,44 @@
 ---
-
+title: 当前开源SLAM方案一览
+date: 2018-09-26 15:52:25
+tags:
+  - SLAM
+mathjax: true
+categories:
+  - 机器人 
+  - SLAM
+  - 其他
 ---
 ---
 这篇文章记录下目前流行的开源SLAM系统的方案。
 <!--more--->
 最近课题进展不顺利，目标不明确、思路不清晰、没有创新点，迷茫、不知所措。还是暂时停一下，花时间查阅一些资料，充实一下自己。
 
-| 时间 |    开源方案    |    传感器形式     | VO       | 稀疏\稠密 | 论文 |                           地址链接                           |
-| :--: | :------------: | :---------------: | -------- | :-------: | :--: | :----------------------------------------------------------: |
+| 时间 |    开源方案    |    传感器形式     |    VO    | 稀疏\稠密 | 论文 |                           地址链接                           |
+| :--: | :------------: | :---------------: | :------: | :-------: | :--: | :----------------------------------------------------------: |
 | 2007 |    MonoSLAM    |       单目        |          |           | [1]  |       [Github](https://github.com/hanmekim/SceneLib2)        |
 | 2007 |      PTAM      |       单目        |          |           | [2]  |     [Source Code]( http://www.robots.ox.ac.uk/~gk/PTAM/)     |
 | 2015 |    ORB-SLAM    |     单目为主      | 特征点法 |   稀疏    | [3]  | [链接](http://webdiis.unizar.es/~raulmur/orbslam/)   [Github](https://github.com/raulmur/ORB_SLAM) |
 | 2017 |   ORB-SLAM2    | 单目、双目、RGB-D | 特征点法 |           | [4]  |        [Github](https://github.com/raulmur/ORB_SLAM2)        |
 | 2014 |    LSD-SLAM    |     单目为主      |          |           | [5]  | [Vision]( http://vision.in.tum.de/research/vslam/lsdslam)   [Github](<https://github.com/tum-vision/lsd_slam> ) |
-| 2014 |      SVO       |       单目        | 直接法   |           | [6]  |         [Github](https://github.com/uzh-rpg/rpg_svo)         |
+| 2014 |      SVO       |       单目        |  直接法  |           | [6]  |         [Github](https://github.com/uzh-rpg/rpg_svo)         |
 | 2014 |    RTAB-MAP    |    RGB-D/双目     |          |           | [7]  |        [Github](https://github.com/introlab/rtabmap )        |
 | 2015 |     OKVIS      |     多目+IMU      |          |           | [8]  |         [Github](https://github.com/ethz-asl/okvis )         |
 | 2015 |     ROVIO      |     单目+IMU      |          |           | [9]  |         [Github](https://github.com/ethz-asl/rovio)          |
-| 2011 |      DTAM      |       RGB-D       | 直接法   |           | [10] |       [Github](https://github.com/anuranbaka/OpenDTAM)       |
+| 2011 |      DTAM      |       RGB-D       |  直接法  |           | [10] |       [Github](https://github.com/anuranbaka/OpenDTAM)       |
 | 2013 |      DVO       |       RGB-D       |          |           | [11] |       [Github](https://github.com/tum-vision/dvo_slam)       |
 | 2014 |      DSO       |       单目        |          |           | [12] |         [Github](https://github.com/JakobEngel/dso)          |
-| 2014 |  RGBD-SLAM-V2  |       RGB-D       |          |           | [13] |     [Github](https://github.com/felixendres/rgbdslam_v2)     |
+| 2014 |   RGBD-SLAM2   |       RGB-D       |          |           | [13] |     [Github](https://github.com/felixendres/rgbdslam_v2)     |
 | 2015 | Elastic Fusion |       RGB-D       |          |   稠密    | [14] |      [Github](https://github.com/mp3guy/ElasticFusion)       |
 | 2011 |  Hector SLAM   |       激光        |          |           | [15] |           [wiki](http://wiki.ros.org/hector_slam)            |
 | 2007 |    GMapping    |       激光        |          |           | [16] |             [wiki](http://wiki.ros.org/gmapping)             |
 | 2015 |     OKVIS      |     多目+IMU      |          |           | [17] |         [Github](https://github.com/ethz-asl/ckvis)          |
 | 2015 |     ROVIO      |     单目+IMU      |          |           | [18] | [Github](https://github.com/ethz-asl/rovio)  [Paper](http://dx.doi.org/10.3929/ethz-a-010566547) |
-|      | Kinetic Fusion |                   |          |   稠密    | [19] |                                                              |
+| 2011 | Kinetic Fusion |       RGB-D       |          |   稠密    | [19] |                                                              |
 |      |   Kintinuous   |                   |          |           | [20] |                                                              |
-|      | DynamicFusion  |                   |          |   稠密    |      |                                                              |
-|      |   InfiniTAM    |                   |          |   稠密    |      |                                                              |
-|      |      LSD       |                   | 直接法   |           |      |                                                              |
+|      | DynamicFusion  |                   |          |   稠密    | [21] |                                                              |
+|      |   InfiniTAM    |                   |          |   稠密    | [22] |                                                              |
+|      |      LSD       |    单目、双目     |  直接法  |  半稠密   | [23] | [Github](https://github.com/tum-vision/lsd_slam) [home](https://vision.in.tum.de/research/vslam/lsdslam) |
 
 ## 论文
 
@@ -67,8 +75,15 @@
 [20]
 
 - [Real-time Large Scale Dense RGB-D SLAM with Volumetric Fusion](http://thomaswhelan.ie/Whelan14ijrr.pdf), T. Whelan, M. Kaess, H. Johannsson, M.F. Fallon, J. J. Leonard and J.B. McDonald, IJRR '14 
-
 - [Kintinuous: Spatially Extended KinectFusion](http://thomaswhelan.ie/Whelan12rssw.pdf), T. Whelan, M. Kaess, M.F. Fallon, H. Johannsson, J. J. Leonard and J.B. McDonald, RSS RGB-D Workshop '12
+
+[23]
+
+- Reconstructing Street-Scenes in Real-Time From a Driving Car (V. Usenko, J. Engel, J. Stueckler, D. Cremers), In Proc. of the Int. Conference on 3D Vision (3DV), 2015.  [bib](https://vision.in.tum.de/research/vslam/lsdslam?key=usenko15_3drecon_stereolsdslam) [[pdf]](https://vision.in.tum.de/_media/spezial/bib/usenko15_3drecon_stereolsdslam.pdf)
+- Large-Scale Direct SLAM for Omnidirectional Cameras (D. Caruso, J. Engel, D. Cremers),In International Conference on Intelligent Robots and Systems (IROS), 2015. [[bib\]](https://vision.in.tum.de/research/vslam/lsdslam?key=caruso2015_omni_lsdslam) [[pdf\]](https://vision.in.tum.de/_media/spezial/bib/caruso2015_omni_lsdslam.pdf) [[video\]](https://vision.in.tum.de/_media/spezial/bib/caruso2015_omni_lsdslam.mp4)
+- Large-Scale Direct SLAM with Stereo Cameras (J. Engel, J. Stueckler, D. Cremers), In International Conference on Intelligent Robots and Systems (IROS), 2015.  [[bib\]](https://vision.in.tum.de/research/vslam/lsdslam?key=engel2015_stereo_lsdslam) [[pdf\]](https://vision.in.tum.de/_media/spezial/bib/engel2015_stereo_lsdslam.pdf) [[video\]](https://vision.in.tum.de/_media/spezial/bib/engel2015_stereo_lsdslam.mp4)
+- Semi-Dense Visual Odometry for AR on a Smartphone (T. Schöps, J. Engel, D. Cremers), In International Symposium on Mixed and Augmented Reality, 2014.  [[bib\]](https://vision.in.tum.de/research/vslam/lsdslam?key=schoeps14ismar) [[pdf\]](https://vision.in.tum.de/_media/spezial/bib/schoeps14ismar.pdf) [[video\]](https://vision.in.tum.de/_media/spezial/bib/schoeps14ismar.mp4)
+- Semi-Dense Visual Odometry for a Monocular Camera (J. Engel, J. Sturm, D. Cremers), In IEEE International Conference on Computer Vision (ICCV), 2013.  [[bib\]](https://vision.in.tum.de/research/vslam/lsdslam?key=engel2013iccv) [[pdf\]](https://vision.in.tum.de/_media/spezial/bib/engel2013iccv.pdf) [[video\]](https://vision.in.tum.de/_media/spezial/bib/engel2013iccv.avi)
 
 ## 参考资料
 

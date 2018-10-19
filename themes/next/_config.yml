@@ -132,7 +132,7 @@ social: # 添加你的社交账号
   QQ: 896928771 || qq
   Wechat: 15116319671 || weixin
   CSDN: https://blog.csdn.net/wentanxing2182 || copyright
-  知乎: https://www.zhihu.com/people/loveyoupumy/activities|| zhihu
+  知乎: https://www.zhihu.com/people/loveyoupumy/activities|| bell-o
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
   #FB Page: https://www.facebook.com/yourname || facebook
@@ -160,10 +160,10 @@ links_title: Links
 links_layout: inline
 links:
   武林盟主: http://usthe.com
-  童博士: http://zhehangt.win
+  一索哥传奇: http://zhehangt.win
   小怪兽哦: http://www.cnblogs.com/mybrave
   DarrenChan陈驰: http://www.cnblogs.com/DarrenChan/
-  祁旭翔师兄: https://blog.csdn.net/xiangxianghehe
+  nudt_qxx: https://blog.csdn.net/xiangxianghehe
 
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
@@ -256,7 +256,7 @@ post_wordcount:
   #description: ex. subscribe to my blog by scanning my public wechat account
 
 # Reward
-reward_comment: 学习永无止境，感谢对我的鼓励和支持！
+reward_comment: 学无止境，感谢对我的鼓励和支持！
 wechatpay: /images/weixin.jpg
 alipay: /images/zhifubao.jpg
 #bitcoin: /images/bitcoin.png
