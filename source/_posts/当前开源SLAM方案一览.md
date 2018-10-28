@@ -19,13 +19,13 @@ categories:
 | 2007 |    MonoSLAM    |       单目        |          |           | [1]  |       [Github](https://github.com/hanmekim/SceneLib2)        |
 | 2007 |      PTAM      |       单目        |          |           | [2]  |     [Source Code]( http://www.robots.ox.ac.uk/~gk/PTAM/)     |
 | 2015 |    ORB-SLAM    |     单目为主      | 特征点法 |   稀疏    | [3]  | [链接](http://webdiis.unizar.es/~raulmur/orbslam/)   [Github](https://github.com/raulmur/ORB_SLAM) |
-| 2017 |   ORB-SLAM2    | 单目、双目、RGB-D | 特征点法 |           | [4]  |        [Github](https://github.com/raulmur/ORB_SLAM2)        |
-| 2014 |    LSD-SLAM    |     单目为主      |          |           | [5]  | [Vision]( http://vision.in.tum.de/research/vslam/lsdslam)   [Github](<https://github.com/tum-vision/lsd_slam> ) |
+| 2017 |   ORB-SLAM2    | 单目、双目、RGB-D | 特征点法 |   稀疏    | [4]  |        [Github](https://github.com/raulmur/ORB_SLAM2)        |
+| 2014 |    LSD-SLAM    |     单目为主      |  直接法  |  半稠密   | [5]  | [Vision]( http://vision.in.tum.de/research/vslam/lsdslam)   [Github](<https://github.com/tum-vision/lsd_slam> ) |
 | 2014 |      SVO       |       单目        |  直接法  |           | [6]  |         [Github](https://github.com/uzh-rpg/rpg_svo)         |
 | 2014 |    RTAB-MAP    |    RGB-D/双目     |          |           | [7]  |        [Github](https://github.com/introlab/rtabmap )        |
 | 2015 |     OKVIS      |     多目+IMU      |          |           | [8]  |         [Github](https://github.com/ethz-asl/okvis )         |
 | 2015 |     ROVIO      |     单目+IMU      |          |           | [9]  |         [Github](https://github.com/ethz-asl/rovio)          |
-| 2011 |      DTAM      |       RGB-D       |  直接法  |           | [10] |       [Github](https://github.com/anuranbaka/OpenDTAM)       |
+| 2011 |      DTAM      |       RGB-D       |  直接法  |   稠密    | [10] |       [Github](https://github.com/anuranbaka/OpenDTAM)       |
 | 2013 |      DVO       |       RGB-D       |          |           | [11] |       [Github](https://github.com/tum-vision/dvo_slam)       |
 | 2014 |      DSO       |       单目        |          |           | [12] |         [Github](https://github.com/JakobEngel/dso)          |
 | 2014 |   RGBD-SLAM2   |       RGB-D       |          |           | [13] |     [Github](https://github.com/felixendres/rgbdslam_v2)     |
@@ -49,7 +49,7 @@ categories:
 
 [5] LSD-SLAM: Large-Scale Direct Monocular SLAM (J. Engel, T. Schöps, D. Cremers), In European Conference on Computer Vision (ECCV), 2014. [[bib\]](http://vision.in.tum.de/research/vslam/lsdslam?key=engel14eccv) [[pdf\]](http://vision.in.tum.de/_media/spezial/bib/engel14eccv.pdf) [[video\]](http://vision.in.tum.de/_media/spezial/bib/engel14eccv.mp4)
 
-[10] DTAM: Dense Tracking and Mapping in Real-Time
+[10] R. A. Newcombe, S. Lovegrove, and A. J. Davison. Dtam: Dense tracking and mapping in real-time. In IEEE International Conference on Computer Vision (ICCV), pages 2320–2327, 2011. 1, 2, 3
 
 [11]
 
