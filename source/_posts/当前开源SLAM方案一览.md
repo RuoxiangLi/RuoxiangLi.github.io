@@ -14,31 +14,30 @@ categories:
 <!--more--->
 最近课题进展不顺利，目标不明确、思路不清晰、没有创新点，迷茫、不知所措。还是暂时停一下，花时间查阅一些资料，充实一下自己。
 
-| 时间 |    开源方案    |    传感器形式     |    VO    | 稀疏\稠密 | 论文 |                           地址链接                           |
-| :--: | :------------: | :---------------: | :------: | :-------: | :--: | :----------------------------------------------------------: |
-| 2007 |    MonoSLAM    |       单目        |          |           | [1]  |       [Github](https://github.com/hanmekim/SceneLib2)        |
-| 2007 |      PTAM      |       单目        |          |           | [2]  |     [Source Code]( http://www.robots.ox.ac.uk/~gk/PTAM/)     |
-| 2015 |    ORB-SLAM    |     单目为主      | 特征点法 |   稀疏    | [3]  | [链接](http://webdiis.unizar.es/~raulmur/orbslam/)   [Github](https://github.com/raulmur/ORB_SLAM) |
-| 2017 |   ORB-SLAM2    | 单目、双目、RGB-D | 特征点法 |   稀疏    | [4]  |        [Github](https://github.com/raulmur/ORB_SLAM2)        |
-| 2014 |    LSD-SLAM    |     单目为主      |  直接法  |  半稠密   | [5]  | [Vision]( http://vision.in.tum.de/research/vslam/lsdslam)   [Github](<https://github.com/tum-vision/lsd_slam> ) |
-| 2014 |      SVO       |       单目        |  直接法  |           | [6]  |         [Github](https://github.com/uzh-rpg/rpg_svo)         |
-| 2014 |    RTAB-MAP    |    RGB-D/双目     |          |           | [7]  |        [Github](https://github.com/introlab/rtabmap )        |
-| 2015 |     OKVIS      |     多目+IMU      |          |           | [8]  |         [Github](https://github.com/ethz-asl/okvis )         |
-| 2015 |     ROVIO      |     单目+IMU      |          |           | [9]  |         [Github](https://github.com/ethz-asl/rovio)          |
-| 2011 |      DTAM      |       RGB-D       |  直接法  |   稠密    | [10] |       [Github](https://github.com/anuranbaka/OpenDTAM)       |
-| 2013 |      DVO       |       RGB-D       |          |           | [11] |       [Github](https://github.com/tum-vision/dvo_slam)       |
-| 2014 |      DSO       |       单目        |          |           | [12] |         [Github](https://github.com/JakobEngel/dso)          |
-| 2014 |   RGBD-SLAM2   |       RGB-D       |          |           | [13] |     [Github](https://github.com/felixendres/rgbdslam_v2)     |
-| 2015 | Elastic Fusion |       RGB-D       |          |   稠密    | [14] |      [Github](https://github.com/mp3guy/ElasticFusion)       |
-| 2011 |  Hector SLAM   |       激光        |          |           | [15] |           [wiki](http://wiki.ros.org/hector_slam)            |
-| 2007 |    GMapping    |       激光        |          |           | [16] |             [wiki](http://wiki.ros.org/gmapping)             |
-| 2015 |     OKVIS      |     多目+IMU      |          |           | [17] |         [Github](https://github.com/ethz-asl/ckvis)          |
-| 2015 |     ROVIO      |     单目+IMU      |          |           | [18] | [Github](https://github.com/ethz-asl/rovio)  [Paper](http://dx.doi.org/10.3929/ethz-a-010566547) |
-| 2011 | Kinetic Fusion |       RGB-D       |          |   稠密    | [19] |                                                              |
-|      |   Kintinuous   |                   |          |           | [20] |                                                              |
-|      | DynamicFusion  |                   |          |   稠密    | [21] |                                                              |
-|      |   InfiniTAM    |                   |          |   稠密    | [22] |                                                              |
-|      |      LSD       |    单目、双目     |  直接法  |  半稠密   | [23] | [Github](https://github.com/tum-vision/lsd_slam) [home](https://vision.in.tum.de/research/vslam/lsdslam) |
+| 时间 |    开源方案    |     传感器形式     |    VO    | 稀疏\稠密 | 论文 |                           地址链接                           |
+| :--: | :------------: | :----------------: | :------: | :-------: | :--: | :----------------------------------------------------------: |
+| 2007 |    MonoSLAM    |        单目        |          |           | [1]  |       [Github](https://github.com/hanmekim/SceneLib2)        |
+| 2007 |      PTAM      |        单目        |          |           | [2]  |     [Source Code]( http://www.robots.ox.ac.uk/~gk/PTAM/)     |
+| 2015 |    ORB-SLAM    |      单目为主      | 特征点法 |   稀疏    | [3]  | [链接](http://webdiis.unizar.es/~raulmur/orbslam/)   [Github](https://github.com/raulmur/ORB_SLAM) |
+| 2017 |   ORB-SLAM2    | 单目、双目、RGB-D  | 特征点法 |   稀疏    | [4]  |        [Github](https://github.com/raulmur/ORB_SLAM2)        |
+| 2014 |    LSD-SLAM    | 单目（为主）、双目 |  直接法  |  半稠密   | [5]  | [home]( http://vision.in.tum.de/research/vslam/lsdslam)   [Github](<https://github.com/tum-vision/lsd_slam> ) |
+| 2014 |      SVO       |        单目        | 半直接法 |           | [6]  |         [Github](https://github.com/uzh-rpg/rpg_svo)         |
+| 2014 |    RTAB-MAP    |     RGB-D/双目     |          |           | [7]  |        [Github](https://github.com/introlab/rtabmap )        |
+| 2015 |     OKVIS      |      多目+IMU      |          |           | [8]  |         [Github](https://github.com/ethz-asl/okvis )         |
+| 2015 |     ROVIO      |      单目+IMU      |          |           | [9]  |         [Github](https://github.com/ethz-asl/rovio)          |
+| 2011 |      DTAM      |       RGB-D        |  直接法  |   稠密    | [10] |       [Github](https://github.com/anuranbaka/OpenDTAM)       |
+| 2013 |      DVO       |       RGB-D        |          |           | [11] |       [Github](https://github.com/tum-vision/dvo_slam)       |
+| 2016 |      DSO       |        单目        |          |           | [12] |         [Github](https://github.com/JakobEngel/dso)          |
+| 2014 |   RGBD-SLAM2   |       RGB-D        |          |           | [13] |     [Github](https://github.com/felixendres/rgbdslam_v2)     |
+| 2015 | Elastic Fusion |       RGB-D        |          |   稠密    | [14] |      [Github](https://github.com/mp3guy/ElasticFusion)       |
+| 2011 |  Hector SLAM   |        激光        |          |           | [15] |           [wiki](http://wiki.ros.org/hector_slam)            |
+| 2007 |    GMapping    |        激光        |          |           | [16] |             [wiki](http://wiki.ros.org/gmapping)             |
+| 2015 |     OKVIS      |      多目+IMU      |          |           | [17] |         [Github](https://github.com/ethz-asl/ckvis)          |
+| 2015 |     ROVIO      |      单目+IMU      |          |           | [18] | [Github](https://github.com/ethz-asl/rovio)  [Paper](http://dx.doi.org/10.3929/ethz-a-010566547) |
+| 2011 | Kinetic Fusion |       RGB-D        |          |   稠密    | [19] |                                                              |
+|      |   Kintinuous   |                    |          |           | [20] |                                                              |
+|      | DynamicFusion  |                    |          |   稠密    | [21] |                                                              |
+|      |   InfiniTAM    |                    |          |   稠密    | [22] |                                                              |
 
 ## 论文
 
