@@ -9,6 +9,7 @@ categories:
   - 机器人
   - SLAM
   - 读书笔记
+copyright: true
 ---
 
 -----

@@ -6,6 +6,7 @@ tags:
 categories: 
   - 工具
   - CMake
+copyright: true
 ---
 
 -----

@@ -8,6 +8,7 @@ categories:
   - 机器人 
   - SLAM
   - 其他
+copyright: true
 ---
 ---
 这篇文章记录下目前流行的开源SLAM系统的方案。

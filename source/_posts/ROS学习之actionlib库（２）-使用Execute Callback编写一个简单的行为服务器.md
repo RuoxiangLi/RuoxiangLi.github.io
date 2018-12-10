@@ -6,6 +6,7 @@ tags:
 categories: 
   - 机器人
   - ROS
+copyright: true
 ---
 -----
 这篇文章是有关ROS中actionlib使用的学习内容。

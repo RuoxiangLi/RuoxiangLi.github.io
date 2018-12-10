@@ -7,6 +7,7 @@ categories:
   - 机器人
   - SLAM
   - navigation
+copyright: true
 ---
 
 ---

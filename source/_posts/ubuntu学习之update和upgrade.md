@@ -6,6 +6,7 @@ tags:
 categories: 
   - 系统
   - ubuntu
+copyright: true
 ---
 
 -----

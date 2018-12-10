@@ -315,7 +315,7 @@
           <!--noindex-->
           <div>
   {% if not is_index %}
-    {% include 'passage-end-tag.swig' %}
+    {% include 'my-copyright.swig' %}
   {% endif %}
 </div>
           <div class="post-button text-center">
@@ -339,6 +339,12 @@
     {### END POST BODY ###}
     {#####################}
 
+    <div>
+      {% if not is_index %}
+        {% include 'my-copyright.swig' %}
+      {% endif %}
+    </div>
+
     {% if theme.wechat_subscriber.enabled and not is_index %}
       <div>
         {% include 'wechat-subscriber.swig' %}
@@ -356,6 +362,12 @@
         {% include 'post-copyright.swig' with { post: post } %}
       </div>
     {% endif %}
+
+    <div>
+    {% if not is_index %}
+      {% include 'passage-end-tag.swig' %}
+    {% endif %}
+    </div>
 
     <footer class="post-footer">
       {% if post.tags and post.tags.length and not is_index %}

@@ -4,11 +4,11 @@
 
 # Site #站点信息
 title: 励志献身SLAM 的 阿翔             #标题
-subtitle:                         #副标题
+subtitle:                           #副标题
 description: 每一阵风过，我们都互相致意 #描述
-author: Ruoxiang Li               #作者
-language: zh-Hans                 #语言
-timezone: Asia/Shanghai           #时区
+author: 阿翔                        #作者
+language: zh-Hans                   #语言
+timezone: Asia/Shanghai             #时区
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'

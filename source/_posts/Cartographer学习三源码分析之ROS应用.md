@@ -10,6 +10,7 @@ categories:
   - 机器人 
   - SLAM
   - Cartographer
+copyright: true
 ---
 
 ---

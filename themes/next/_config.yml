@@ -168,7 +168,7 @@ links:
 # Sidebar Avatar
 # in theme directory(source/images): /images/avatar.gif
 # in site  directory(source/uploads): /uploads/avatar.gif
-avatar: /images/hexo.jpg
+avatar: /images/photo.jpg
 
 # Table Of Contents in the Sidebar
 toc:
@@ -208,7 +208,7 @@ sidebar:
   b2t: false
 
   # Scroll percent label in b2t button.
-  scrollpercent: false
+  scrollpercent: true
 
   # Enable sidebar on narrow view (only for Muse | Mist).
   onmobile: false
@@ -256,7 +256,7 @@ post_wordcount:
   #description: ex. subscribe to my blog by scanning my public wechat account
 
 # Reward
-reward_comment: 学无止境，感谢对我的鼓励和支持！
+reward_comment: 点击给我一些鼓励叭！
 wechatpay: /images/weixin.jpg
 alipay: /images/zhifubao.jpg
 #bitcoin: /images/bitcoin.png
@@ -367,7 +367,7 @@ han: false
 #swiftype_key:
 
 # Baidu Analytics ID
-#baidu_analytics:
+baidu_analytics: 2167066263b4ea80e21ad5060efbc2a6
 
 # Duoshuo ShortName
 #duoshuo_shortname:
@@ -392,9 +392,9 @@ changyan:
 # You can get your appid and appkey from https://leancloud.cn
 # more info please open https://valine.js.org
 valine:
-  enable: false
-  appid:  # your leancloud application appid
-  appkey:  # your leancloud application appkey
+  enable: true
+  appid:  7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz # your leancloud application appid
+  appkey:  Dl5bC4kDveO2sUOJMNm3K8me # your leancloud application appkey
   notify: false # mail notifier , https://github.com/xCss/Valine/wiki
   verify: false # Verification code
   placeholder: Just go go # comment box placeholder
@@ -545,9 +545,9 @@ rating:
 # Show number of visitors to each article.
 # You can visit https://leancloud.cn get AppID and AppKey.
 leancloud_visitors:
-  enable: false
-  app_id: #<app_id>
-  app_key: #<app_key>
+  enable: true
+  app_id: 7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz #<app_id>
+  app_key: Dl5bC4kDveO2sUOJMNm3K8me #<app_key>
 
 # Another tool to show number of visitors to each article.
 # visit https://console.firebase.google.com/u/0/ to get apiKey and projectId
@@ -563,19 +563,19 @@ firestore:
 # Get more information on http://ibruce.info/2015/04/04/busuanzi/
 busuanzi_count:
   # count values only if the other configs are false
-  enable: true
+  enable: false
   # custom uv span for the whole site
-  site_uv: false
+  site_uv: ture
   site_uv_header: 本站访客数
-  site_uv_footer: 人次
+  site_uv_footer:
   # custom pv span for the whole site
-  site_pv: false
-  site_pv_header: <i class="fa fa-eye"></i>
+  site_pv: true
+  site_pv_header: <i class="fa fa-eye"></i> 总访问量
   site_pv_footer:
   # custom pv span for one page only
   page_pv: true
-  page_pv_header: <i class="fa fa-file-o"></i>&nbsp&nbsp阅读数
-  page_pv_footer:
+  page_pv_header: <i class="fa fa-file-o"></i> 阅读数
+  page_pv_footer: 次
 
 
 # Tencent analytics ID
@@ -689,7 +689,7 @@ motion:
 fancybox: true
 
 # Progress bar in the top during page loading.
-pace: false
+pace: true
 # Themes list:
 #pace-theme-big-counter
 #pace-theme-bounce
@@ -825,3 +825,7 @@ images: images
 
 # Theme version
 version: 5.1.4
+
+# 文章末尾添加“本文结束”标记
+passage_end_tag:
+  enabled: true

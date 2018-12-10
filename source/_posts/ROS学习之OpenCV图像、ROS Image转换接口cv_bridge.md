@@ -6,6 +6,7 @@ tags:
 categories: 
   - 机器人
   - ROS
+copyright: true
 ---
 
 这篇文章是有关OpenCV图像与ROS Image转换接口ROS cv_bridge的学习内容。

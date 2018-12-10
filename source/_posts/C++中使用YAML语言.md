@@ -9,6 +9,7 @@ tags:
 categories: 
   - 语言
   - YAML
+copyright: true
 ---
 
 -----

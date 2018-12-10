@@ -7,6 +7,7 @@ categories:
   - 机器人
   - SLAM
   - 论文阅读
+copyright: true
 ---
 
 ---

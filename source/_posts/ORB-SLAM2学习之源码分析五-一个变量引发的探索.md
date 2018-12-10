@@ -8,6 +8,7 @@ categories:
   - 机器人
   - SLAM
   - ORB_SLAM2
+copyright: true
 ---
 
 -----

@@ -10,6 +10,7 @@ tags:
 categories: 
   - 机器人
   - ROS
+copyright: true
 ---
 
 -----

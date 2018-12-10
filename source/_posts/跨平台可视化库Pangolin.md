@@ -7,6 +7,7 @@ categories:
   - 机器人
   - SLAM
   - 可视化库
+copyright: true
 ---
 
 ---

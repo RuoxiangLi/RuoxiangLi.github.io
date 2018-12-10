@@ -6,6 +6,7 @@ tags:
 categories: 
   - 深度学习
   - Caffe
+copyright: true
 ---
 
 -----
