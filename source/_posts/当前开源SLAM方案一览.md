@@ -42,6 +42,8 @@ copyright: true
 
 ## 论文
 
+[2] Klein G, Murray D. Parallel tracking and mapping for small AR workspaces[C]//Proceedings of the 2007 6th IEEE and ACM International Symposium on Mixed and Augmented Reality. IEEE Computer Society, 2007: 1-10. [[pdf](http://www.robots.ox.ac.uk/~gk/publications/KleinMurray2007ISMAR.pdf)] [[slides](http://www.robots.ox.ac.uk/~gk/publications/Slides_KleinMurray2007ISMAR.pdf)]
+
 [3] 
 
 - [Raúl Mur-Artal](http://webdiis.unizar.es/~raulmur/), [J. M. M. Montiel](http://webdiis.unizar.es/~josemari/) and [Juan D. Tardós](http://webdiis.unizar.es/~jdtardos/). ORB-SLAM: A Versatile and Accurate Monocular SLAM System.  IEEE Transactions on Robotics, vol. 31, no. 5, pp. 1147-1163, October 2015. [[pdf\]](http://webdiis.unizar.es/~raulmur/MurMontielTardosTRO15.pdf)
