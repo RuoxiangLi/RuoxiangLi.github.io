@@ -31,7 +31,7 @@ PTAM，是最早提出将Track和Map并行处理的一种SLAM算法，是一种*
 
 ### 主要任务
 
-- 估计相机位姿，使用Map完成追踪
+- 估计相机位姿，使用Map完成追踪（初始化时使用2D-2D方法估算初始位姿，后续过程使用3D-2D方法追踪）
 - 与Map线程通信，选取添加关键帧到缓存队列，进而发送到Map
 - 构建关键帧，关键帧的选择
 - 地图初始化
@@ -43,13 +43,13 @@ Tracking线程也用到关键帧，每一个新的图像帧都会在追踪过程
 
 1. `MakeKeyFrame_Lite`：使用当前帧构建初始关键帧
 
-2. `TrackForInitialMap`：**地图初始化**。由于刚开始没有地图，需要在双目图像帧（最开始的两帧图像）中进行简单的Patch搜索。Patch搜索是在`TrailTracking_Advance`进行的。具体过程如下：
+2. `TrackForInitialMap`：**地图初始化**。由于刚开始没有地图，需要在双目图像帧（使用的是第一帧图像以及有足够平移的另一帧图像，保证双目模型的基线满足）中进行简单的Patch搜索。Patch搜索是在`TrailTracking_Advance`进行的。具体过程如下：
 
    {% asset_img patchsearch.png %}
 
    - 第一帧图像构建初始关键帧（该过程检测FAST角点），调用`TrailTracking_Start`函数，完善关键帧结构，包括对金字塔层级所有图像中的FAST角点非极大值抑制，并使用Shi-Tomasi方法计算角点得分，选取高得分角点（作为候选关键点）；
    - 根据Shi-Tomasi得分，对上述候选关键点排序，将这些候选关键点全部加入待追踪/匹配集合，并提取它们的局部Patch；
-   - 正向搜索。第二帧图像构建初始关键帧，调用`TrailTracking_Advance`函数，对于上一帧关键帧中的每一个$Corner_i$的$Patch_i$，在当前关键帧的FAST角点中基于SSD匹配（是块匹配），搜索最佳的角点$Corner_j$，提取$Corner_j$的局部块$Patch_j$；
+   - 正向搜索。第二帧（合适的、距离第一帧有一定距离）图像构建初始关键帧，调用`TrailTracking_Advance`函数，对于上一帧关键帧中的每一个$Corner_i$的$Patch_i$，在当前关键帧的FAST角点中基于SSD匹配（是块匹配），搜索最佳的角点$Corner_j$，提取$Corner_j$的局部块$Patch_j$；
    - 反向搜索（Cross Check Test？）。在上一帧关键帧中的FAST角点中搜索与$Pathc_j$匹配的最佳的角点$Corner_k$；
    - 判断$i-k<=2$，则$Corner_j$是$Corner_i$的匹配关键点；如果没找到$Corner_i$的匹配点，则将$Corner_i$删除，是从待追踪/匹配集合中删除，而不是从关键帧候选关键点集合中删除（后面三角化完成之后还会根据候选关键点集合，采用极线搜索添加三维地图点，所以这里不会删除候选关键点）；
    - 如果追踪/匹配到的角点对数量>=10，则用这些匹配到的点对，调用`InitFromStereo`函数，求取两个关键帧的初始位姿和初始地图：
@@ -68,8 +68,8 @@ Tracking线程也用到关键帧，每一个新的图像帧都会在追踪过程
 
 4. `TrackMap`：使用估算的位姿，将所有地图点投影到当前帧图像，不在当前帧图像中的地图点丢弃
 
-   - 根据预测的相机位姿，将当前所有世界点根据小孔成像原理进行投影，投影后的像素点记为pi，并计算出对应的金字塔层级。
-   - 根据金字塔高层优先原则，选取一定数量世界点（通常，粗搜索选取30～60个，细搜索选取1000个左右）.
+   - 根据预测的相机位姿，将当前所有世界点根据小孔成像原理进行投影，投影后的像素点记为pi，并计算出对应的金字塔层级
+   - 根据金字塔高层优先原则，选取一定数量世界点（通常，粗搜索选取30～60个，细搜索选取1000个左右）
 
 5. 
 
@@ -163,7 +163,7 @@ BA收敛并且不再需要新的关键帧时，即相机已经处于一个建图
 
 ## 参考资料
 
-1. https://github.com/Ewenwan/MVision/tree/master/vSLAM/PTAM
+1. 墙裂推荐：https://github.com/Ewenwan/MVision/tree/master/vSLAM/PTAM
 2. https://blog.csdn.net/ilotuo/article/category/6297333
 3. https://blog.csdn.net/u013925378/article/details/77455555
 4. https://blog.csdn.net/u011178262/article/details/79315782
