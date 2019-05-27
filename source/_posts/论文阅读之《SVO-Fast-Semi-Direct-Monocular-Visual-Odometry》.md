@@ -78,3 +78,6 @@ $\mathbf{T}_{k,w}=\mathop{\arg\min}\limits_{\mathbf{T}_{k,w}}\frac{1}{2}\sum\lim
 
 每个关键帧与一个深度滤波器关联。
 
+## 参考资料
+
+1. https://github.com/Ewenwan/MVision/tree/master/vSLAM/svo_slam

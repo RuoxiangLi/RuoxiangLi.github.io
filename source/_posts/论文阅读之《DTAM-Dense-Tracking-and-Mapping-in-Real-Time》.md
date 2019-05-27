@@ -39,7 +39,7 @@ DTAM的direct method在默认环境亮度不变（brightness consistancy assumpt
 
 本模块的分析详见参考资料2。
 
-构建**代价体素（Cost Volume）**，
+构建**代价体素（Cost Volume）**。
 
 ## Tracking
 
