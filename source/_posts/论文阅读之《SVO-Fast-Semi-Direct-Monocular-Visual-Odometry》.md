@@ -3,7 +3,7 @@ title: 论文阅读之《SVO Fast Semi-Direct Monocular Visual Odometry》
 date: 2019-05-25 09:51:05
 tags: 
   - SLAM
-  - PTAM
+  - SVO
   - 半直接法SLAM
 categories: 
   - 机器人
