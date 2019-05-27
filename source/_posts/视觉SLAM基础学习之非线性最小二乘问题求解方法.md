@@ -18,7 +18,7 @@ copyright: true
 
 ## Introduction and Definitions
 
-最小二乘问题的目标是找到局部极小解，是全局最优化问题（求目标函数/代价函数的全局最小值）的一个特例。
+最小二乘问题的目标是找到局部极小解，是全局最优化问题（求目标函数/代价函数的全局最小值）的一个特例。由于全局最优化问题很难求解，习惯上将其简化为查找一个局部的最小解，即找到一个自变量向量，使得目标函数在确定区域内具有极小值。
 
 #### 定义 1.1. 最小二成问题
 
@@ -34,7 +34,7 @@ $f_i(\mathbf{x})$是分量函数，其自变量是$n$维向量，值域属于实
 
 ## 参考资料
 
-1. https://blog.csdn.net/zhangjunhit/article/details/88883459
+1. 推荐中文解析：https://blog.csdn.net/zhangjunhit/article/details/88883459
 2. 文献原文：
 
 http://www2.imm.dtu.dk/pubdb/views/edoc_download.php/3215/pdf/imm3215.pdf
