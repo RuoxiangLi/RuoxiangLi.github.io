@@ -35,6 +35,46 @@ copyright: true
 - **建图线程**基于深度滤波器更新三维点深度信息，主要步骤：
   - 判断新到达的图像帧是否为关键帧；新的关键帧将会提取特征，非关键帧图像则用于更新深度滤波器；
   - 在新的关键帧中提取特征后，为关键帧中的每个2D特征，初始化一个概率深度滤波器，用于估计与其对应的三维点。初始的深度滤波器具有很大的深度不确定性，随着新的图像帧的加入，逐步更新2D特征点对应的三维地图点的深度值，直到深度不确定性足够小，深度滤波收敛，插入新的地图点，地图点用于追踪线程的运动估计过程。
-  - 
-- 
+
+## Motion Estimation
+
+### Sparse Model-based Image Alignment
+
+将当前关键帧与上一相邻图像帧（注意不是关键帧）对齐，即**最小化光度误差**Photometric Error（特征点局部Patch的光度误差，Patch的大小为4×4），**优化两帧之间的相对位姿**（初始化为上一帧的位姿或单位矩阵），即图像帧对齐。
+
+$\mathbf{T}_{k,k-1}=\mathop{\arg\min}\limits_{\mathbf{T}_{k,k-1}}\frac{1}{2}\sum\limits_{i\in\mathcal{\overline{R}}}{\parallel\delta \mathbf{I}(\mathbf{T}_{k,k-1},\mathbf{u}_i)\parallel^2}$
+
+其中，$\delta\mathbf{I}(\mathbf{T},\mathbf{u})=I_k(\pi(\mathbf{T}\cdot\pi^{-1}(\mathbf{u},d_{\mathbf{u}}))-I_{k-1}(\mathbf{u}),\quad\forall\mathbf{u}\in\mathcal{\overline{R}}$，表示上一帧中的特征点反投影至其相机坐标系下，再变换到当前帧相机坐标系下，重投影得到像素坐标值。
+
+具体过程：
+
+- **准备工作。**通过之前多帧之间的特征检测和深度估计，已确定第$I_{k-1}$帧中特征点位置和深度值，即图中$u_1,u_2,u_3$的坐标即深度值；假设相邻帧$I_{k-1}$和$I_{k}$之间位姿$T_{k,k-1}$已知，一般初始化为上一相邻时刻的位姿或者假设为单位矩阵；
+- **重投影。**将第$I_{k-1}$帧中特征点$u_i$投影到三维空间，得到该帧相机坐标系下的三维点$p^{k-1}_i$；再使用$T_{k,k-1}$将$p^{k-1}_i$变换至当前帧相机坐标系下，得到$p^{k}_i$；再使用相机内参重投影至当前帧图像，得到特征点的像素坐标$u'_i$；
+- **迭代优化更新位姿。**相邻两帧的变化比较小，相同特征点的亮度值变化不大，但由于相对位姿$T_{k,k-1}$是假设值，投影点$u'_i$的位置不准确，导致投影前后的亮度值不相等，有一个差值。因此，通过迭代优化相对位姿，减小这个差值，得到优化后的位姿$T_{k,k-1}$。
+
+{% asset_img a.png %}
+
+### Relaxation Through Feature Alignment
+
+由于上一步估计的相对位姿是不准确的，导致重投影预测的特征点位置$u'_i$并不是真正的特征点位置。下图$I_k$中灰色特征块为假设的真实位置，目前是未知的；蓝色特征块为预测的特征点位置，利用它们之间的偏差构建残差目标函数，和上述直接法类似，即**最小化光度误差**（同样是针对特征点的局部Patch）。但这一步加入了放射变换（因为关键帧与关键帧之间的距离可能比较远，特征点局部Patch也扩大为8×8），而且优化变量不再是相机位姿，而是**特征点预测位置$u'_i$**，通过迭代对特征块的预测位置进行优化，即特征对齐。
+
+$\mathbf{u'}_i=\mathop{\arg\min}\limits_{\mathbf{u'}_i}\frac{1}{2}{\parallel \mathbf{I}_k(\mathbf{u'}_i)-\mathbf{A}_{i}\cdot\mathbf{I}_r(\mathbf{u}_i)\parallel^2},\quad\forall i$
+
+{% asset_img b.png %}
+
+### Pose and Structure Refinement
+
+上一步优化的特征点预测位置与第一步预测的特征点位置（即地图点通过第一步估计的位姿重投影的特征点位置）之间有偏差，利用该偏差构造新的优化目标函数，即**最小化重投影特征点位置误差**（不是像素值的差异），**优化当前关键帧相机位姿以及地图点位置**。
+
+> 这一步其实是Bundler Adjustment，包括Motion-only Bundler Adjustment和Structure-only Bundler Adjustment，前者是优化当前帧位姿（如下优化目标函数），后者是优化当前帧关联的地图点位置（优化目标函数与下式相似，只不过优化变量为三维地图点$_{w}\mathbf{p}_i$位置）。
+
+$\mathbf{T}_{k,w}=\mathop{\arg\min}\limits_{\mathbf{T}_{k,w}}\frac{1}{2}\sum\limits_{i}{\parallel\mathbf{u}_i-\mathbf{\pi}(\mathbf{T}_{k,w},_{w}\mathbf{p}_i)\parallel^2}$
+
+{% asset_img c.png %}
+
+## Mapping
+
+对于已知位姿的当前帧，Mapping线程估计图像中2D特征（它们关联的三维地图点还未知）的深度值。深度值估计过程采用概率分布模型，每一组观测$\{I_k,\mathbf{T}_{k,w}\}$，都会被用于更新Bayesian框架分布。当分布的变化收敛到足够小时，估计的深度将用于生成三维地图点$_{k}\mathbf{p}=\pi^{-1}(\mathbf{u},d_{\mathbf{u}})​$，新生成的地图点被加入到地图中，并立即用于运动估计。
+
+每个关键帧与一个深度滤波器关联。
 
