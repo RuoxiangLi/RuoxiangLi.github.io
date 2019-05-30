@@ -4,12 +4,12 @@ date: 2018-09-12 16:56:16
 tags: 
   - Lidar SLAM
   - Cartographer
-mathjax: true
 categories:
   - 机器人 
   - SLAM
   - Cartographer
 copyright: true
+mathjax: true
 ---
 
 ---
@@ -20,7 +20,7 @@ copyright: true
 
 ## 概况
 
-`Real-time loop closure in 2D LIDAR SLAM`是Google发表在ICRA2016会议上的一篇论文，开源的系统是大名鼎鼎的Cartographer，目前该系统已经有大神改到Cartographer-ROS版本。本文在阅读论文的基础上，参考其他网络博客资料，学习并记录论文的一些要点，通过这个过程希望能够理解论文的核心内容和系统的实现。
+`Real-time loop closure in 2D LIDAR SLAM`是Google发表在ICRA2016上的一篇论文，开源的系统是大名鼎鼎的Cartographer，目前该系统已经有大神改到Cartographer-ROS版本。本文在阅读论文的基础上，参考其他网络博客资料，学习并记录论文的一些要点，通过这个过程希望能够理解论文的核心内容和系统的实现。
 
 ### 主要论文
 
@@ -89,22 +89,14 @@ copyright: true
 ## 符号说明
 
 - 位姿表示：$\xi=(\xi_x,\xi_y,\xi_{\theta})$
-
-- 扫描scan：$H=\{h_k\}_{k=1,…,K},h_k \in \mathbb{R^2}$
-
-- scan-to-submap变换矩阵：$T_\xi$
-
-- scan-to-submap变换：$T_{\xi }h_k=\underbrace{\left(\begin{matrix}cos\xi_\theta&-sin\xi_\theta\\sin\xi_\theta&cos\xi_\theta\end{matrix} \right)}_{R_\xi}h_k+\underbrace{\left(\begin{matrix}\xi_x\\\xi_y\end{matrix}\right)}_{t_\xi}$
-
+- 扫描scan：$H=\{h_k\}_{k=1,…,K},h_k \in \mathbb{R^2}​$
+- scan-to-submap变换矩阵：$T_\xi​$
+- scan-to-submap变换：$T_{\xi }h_k=\underbrace{\left(\begin{matrix}cos\xi_\theta&-sin\xi_\theta\\sin\xi_\theta&cos\xi_\theta\end{matrix} \right)}_{R_\xi}h_k+\underbrace{\left(\begin{matrix}\xi_x\\\xi_y\end{matrix}\right)}_{t_\xi}​$
 - 概率栅格地图概率值：$M:r\mathbb{Z}\times r\mathbb{Z} \to [p_{min},p_{max}]$
-
-- submap世界坐标系下的位姿（m代表map）：$\Xi^m=\{\xi^m_i\}_{i=1,...,m}$
-
-- scan世界坐标系下的位姿（s代表scan）：$\Xi^s=\{\xi^s_j\}_{j=1,...,n}$
-
-- scan $i$在匹配到的submap $j$坐标系下的位姿：$\xi_{ij}$
-
-- 与scan $i$和submap $j$相对应的协方差矩阵：$\sum_{ij}$
+- submap世界坐标系下的位姿（m代表map）：$\Xi^m=\{\xi^m_i\}_{i=1,...,m}​$
+- scan世界坐标系下的位姿（s代表scan）：$\Xi^s=\{\xi^s_j\}_{j=1,...,n}​$
+- scan $i​$在匹配到的submap $j​$坐标系下的位姿：$\xi_{ij}​$
+- 与scan $i​$和submap $j​$相对应的协方差矩阵：$\sum_{ij}​$
 
 ## Local 2D SLAM
 

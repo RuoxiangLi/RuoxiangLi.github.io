@@ -13,7 +13,7 @@ copyright: true
 ---
 ---
 
-《Methods for Non-linear Least Squares Problems》学习笔记。
+《Methods for Non-linear Least Squares Problems》学习记录。
 <!--more--->
 
 ## Introduction and Definitions
