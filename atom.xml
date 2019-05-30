@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ttshun.com/"/>
-  <updated>2019-05-30T12:29:26.307Z</updated>
+  <updated>2019-05-30T12:43:38.939Z</updated>
   <id>http://ttshun.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>test</title>
+    <link href="http://ttshun.com/2019/05/30/test/"/>
+    <id>http://ttshun.com/2019/05/30/test/</id>
+    <published>2019-05-30T12:42:50.000Z</published>
+    <updated>2019-05-30T12:43:38.939Z</updated>
+    
+    <content type="html"><![CDATA[<hr><p>-just for test<br><a id="more"></a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;hr&gt;
+&lt;p&gt;-just for test&lt;br&gt;
+    
+    </summary>
+    
+      <category term="工具" scheme="http://ttshun.com/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+    
+      <category term="ubuntu16.04" scheme="http://ttshun.com/tags/ubuntu16-04/"/>
+    
+      <category term="Hexo" scheme="http://ttshun.com/tags/Hexo/"/>
+    
+      <category term="Github" scheme="http://ttshun.com/tags/Github/"/>
+    
+      <category term="Typora" scheme="http://ttshun.com/tags/Typora/"/>
+    
+  </entry>
   
   <entry>
     <title>视觉SLAM基础学习之非线性最小二乘问题求解方法</title>
