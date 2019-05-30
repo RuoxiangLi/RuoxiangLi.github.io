@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+      
+    
+    
+  <script src="tree"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="lightweight_mapping,Delaunay三角剖分,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="励志献身SLAM 的 阿翔" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="这篇文章是有关lightwight_mapping项目源码分析的内容，主要记录LocalMesshing模块，该模块涉及CGAL库Delauary三角剖分的知识。">
+<meta name="keywords" content="lightweight_mapping,Delaunay三角剖分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lightweight_mapping学习之LocalMeshing">
+<meta property="og:url" content="http://ttshun.com/2018/09/04/lightweight_mapping学习之LocalMeshing/index.html">
+<meta property="og:site_name" content="励志献身SLAM 的 阿翔">
+<meta property="og:description" content="这篇文章是有关lightwight_mapping项目源码分析的内容，主要记录LocalMesshing模块，该模块涉及CGAL库Delauary三角剖分的知识。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ttshun.com/2018/09/04/lightweight_mapping学习之LocalMeshing/Delanunay三角剖分.png">
+<meta property="og:updated_time" content="2019-05-30T12:29:26.303Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="lightweight_mapping学习之LocalMeshing">
+<meta name="twitter:description" content="这篇文章是有关lightwight_mapping项目源码分析的内容，主要记录LocalMesshing模块，该模块涉及CGAL库Delauary三角剖分的知识。">
+<meta name="twitter:image" content="http://ttshun.com/2018/09/04/lightweight_mapping学习之LocalMeshing/Delanunay三角剖分.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ttshun.com/2018/09/04/lightweight_mapping学习之LocalMeshing/">
+
+
+
+
+
+  <title>lightweight_mapping学习之LocalMeshing | 励志献身SLAM 的 阿翔</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2167066263b4ea80e21ad5060efbc2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">励志献身SLAM 的 阿翔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ttshun.com/2018/09/04/lightweight_mapping学习之LocalMeshing/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="阿翔">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="励志献身SLAM 的 阿翔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">lightweight_mapping学习之LocalMeshing</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-04T22:59:48+08:00">
+                2018-09-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/" itemprop="url" rel="index">
+                    <span itemprop="name">机器人</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SLAM</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/navigation/" itemprop="url" rel="index">
+                    <span itemprop="name">navigation</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/04/lightweight_mapping学习之LocalMeshing/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/04/lightweight_mapping学习之LocalMeshing/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/09/04/lightweight_mapping学习之LocalMeshing/" class="leancloud_visitors" data-flag-title="lightweight_mapping学习之LocalMeshing">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3,149
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  11
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>这篇文章是有关lightwight_mapping项目源码分析的内容，主要记录LocalMesshing模块，该模块涉及CGAL库Delauary三角剖分的知识。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>LocalMeshing线程主要任务是使用SLAM优化后的稀疏特征（优化的稀疏三维点云）转化为稠密体积表示。具体来说，SLAM模块提供优化后的稀疏三维点云，LocalMeshing线程使用Delaunay三角剖分算法将三维空间进行细分，使用可视化约束刻画空间。LocalMeshing线程的输入是来自LoopClosing线程传送的关键帧（其实这些关键帧都是在Tracking线程创建的），输出是一系列的三维空间中的点、三角形、边结构，这些信息由可视化线程展示在窗口。</p>
+<h2 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h2><ol>
+<li>关键帧约束和非关键帧约束区别何在？为何要区分？顶点细化的最后为何要添加这两种约束？？</li>
+<li>顶点删除过程，会对新产生的空洞重新三角剖分？？</li>
+</ol>
+<h2 id="关于Delaunay三角剖分"><a href="#关于Delaunay三角剖分" class="headerlink" title="关于Delaunay三角剖分"></a>关于Delaunay三角剖分</h2><h3 id="Triangulation"><a href="#Triangulation" class="headerlink" title="Triangulation"></a>Triangulation</h3><p>三角剖分是代数拓扑学最基本的研究方法。以曲面三角剖分为例，三角剖分需要满足一些条件：</p>
+<p>（1）每一块碎片都是曲边三角形（曲边三角形就是以等边三角形的三个顶点为圆心，边长为半径画出的图形，曲面的宽度是等长的）</p>
+<p>（2）曲面上任何两个这样的曲边三角形，不能同时相交两条或两条以上的边，只能不相交或者是相切于一条公共边</p>
+<p>（3）曲面中所有的都是三角面，且所有三角面的合集是所有点集合的凸包</p>
+<h3 id="Delaunay-Triangulation"><a href="#Delaunay-Triangulation" class="headerlink" title="Delaunay Triangulation"></a>Delaunay Triangulation</h3><p>假设边的集合E中的一条边e（两个端点为a，b）,e如果满足下列条件，则称之为Delaunay边：</p>
+<p>存在一个圆经过a,b两点，圆内不包含点集中的任何点，这一特性称为空圆特性。</p>
+<p>如果一个曲面的点集的一个三角剖分只包含Delaunay边，那么这样的三角剖分就称为Delaunay三角剖分。</p>
+<p>关于Delaunay三角剖分更为直观的定义是：三角剖分中的每个三角形的外接圆的内部都不包含点集中的任何点。</p>
+<p>Delaunay三角剖分的算法有翻边算法、逐点插入算法、分割合并算法以及Bowyer-Watson算法等。</p>
+<p>下图是Delaunay三角剖分的一个直观示意图：</p>
+<img src="/2018/09/04/lightweight_mapping学习之LocalMeshing/Delanunay三角剖分.png">
+<h2 id="LocalMeshing-h"><a href="#LocalMeshing-h" class="headerlink" title="LocalMeshing.h"></a>LocalMeshing.h</h2><p>新增文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">delaunay文件夹：FreespaceDelaunayAlgorithm相关的文件</span><br><span class="line">dataStructure.h</span><br><span class="line">FColorMap.h/FColorMap.cpp</span><br><span class="line">LocalMeshing.h/LocalMeshing.cpp</span><br></pre></td></tr></table></figure>
+<p>增添内容文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">MapDrawer.h MapDrawer.cpp</span><br></pre></td></tr></table></figure>
+<h3 id="重要的数据结构"><a href="#重要的数据结构" class="headerlink" title="重要的数据结构"></a>重要的数据结构</h3><ol>
+<li>Class <code>Delaunay3CellInfo</code>：Delaunay三维剖分四面体信息</li>
+<li>Class <code>pointInfo</code>：顶点信息</li>
+<li>Class <code>constraintInfo</code>：约束信息类，成员包括约束类型、关联的Cell集合</li>
+</ol>
+<h3 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h3><p>约束定义为相机中心与地图点（顶点）之间的线段。每个约束有一个ID，并且保存定义该约束的顶点的ID。</p>
+<p>三种类型：</p>
+<ul>
+<li><code>CON_KF</code>：关键帧约束</li>
+<li><code>CON_NONKF</code>：非关键帧约束</li>
+<li><code>CON_INFINITY</code>：deleted 约束（无穷约束？？），程序中并没有用到。</li>
+</ul>
+<p>关于添加约束的函数：（分别在什么情况下使用？在后面约束插入函数的介绍中说明）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">addSetOfConstraints( int vertexID, float pose_x, float pose_y, float pose_z, float time )：直接与点关联的约束</span><br><span class="line">addConstraintKF(int vertexID, KeyFrame *kF)：与关键帧关联的约束</span><br><span class="line">addConstraintNonKF()</span><br></pre></td></tr></table></figure>
+<h2 id="LocalMeshing-buildMesh2"><a href="#LocalMeshing-buildMesh2" class="headerlink" title="LocalMeshing::buildMesh2"></a>LocalMeshing::buildMesh2</h2><p>该函数是LocalMeshing线程实现功能的主要函数，构建三角剖分过程在该函数中完成。函数主要过程如下：</p>
+<ol>
+<li>检查关键帧队列是否为空，不为空则弹出队列头的关键帧，并设置当前关键帧禁止被设为<code>bad</code>；</li>
+<li>检查当前关键帧的数据可用性、是否为<code>bad</code>；</li>
+<li>获取当前关键帧的位姿的逆，即<code>Twc</code>，由此得到旋转矩阵、平移向量；</li>
+<li>获取当前关键帧观测到的地图点<code>vpMapPoints</code>；</li>
+<li>关键帧图像转成BGR彩色图；</li>
+<li>删除外点<ul>
+<li>从<code>outlierVertexList</code>集合获取LocalMapping线程截至目前剔除的外点，保存在<code>currentOutlierVertexList</code>，并将<code>outlierVertexList</code>（它是LocalMapping线程地图点剔除过程保存外点的接口）外点清空，重新收集；</li>
+<li>遍历获取到的外点（也没进行什么有实质内容的操作啊，有什么作用？会在全局顶点集合中查找每一个外点）；</li>
+<li>调用顶点集合删除算法删除外点，并得到与外点关联的约束集合。</li>
+</ul>
+</li>
+<li>根据4获取到的<code>vpMapPoints</code>收集地图点和约束；</li>
+<li>更新地图点和约束<ul>
+<li>调用顶点插入函数插入顶点，并得到与顶点相关联的约束集合；</li>
+<li>处理上一步得到的约束集合；</li>
+<li>插入关键帧约束。</li>
+</ul>
+</li>
+<li>检查关键帧变化<ul>
+<li>获取当前关键帧的临近关键帧集合，对于每一个关键帧进行如下操作：<ul>
+<li>获取当前关键帧匹配到的地图点；</li>
+<li>检查地图点，并收集所有地图点到集合；</li>
+</ul>
+</li>
+<li>检查收集到的地图点变化，如果变化大于阈值则需要更新，将地图点放入待更新集合；</li>
+<li>对于待更新集合中的地图点，调用顶点细化函数更新地图点；</li>
+<li>对于临近关键帧集合中的每一个关键帧进行如下操作：<ul>
+<li>如果关键帧是<code>bad</code>，则将该关键帧关联的所有约束删除，处理下一个关键帧，否则，继续后面的操作；</li>
+<li>获取当前关键帧的位姿；</li>
+<li>对于当前关键帧关联的所有约束，进行如下操作： <ul>
+<li>获取当前约束关联的顶点，得到其坐标信息；</li>
+<li>检查位姿和三维点的变化确定是否需要更新约束，如需要更新则删除当前约束，重新添加关键帧约束。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>发布网格地图<code>tetsToTris_naive2</code>，创建三维空间点、三角形、边集合，主要过程如下：<ul>
+<li>初始化三维空间点、三角形、边集合为空；</li>
+<li>创建顶点句柄列表，关联到边界顶点（边界顶点与无线远处连接）；</li>
+<li>填充顶点列表，创建有限的非边界顶点句柄列表，并创建有用的句柄与顶点的关联映射；</li>
+<li>遍历有限面集合，并在网格上添加三角形，创建三角形、边。</li>
+</ul>
+</li>
+</ol>
+<h2 id="顶点插入算法"><a href="#顶点插入算法" class="headerlink" title="顶点插入算法"></a>顶点插入算法</h2><p>该算法输入是一个顶点的信息，输出是由该顶点引起的冲突Cell关联的约束的集合，由于顶点的插入可能会产生新的四面体，所以还需要重新检查该集合中的约束，将约束关联到四面体（快速搜索与新的约束相交的四面体，并标记为空）。</p>
+<h3 id="对应函数"><a href="#对应函数" class="headerlink" title="对应函数"></a>对应函数</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addVertex(<span class="keyword">int</span> vertexID, <span class="keyword">float</span> x, <span class="keyword">float</span> y, <span class="keyword">float</span> z, <span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;&amp; setUnionedConstraints )</span><br></pre></td></tr></table></figure>
+<h3 id="函数参数"><a href="#函数参数" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
+<li>vertexID：顶点ID</li>
+<li>x,y,z：顶点三维坐标</li>
+<li>setUnionedConstraints：顶点关联的约束集合</li>
+</ul>
+<h3 id="算法过程"><a href="#算法过程" class="headerlink" title="算法过程"></a>算法过程</h3><ol>
+<li>使用传入的参数创建待处理的顶点；</li>
+<li>定位顶点的位置；</li>
+<li>找到由此顶点引起的冲突Cell集合；</li>
+<li>对于每一个冲突Cell，将其从关联的约束的关联Cell列表中删除，同时得到所有冲突Cell关联的约束集合（作为算法输出）；</li>
+<li>删除冲突的Cell、插入新顶点并重新三角化空洞产生新的Cell；</li>
+<li>将顶点保存到全局顶点集合。</li>
+</ol>
+<h2 id="约束插入算法"><a href="#约束插入算法" class="headerlink" title="约束插入算法"></a>约束插入算法</h2><p>插入约束的函数有三种，分别适用于不同的情况。</p>
+<ol>
+<li><code>addConstraintNonKF()</code>：适用于没有和关键帧关联的顶点，函数直接输入顶点坐标信息；</li>
+<li><code>addConstraintKF()</code>：适用于和关键帧关联的顶点，通过关键帧的位姿获取顶点的坐标信息，约束的插入过程与第一种类似，只是增加了和关键帧相关的一些操作，例如该约束分类为<code>CON_KF</code>、当前关键帧的约束列表会添加该约束；</li>
+<li><code>addSetOfConstraints</code>：适用于插入已有的约束，函数输入约束集合，使用约束关联的顶点获取顶点坐标信息。</li>
+</ol>
+<p>顶点插入的过程大体类似，只介绍第一种插入函数。</p>
+<h3 id="对应函数-1"><a href="#对应函数-1" class="headerlink" title="对应函数"></a>对应函数</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addConstraintNonKF( <span class="keyword">int</span> vertexID, <span class="keyword">float</span> pose_x, <span class="keyword">float</span> pose_y, <span class="keyword">float</span> pose_z, <span class="keyword">float</span> time )</span><br></pre></td></tr></table></figure>
+<h3 id="函数参数-1"><a href="#函数参数-1" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
+<li>vertexID：顶点ID</li>
+<li>pose_x,pose_y,pose_z：顶点三维坐标</li>
+<li>time：时间戳</li>
+</ul>
+<h3 id="算法过程-1"><a href="#算法过程-1" class="headerlink" title="算法过程"></a>算法过程</h3><ol>
+<li>通过顶点ID获取顶点信息、顶点操作手柄；</li>
+<li>使用传入的参数创建待处理的约束，设为<code>CON_NONKF</code>类型；</li>
+<li>将约束保存到全局约束集合；</li>
+<li>将约束关联到当前顶点；</li>
+<li>将约束关联到四面体（快速搜索与新的约束相交的四面体，并标记为空）。</li>
+</ol>
+<h2 id="约束删除算法"><a href="#约束删除算法" class="headerlink" title="约束删除算法"></a>约束删除算法</h2><h3 id="对应函数-2"><a href="#对应函数-2" class="headerlink" title="对应函数"></a>对应函数</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">removeConstraint( <span class="keyword">int</span> constraintID )</span><br></pre></td></tr></table></figure>
+<h3 id="函数参数-2"><a href="#函数参数-2" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
+<li>constraintID：函数输入，要删除的约束ID</li>
+</ul>
+<h3 id="算法过程-2"><a href="#算法过程-2" class="headerlink" title="算法过程"></a>算法过程</h3><ol>
+<li>获取与该约束关联的所有Cell，将该约束与所有Cell消除关联；</li>
+<li>获取与该约束关联的顶点，将该约束从顶点的约束列表中删除；</li>
+<li>获取该约束关联的关键帧（如果是<code>CON_KF</code>类型的约束），将该约束从关键帧的约束列表中删除；</li>
+<li>从全局约束集合中删除该约束。</li>
+</ol>
+<h2 id="顶点删除算法"><a href="#顶点删除算法" class="headerlink" title="顶点删除算法"></a>顶点删除算法</h2><p>包括单个顶点的删除和顶点集合的删除两个函数。顶点删除的过程大致可以分为四个步骤：</p>
+<ul>
+<li>删除与该外点关联的约束</li>
+<li>收集外点附带的四面体关联的约束集合；</li>
+<li>删除外点及其附带的四面体，并对产生的空洞重新三角剖分；</li>
+<li>检查约束集合，约束可能会关联到新产生的四面体。</li>
+</ul>
+<h3 id="删除顶点"><a href="#删除顶点" class="headerlink" title="删除顶点"></a>删除顶点</h3><h4 id="对应函数-3"><a href="#对应函数-3" class="headerlink" title="对应函数"></a>对应函数</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">removeVertex_origin( <span class="keyword">int</span> vertexID )</span><br></pre></td></tr></table></figure>
+<h4 id="函数参数-3"><a href="#函数参数-3" class="headerlink" title="函数参数"></a>函数参数</h4><ul>
+<li>vertexID：函数输入，要删除的外点ID</li>
+</ul>
+<h4 id="算法过程-3"><a href="#算法过程-3" class="headerlink" title="算法过程"></a>算法过程</h4><ol>
+<li>获取该点相关的约束集合（约束ID），调用约束删除算法剔除每一个约束；</li>
+<li>获取与该外点相关的所有四面体的<code>Cell_hande</code>，对于每一个执行如下操作：<ul>
+<li>获取与该Cell关联的约束集合；</li>
+<li>对于每一个约束，将当前Cell从约束的Cell列表中删除，并收集该约束到集合。</li>
+</ul>
+</li>
+<li>剔除该外点（同时会对新产生的空洞重新三角剖分）；</li>
+<li>处理前面收集的约束集合，将约束关联到四面体（快速搜索与新的约束相交的四面体，并标记为空）。</li>
+</ol>
+<h3 id="删除顶点集合"><a href="#删除顶点集合" class="headerlink" title="删除顶点集合"></a>删除顶点集合</h3><h4 id="对应函数-4"><a href="#对应函数-4" class="headerlink" title="对应函数"></a>对应函数</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">removeVertexSet(<span class="built_in">list</span>&lt;<span class="keyword">int</span>&gt;&amp; currentOutlierVertexList, <span class="built_in">std</span>::<span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;&amp; setUnionedConstraints)</span><br></pre></td></tr></table></figure>
+<h4 id="函数参数-4"><a href="#函数参数-4" class="headerlink" title="函数参数"></a>函数参数</h4><ul>
+<li>currentOutlierVertexList：函数输入，要删除的外点集合</li>
+<li>setUnionedConstraints：函数输出，与删除外点相关联的约束集合，同顶点插入函数一样，也需要检查约束集合。</li>
+</ul>
+<h4 id="算法过程-4"><a href="#算法过程-4" class="headerlink" title="算法过程"></a>算法过程</h4><p>与顶点删除过程类似，只是多了访问待删除外点集合的循环。</p>
+<h2 id="顶点细化算法"><a href="#顶点细化算法" class="headerlink" title="顶点细化算法"></a>顶点细化算法</h2><h3 id="对应函数-5"><a href="#对应函数-5" class="headerlink" title="对应函数"></a>对应函数</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">moveVertexSet( <span class="keyword">const</span> <span class="built_in">list</span>&lt;<span class="keyword">int</span>&gt;&amp; moveVertexList )</span><br></pre></td></tr></table></figure>
+<h3 id="函数参数-5"><a href="#函数参数-5" class="headerlink" title="函数参数"></a>函数参数</h3><ul>
+<li>moveVertexList：函数输入，待细化（更新坐标）的顶点集合</li>
+</ul>
+<h3 id="算法过程-5"><a href="#算法过程-5" class="headerlink" title="算法过程"></a>算法过程</h3><ol>
+<li>对于待细化顶点集合中的每一个顶点，进行如下操作：<ul>
+<li>获取该顶点的ID、坐标信息（新值），构造<code>tmp</code>顶点（这些顶点具备足够的信息，在后续过程进行更新）；</li>
+<li>获取该顶点的约束集合，对于集合中的每一个约束进行如下操作：<ul>
+<li>如果该约束类型为<code>CON_KF</code>，则在<code>tmp</code>顶点中添加该顶点关联的关键帧位姿信息；</li>
+<li>如果该约束类新为<code>CON_NONKF</code>，则用该顶点的坐标值（旧值）为<code>tmp</code>顶点赋值。</li>
+</ul>
+</li>
+<li>将<code>tmp</code>顶点加入<code>moveList</code>集合；</li>
+</ul>
+</li>
+<li>调用顶点集合删除函数，将待细化顶点集合中的顶点全部删除，并得到与删除顶点关联的约束集合；</li>
+<li>调用顶点添加函数，添加<code>moveList</code>集合中的顶点（这一步和上一步会产生新的四面体）；</li>
+<li>调用<code>addSetOfConstraints</code>函数，处理2中得到的约束集合，与新生成的四面体关联；</li>
+<li>添加与<code>moveList</code>集合中的顶点关联的关键帧约束；</li>
+<li>添加与<code>moveList</code>集合中的顶点关联的非关键帧约束。</li>
+</ol>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>论文：Building maps for autonomous navigation using sparse visual SLAM features</li>
+<li><a href="https://doc.cgal.org/latest/Triangulation_3/index.html" target="_blank" rel="noopener">CGAL手册</a></li>
+<li>书籍：Computational Geometry Algorithms and Applications(third edition)</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/09/04/lightweight_mapping学习之LocalMeshing/">lightweight_mapping学习之LocalMeshing</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 阿翔 的个人博客">阿翔</a></p>
+  <p><span>发布时间:</span>2018年09月04日 - 22:09</p>
+  <p><span>最后更新:</span>2019年05月30日 - 20:05</p>
+  <p><span>原始链接:</span><a href="/2018/09/04/lightweight_mapping学习之LocalMeshing/" title="lightweight_mapping学习之LocalMeshing">http://ttshun.com/2018/09/04/lightweight_mapping学习之LocalMeshing/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://ttshun.com/2018/09/04/lightweight_mapping学习之LocalMeshing/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+      $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+        });
+    });  
+</script>
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>点击给我一些鼓励叭！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixin.jpg" alt="阿翔 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt="阿翔 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <div>
+    
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+    
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/lightweight-mapping/" rel="tag"><i class="fa fa-tag"></i> lightweight_mapping</a>
+          
+            <a href="/tags/Delaunay三角剖分/" rel="tag"><i class="fa fa-tag"></i> Delaunay三角剖分</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/01/视觉SLAM十四讲阅读笔记七-双目相机模型/" rel="next" title="视觉SLAM十四讲阅读笔记七-双目相机模型">
+                <i class="fa fa-chevron-left"></i> 视觉SLAM十四讲阅读笔记七-双目相机模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/05/跨平台可视化库Pangolin/" rel="prev" title="跨平台可视化库Pangolin">
+                跨平台可视化库Pangolin <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/photo.jpg" alt="阿翔">
+            
+              <p class="site-author-name" itemprop="name">阿翔</p>
+              <p class="site-description motion-element" itemprop="description">每一阵风过，我们都互相致意</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/RuoxiangLi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ruoxianglee@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="896928771" target="_blank" title="QQ">
+                      
+                        <i class="fa fa-fw fa-qq"></i>QQ</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="15116319671" target="_blank" title="Wechat">
+                      
+                        <i class="fa fa-fw fa-weixin"></i>Wechat</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/wentanxing2182" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/loveyoupumy/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-bell-o"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://usthe.com" title="武林盟主" target="_blank">武林盟主</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zhehangt.win" title="一索哥传奇" target="_blank">一索哥传奇</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/mybrave" title="小怪兽哦" target="_blank">小怪兽哦</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/DarrenChan/" title="DarrenChan陈驰" target="_blank">DarrenChan陈驰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/xiangxianghehe" title="nudt_qxx" target="_blank">nudt_qxx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#疑问"><span class="nav-number">2.</span> <span class="nav-text">疑问</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于Delaunay三角剖分"><span class="nav-number">3.</span> <span class="nav-text">关于Delaunay三角剖分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Triangulation"><span class="nav-number">3.1.</span> <span class="nav-text">Triangulation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delaunay-Triangulation"><span class="nav-number">3.2.</span> <span class="nav-text">Delaunay Triangulation</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LocalMeshing-h"><span class="nav-number">4.</span> <span class="nav-text">LocalMeshing.h</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重要的数据结构"><span class="nav-number">4.1.</span> <span class="nav-text">重要的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#约束"><span class="nav-number">4.2.</span> <span class="nav-text">约束</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LocalMeshing-buildMesh2"><span class="nav-number">5.</span> <span class="nav-text">LocalMeshing::buildMesh2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#顶点插入算法"><span class="nav-number">6.</span> <span class="nav-text">顶点插入算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对应函数"><span class="nav-number">6.1.</span> <span class="nav-text">对应函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数参数"><span class="nav-number">6.2.</span> <span class="nav-text">函数参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法过程"><span class="nav-number">6.3.</span> <span class="nav-text">算法过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#约束插入算法"><span class="nav-number">7.</span> <span class="nav-text">约束插入算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对应函数-1"><span class="nav-number">7.1.</span> <span class="nav-text">对应函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数参数-1"><span class="nav-number">7.2.</span> <span class="nav-text">函数参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法过程-1"><span class="nav-number">7.3.</span> <span class="nav-text">算法过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#约束删除算法"><span class="nav-number">8.</span> <span class="nav-text">约束删除算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对应函数-2"><span class="nav-number">8.1.</span> <span class="nav-text">对应函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数参数-2"><span class="nav-number">8.2.</span> <span class="nav-text">函数参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法过程-2"><span class="nav-number">8.3.</span> <span class="nav-text">算法过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#顶点删除算法"><span class="nav-number">9.</span> <span class="nav-text">顶点删除算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除顶点"><span class="nav-number">9.1.</span> <span class="nav-text">删除顶点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对应函数-3"><span class="nav-number">9.1.1.</span> <span class="nav-text">对应函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数参数-3"><span class="nav-number">9.1.2.</span> <span class="nav-text">函数参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法过程-3"><span class="nav-number">9.1.3.</span> <span class="nav-text">算法过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除顶点集合"><span class="nav-number">9.2.</span> <span class="nav-text">删除顶点集合</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对应函数-4"><span class="nav-number">9.2.1.</span> <span class="nav-text">对应函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#函数参数-4"><span class="nav-number">9.2.2.</span> <span class="nav-text">函数参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法过程-4"><span class="nav-number">9.2.3.</span> <span class="nav-text">算法过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#顶点细化算法"><span class="nav-number">10.</span> <span class="nav-text">顶点细化算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对应函数-5"><span class="nav-number">10.1.</span> <span class="nav-text">对应函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数参数-5"><span class="nav-number">10.2.</span> <span class="nav-text">函数参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法过程-5"><span class="nav-number">10.3.</span> <span class="nav-text">算法过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">11.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿翔</span>
+
+  
+</div>
+
+
+  <!--<div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz',
+        appKey: 'Dl5bC4kDveO2sUOJMNm3K8me',
+        placeholder: 'Just go go',
+        avatar:'/uploads/hexo.jpg',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz", "Dl5bC4kDveO2sUOJMNm3K8me");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

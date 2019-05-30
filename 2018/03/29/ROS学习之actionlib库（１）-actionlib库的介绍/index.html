@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+      
+    
+    
+  <script src="tree"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ROS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="励志献身SLAM 的 阿翔" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="这篇文章是有关ROS中actionlib使用的学习内容。">
+<meta name="keywords" content="ROS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS学习之actionlib库（１）-actionlib库的介绍">
+<meta property="og:url" content="http://ttshun.com/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/index.html">
+<meta property="og:site_name" content="励志献身SLAM 的 阿翔">
+<meta property="og:description" content="这篇文章是有关ROS中actionlib使用的学习内容。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wiki.ros.org/actionlib/DetailedDescription?action=AttachFile&do=get&target=server_states_detailed.png">
+<meta property="og:image" content="http://wiki.ros.org/actionlib?action=AttachFile&do=get&target=client_server_interaction.png">
+<meta property="og:image" content="http://ttshun.com/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/节点图.png">
+<meta property="og:updated_time" content="2019-05-30T12:29:26.295Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ROS学习之actionlib库（１）-actionlib库的介绍">
+<meta name="twitter:description" content="这篇文章是有关ROS中actionlib使用的学习内容。">
+<meta name="twitter:image" content="http://wiki.ros.org/actionlib/DetailedDescription?action=AttachFile&do=get&target=server_states_detailed.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ttshun.com/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/">
+
+
+
+
+
+  <title>ROS学习之actionlib库（１）-actionlib库的介绍 | 励志献身SLAM 的 阿翔</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2167066263b4ea80e21ad5060efbc2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">励志献身SLAM 的 阿翔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ttshun.com/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="阿翔">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="励志献身SLAM 的 阿翔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ROS学习之actionlib库（１）-actionlib库的介绍</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-29T22:42:46+08:00">
+                2018-03-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/" itemprop="url" rel="index">
+                    <span itemprop="name">机器人</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/ROS/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/" class="leancloud_visitors" data-flag-title="ROS学习之actionlib库（１）-actionlib库的介绍">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,567
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>这篇文章是有关ROS中actionlib使用的学习内容。</p>
+<a id="more"></a>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>actionlib软件包为ROS中的可抢占任务提供了一个基于话题的通用接口。在任何一个比较大的基于ROS的系统，都会有这样的情况，向某个节点发送请求执行某一个任务，并返回相应的执行结果，这种请求-响应式的使用场景通常使用ROS提供的服务（services）机制完成。然而，有一些情况服务执行的时间很长，在执行中想要定期获得任务处理的进度，或可能取消执行任务（或请求），例如如果执行各种运动的动作，像控制机械手臂去抓取一个杯子，这个过程可能复杂而漫长，执行过程中还可能强制中断或反馈信息，service机制就无法满足需求，而actionlib就能实现这样的功能。它是ROS中一个很重要的功能包集合（库），可以实现一些简单的状态机功能，算的上是SMACH的一个弱化版。</p>
+<p>扩展：</p>
+<p>SMACH是一个用于快速创建复杂机器人行为的任务级体系结构。SMACH的核心是独立于ROS的Python库，用于构建分层状态机。SMACH是一个新的库，它利用非常古老的概念来快速创建具有可维护和模块化代码的强大机器人行为。可以使用SMACH建立一个有限状态机，但SMACH能做的更多。SMACH是一个任务级的执行和协调库，并提供集中“状态容器”。一个这样的容器是一个有限状态机，但是这个容器也可以是另一个容器中的状态。更多内容<a href="http://wiki.ros.org/cn/smach" target="_blank" rel="noopener">参考wiki</a>。</p>
+<h1 id="细节描述"><a href="#细节描述" class="headerlink" title="细节描述"></a>细节描述</h1><p>actionlib堆栈提供了一个标准化的接口同可抢占任务进行交互，这方面的例子包括将底座移动到目标位置、执行激光扫描并返回产生的点云、检测门的手柄等等。</p>
+<h2 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h2><p>下面将描述动作客户端和服务器相互交互的底层机制，如果只是简单的使用actionlib就没必要深入学习了。</p>
+<h2 id="高级客户端-服务器交互"><a href="#高级客户端-服务器交互" class="headerlink" title="高级客户端/服务器交互"></a>高级客户端/服务器交互</h2><h3 id="服务器描述"><a href="#服务器描述" class="headerlink" title="服务器描述"></a>服务器描述</h3><h4 id="服务器状态机"><a href="#服务器状态机" class="headerlink" title="服务器状态机"></a>服务器状态机</h4><p>goal是在ActionClient端启动的（因为client会发送sendgoal嘛），一旦ActionServer接收到goal请求，它就会为这个goal创建一个状态机，来追踪goal的状态转换。注意，状态机跟踪的是goal！而不是不是跟踪ActionServer本身！所以系统中对于每一个goal都会有一个状态机。状态转换图如下所示：</p>
+<p><img src="http://wiki.ros.org/actionlib/DetailedDescription?action=AttachFile&amp;do=get&amp;target=server_states_detailed.png" alt="server_states_detailed.png"></p>
+<h4 id="服务器转换状态"><a href="#服务器转换状态" class="headerlink" title="服务器转换状态"></a>服务器转换状态</h4><p>这些状态的转换大多是服务的实施者（其实就是服务的程序）触发的，用小一串命令：</p>
+<ul>
+<li><strong>setAccepted</strong> - 检查到有goal之后，决定开始处理它 </li>
+<li><strong>setRejected</strong> - 检察到goal后，决定不去处理它，因为它是个无效请求（溢出，资源不可用，无效等） </li>
+<li><strong>setSucceeded</strong> - 告知goal被正确执行</li>
+<li><strong>setAborted</strong> - 告知goal在处理时遇到了问题不得不被终止了</li>
+<li><strong>setCanceled</strong> - 告知因cancle请求，goal不再被执行了</li>
+</ul>
+<p>action client也能异步触发状态转换：</p>
+<ul>
+<li><strong>CancelRequest</strong>: 客户端通知action server它想要server停止处理这个goal服务端状态</li>
+</ul>
+<p>服务端状态</p>
+<ol>
+<li><p>中间状态</p>
+<p>（前面说了，simple的状态有三个，就是等待执行挂起）</p>
+<ul>
+<li><strong>Pending</strong> - goal还没有被ActionServer处理</li>
+<li><strong>Active</strong> - goal正在被AS处理 </li>
+<li><strong>Recalling</strong> - goal没有被处理并且从客户端已发送取消它的命令，但AS还不确定goal已经被取消了（时差导致的？）</li>
+<li><strong>Preempting</strong> - goal正被处理呢，从AC端收到了取消请求，但AS还不确定goal已经被取消</li>
+</ul>
+</li>
+</ol>
+<ol>
+<li>终点状态 <ul>
+<li><strong>Rejected</strong> - AC没有发cancle请求，goal被AS不处理直接拒绝了The goal was rejected by the action server without being processed and without a request from the action client to cancel </li>
+<li><strong>Succeeded</strong> - goal被AS成功实现 was achieved successfully by the action server </li>
+<li><strong>Aborted</strong> - goal被AS终止没有AC的cancle请求</li>
+<li><strong>Recalled</strong> - 在AS开始执行之前这个goal被另一个goal或者cancle请求取消了</li>
+<li><strong>Preempted</strong> - 处理中的goal被另一个goal或者AC的取消请求给取消了</li>
+</ul>
+</li>
+</ol>
+<h3 id="客户端描述"><a href="#客户端描述" class="headerlink" title="客户端描述"></a>客户端描述</h3><h4 id="客户端状态机"><a href="#客户端状态机" class="headerlink" title="客户端状态机"></a>客户端状态机</h4><h4 id="客户端状态"><a href="#客户端状态" class="headerlink" title="客户端状态"></a>客户端状态</h4><h2 id="Action接口和传输层（协议）"><a href="#Action接口和传输层（协议）" class="headerlink" title="Action接口和传输层（协议）"></a>Action接口和传输层（协议）</h2><h3 id="数据与"><a href="#数据与" class="headerlink" title="数据与"></a>数据与</h3><h3 id="信息"><a href="#信息" class="headerlink" title="信息"></a>信息</h3><h4 id="goal话题"><a href="#goal话题" class="headerlink" title="goal话题"></a>goal话题</h4><h4 id="cancel话题"><a href="#cancel话题" class="headerlink" title="cancel话题"></a>cancel话题</h4><h4 id="status话题"><a href="#status话题" class="headerlink" title="status话题"></a>status话题</h4><h4 id="feedback话题"><a href="#feedback话题" class="headerlink" title="feedback话题"></a>feedback话题</h4><h4 id="result话题"><a href="#result话题" class="headerlink" title="result话题"></a>result话题</h4><h2 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h2><h3 id="简单的行为客户端"><a href="#简单的行为客户端" class="headerlink" title="简单的行为客户端"></a>简单的行为客户端</h3><h4 id="客户端状态歧义"><a href="#客户端状态歧义" class="headerlink" title="客户端状态歧义"></a>客户端状态歧义</h4><h4 id="多目标策略"><a href="#多目标策略" class="headerlink" title="多目标策略"></a>多目标策略</h4><h4 id="线程模型"><a href="#线程模型" class="headerlink" title="线程模型"></a>线程模型</h4><h3 id="简单的行为服务器"><a href="#简单的行为服务器" class="headerlink" title="简单的行为服务器"></a>简单的行为服务器</h3><h4 id="目标通知"><a href="#目标通知" class="headerlink" title="目标通知"></a>目标通知</h4><h4 id="线程模型-1"><a href="#线程模型-1" class="headerlink" title="线程模型"></a>线程模型</h4><h1 id="Client-Server交互"><a href="#Client-Server交互" class="headerlink" title="Client-Server交互"></a>Client-Server交互</h1><p>如下图所示，actionlib的框架实际是一种特殊的客户-服务的模式。除了服务请求的功能外，还可以实时获取服务器执行任务的进度状态，以及强制中断服务的功能。action客户端和服务端通过预定义的ROS Action协议通信，该通信机制基于ROS消息。action客户端和服务端通过函数调用和回调的方式，向用户提供用于请求目标（在客户端发生）或执行目标（服务器端发生）的接口。</p>
+<p><img src="http://wiki.ros.org/actionlib?action=AttachFile&amp;do=get&amp;target=client_server_interaction.png" alt="client_server_interaction.png"></p>
+<h1 id="Action清单：Goal-Feedback-Result"><a href="#Action清单：Goal-Feedback-Result" class="headerlink" title="Action清单：Goal,Feedback,Result"></a>Action清单：Goal,Feedback,Result</h1><p>为了使得客户端和服务器之间进行通信，需要定义一些用于二者之间通信的消息，这就是<em>action清单</em>。该清单定义客户端和服务器之间通信的Goal、Feedback、Result信息。</p>
+<ul>
+<li>Goal：为了使用action来完成任务，引入可以由ActionClient发送到服务器的Goal概念。对于移动底座的情况，Goal将是PoseStamped消息，其中包含关于机器人应该在世界坐标系移动到何处的信息。对于控制倾斜激光扫描仪的情况，    Goal应该包含扫描参数（最小角、最大角、速度等）。</li>
+<li>Feedback：Feedback为服务器实施者提供了一种方法，告知ActionClient目标的增量变化情况。对于移动底座的情况，它可能是机器人沿着路径运动时当前的姿势；对于控制倾斜激光扫描仪的情况，它可能是扫描完成之前剩下的时间。</li>
+<li>Result：完成目标后，结果会从ActionServer发送到ActionClient。Result同Feedback不同，因为它只发送一次，当行动的目标是提供某种信息时，这一点就非常有用。对于移动底座的情况，Result不是非常重要，但它可以是机器人的最终位姿；对于控制倾斜激光扫描仪的情况，结果可能包含根据请求的扫描生成的点云。</li>
+</ul>
+<h1 id="action文件"><a href="#action文件" class="headerlink" title=".action文件"></a>.action文件</h1><p>在介绍.action文件之前，先创建一个程序包，用于后续内容的学习，actinlib库相关的文件都放在该程序包下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">catkin_create_pkg actionlib_tutorials actionlib message_generation roscpp rospy std_msgs actionlib_msgs</span><br></pre></td></tr></table></figure>
+<p>ROS中使用一个.action文件定义action清单，该文件包含goal、result、feedback的定义，使用—-分隔开，它一般会被放置在程序包的action目录下。以洗碟子为例，描述该过程的action清单如下所示：</p>
+<p><code>actionlib_tutorials/action/DoDishes.action</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Define the goal</span><br><span class="line">uint32 dishwasher_id  # Specify which dishwasher we want to use</span><br><span class="line">---</span><br><span class="line"># Define the result</span><br><span class="line">uint32 total_dishes_cleaned</span><br><span class="line">---</span><br><span class="line"># Define a feedback message</span><br><span class="line">float32 percent_complete</span><br></pre></td></tr></table></figure>
+<p>基于<code>.action</code>文件会产生６个消息用于客户端和服务器的通信，这一过程在<code>catkin_make</code>编译过程自动触发完成。</p>
+<h2 id="Catkin"><a href="#Catkin" class="headerlink" title="Catkin"></a>Catkin</h2><p>在当前程序包<code>CMakeList.txt</code>文件中<code>catkin_package()</code>之前添加：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">add_action_files(</span><br><span class="line">  FILES</span><br><span class="line">  DoDishes.action</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">generate_messages(</span><br><span class="line">  DEPENDENCIES</span><br><span class="line">  actionlib_msgs</span><br><span class="line">  std_msgs</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">catkin_package(</span><br><span class="line">   CATKIN_DEPENDS actionlib_msgs</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>同时需要在<code>package.xml</code>文件中包含如下依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build_depend</span>&gt;</span>actionlib<span class="tag">&lt;/<span class="name">build_depend</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">build_depend</span>&gt;</span>actionlib_msgs<span class="tag">&lt;/<span class="name">build_depend</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">run_depend</span>&gt;</span>actionlib<span class="tag">&lt;/<span class="name">run_depend</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">run_depend</span>&gt;</span>actionlib_msgs<span class="tag">&lt;/<span class="name">run_depend</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h2><p>执行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">roscd actionlib_tutorials</span><br><span class="line">rosrun actionlib_msgs genaction.py -o msg/ action/Fibonacci.action</span><br></pre></td></tr></table></figure>
+<p><code>genaction.py</code>文件位于<code>/opt/ros/kinetic/lib/actionlib_msgs/</code>目录下。</p>
+<p>会出现如下提示信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Generating for action Fibonacci</span><br></pre></td></tr></table></figure>
+<p>通过手动执行<code>generation.py</code>文件，我们就使用DoDishes.action生成了以下消息，并保存在了程序包的<code>msg/</code>目录下。这些消息文件将被actionlib内部用于ActionClient和ActionServer之间的通信。</p>
+<ul>
+<li><code>DoDishesAction.msg</code> </li>
+<li><code>DoDishesActionGoal.msg</code> </li>
+<li><code>DoDishesActionResult.msg</code> </li>
+<li><code>DoDishesActionFeedback.msg</code> </li>
+<li><code>DoDishesGoal.msg</code> </li>
+<li><code>DoDishesResult.msg</code> </li>
+<li><code>DoDishesFeedback.msg</code></li>
+</ul>
+<p><strong>注意</strong>：其实我们可以完全不用手动执行如上操作，手动生成消息文件。我们可以在工作空间目录下执行<code>catkin_make</code>命令，就会自动生成的<code>.msg</code>和<code>.h</code>文件，并分别保存在<code>工作空间/devel/share/actionlib_tutorials/msg</code>和<code>工作空间/devel/include/actionlib_tutorials</code>目录下。</p>
+<h1 id="ActionClient的使用-C-SimpleActionClient"><a href="#ActionClient的使用-C-SimpleActionClient" class="headerlink" title="ActionClient的使用-C++ SimpleActionClient"></a>ActionClient的使用-C++ SimpleActionClient</h1><p>以下程序实现了如何将goal发送到名为<code>do_dishes</code>的DoDishes ActionServer。创建文件<code>actionlib_tutorials/src/do_dishes_client.cpp</code>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;actionlib_tutorials/DoDishesAction.h&gt; // Note: "Action" is appended</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;actionlib/client/simple_action_client.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> actionlib::SimpleActionClient&lt;actionlib_tutorials::DoDishesAction&gt; Client;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  ros::init(argc, argv, <span class="string">"do_dishes_client"</span>);</span><br><span class="line">  <span class="function">Client <span class="title">client</span><span class="params">(<span class="string">"do_dishes"</span>, <span class="literal">true</span>)</span></span>; <span class="comment">// true -&gt; don't need ros::spin()</span></span><br><span class="line">  client.waitForServer();</span><br><span class="line">  actionlib_tutorials::DoDishesGoal goal;</span><br><span class="line">  <span class="comment">// Fill in goal here</span></span><br><span class="line">  client.sendGoal(goal);</span><br><span class="line">  client.waitForResult(ros::Duration(<span class="number">5.0</span>));</span><br><span class="line">  <span class="keyword">if</span> (client.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Yay! The dishes are now clean"</span>);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">"Current State: %s\n"</span>, client.getState().toString().c_str());</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：对于C++SimpleActionClient，在一个单独的线程正在服务客户端的回调队列时，<code>waitForServer</code>方法才会工作。这需要传递给客户端构造函数的spin_thread选项，使用多线程微调器运行，或者使用您自己的线程为ROS回调队列提供服务。</p>
+<h1 id="ActionServer的使用-C-SimpleActionServer"><a href="#ActionServer的使用-C-SimpleActionServer" class="headerlink" title="ActionServer的使用-C++ SimpleActionServer"></a>ActionServer的使用-C++ SimpleActionServer</h1><p>以下片段显示了如何编写一个名为“do_dishes”的DoDishes ActionServer。创建文件<code>actionlib_tutorials/src/do_dishes_server.cpp</code>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;actionlib_tutorials/DoDishesAction.h&gt;  // Note: "Action" is appended</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;actionlib/server/simple_action_server.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> actionlib::SimpleActionServer&lt;actionlib_tutorials::DoDishesAction&gt; Server;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">execute</span><span class="params">(<span class="keyword">const</span> actionlib_tutorials::DoDishesGoalConstPtr&amp; goal, Server* as)</span>  <span class="comment">// Note: "Action" is not appended to DoDishes here</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">// Do lots of awesome groundbreaking robot stuff here</span></span><br><span class="line">  as-&gt;setSucceeded();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  ros::init(argc, argv, <span class="string">"do_dishes_server"</span>);</span><br><span class="line">  ros::NodeHandle n;</span><br><span class="line">  Server server(n, "do_dishes", boost::bind(&amp;execute, _1, &amp;server), false);</span><br><span class="line">  server.start();</span><br><span class="line">  ros::spin();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="测试Action"><a href="#测试Action" class="headerlink" title="测试Action"></a>测试Action</h1><p>工作空间目录下执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">catkin_make</span><br></pre></td></tr></table></figure>
+<p>执行完会自动生成可执行文件<code>do_dishes_client</code>、<code>do_dishes_server</code>，保存在<code>工作空间/devel/lib/actionlib_tutorials</code>目录下。</p>
+<p>终端启动ROS：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">roscore</span><br></pre></td></tr></table></figure>
+<p>运行行为客户端：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun actionlib_tutorials do_dishes_client</span><br></pre></td></tr></table></figure>
+<p>运行行为服务器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun actionlib_tutorials do_dishes_server</span><br></pre></td></tr></table></figure>
+<p>执行完成客户端会有如下输出信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Yay! The dishes are now cleanCurrent State: SUCCEEDED</span><br></pre></td></tr></table></figure>
+<p>执行<code>rqt_graph</code>命令查看节点图：</p>
+<img src="/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/节点图.png">
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/">ROS学习之actionlib库（１）-actionlib库的介绍</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 阿翔 的个人博客">阿翔</a></p>
+  <p><span>发布时间:</span>2018年03月29日 - 22:03</p>
+  <p><span>最后更新:</span>2019年05月30日 - 20:05</p>
+  <p><span>原始链接:</span><a href="/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/" title="ROS学习之actionlib库（１）-actionlib库的介绍">http://ttshun.com/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://ttshun.com/2018/03/29/ROS学习之actionlib库（１）-actionlib库的介绍/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+      $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+        });
+    });  
+</script>
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>点击给我一些鼓励叭！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixin.jpg" alt="阿翔 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt="阿翔 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <div>
+    
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+    
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ROS/" rel="tag"><i class="fa fa-tag"></i> ROS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/29/C++学习之不常用的重要关键字/" rel="next" title="C++学习之不常用的重要关键字">
+                <i class="fa fa-chevron-left"></i> C++学习之不常用的重要关键字
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/30/ROS学习之actionlib库（２）-使用Execute Callback编写一个简单的行为服务器/" rel="prev" title="ROS学习之actionlib库（２）-使用Execute Callback编写一个简单的行为服务器">
+                ROS学习之actionlib库（２）-使用Execute Callback编写一个简单的行为服务器 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/photo.jpg" alt="阿翔">
+            
+              <p class="site-author-name" itemprop="name">阿翔</p>
+              <p class="site-description motion-element" itemprop="description">每一阵风过，我们都互相致意</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/RuoxiangLi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ruoxianglee@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="896928771" target="_blank" title="QQ">
+                      
+                        <i class="fa fa-fw fa-qq"></i>QQ</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="15116319671" target="_blank" title="Wechat">
+                      
+                        <i class="fa fa-fw fa-weixin"></i>Wechat</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/wentanxing2182" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/loveyoupumy/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-bell-o"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://usthe.com" title="武林盟主" target="_blank">武林盟主</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zhehangt.win" title="一索哥传奇" target="_blank">一索哥传奇</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/mybrave" title="小怪兽哦" target="_blank">小怪兽哦</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/DarrenChan/" title="DarrenChan陈驰" target="_blank">DarrenChan陈驰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/xiangxianghehe" title="nudt_qxx" target="_blank">nudt_qxx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#细节描述"><span class="nav-number">2.</span> <span class="nav-text">细节描述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍-1"><span class="nav-number">2.1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高级客户端-服务器交互"><span class="nav-number">2.2.</span> <span class="nav-text">高级客户端/服务器交互</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#服务器描述"><span class="nav-number">2.2.1.</span> <span class="nav-text">服务器描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器状态机"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">服务器状态机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器转换状态"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">服务器转换状态</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#客户端描述"><span class="nav-number">2.2.2.</span> <span class="nav-text">客户端描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端状态机"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">客户端状态机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端状态"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">客户端状态</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Action接口和传输层（协议）"><span class="nav-number">2.3.</span> <span class="nav-text">Action接口和传输层（协议）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据与"><span class="nav-number">2.3.1.</span> <span class="nav-text">数据与</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#信息"><span class="nav-number">2.3.2.</span> <span class="nav-text">信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#goal话题"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">goal话题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cancel话题"><span class="nav-number">2.3.2.2.</span> <span class="nav-text">cancel话题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#status话题"><span class="nav-number">2.3.2.3.</span> <span class="nav-text">status话题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#feedback话题"><span class="nav-number">2.3.2.4.</span> <span class="nav-text">feedback话题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#result话题"><span class="nav-number">2.3.2.5.</span> <span class="nav-text">result话题</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#协议"><span class="nav-number">2.4.</span> <span class="nav-text">协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的行为客户端"><span class="nav-number">2.4.1.</span> <span class="nav-text">简单的行为客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#客户端状态歧义"><span class="nav-number">2.4.1.1.</span> <span class="nav-text">客户端状态歧义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#多目标策略"><span class="nav-number">2.4.1.2.</span> <span class="nav-text">多目标策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程模型"><span class="nav-number">2.4.1.3.</span> <span class="nav-text">线程模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单的行为服务器"><span class="nav-number">2.4.2.</span> <span class="nav-text">简单的行为服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标通知"><span class="nav-number">2.4.2.1.</span> <span class="nav-text">目标通知</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#线程模型-1"><span class="nav-number">2.4.2.2.</span> <span class="nav-text">线程模型</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Client-Server交互"><span class="nav-number">3.</span> <span class="nav-text">Client-Server交互</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Action清单：Goal-Feedback-Result"><span class="nav-number">4.</span> <span class="nav-text">Action清单：Goal,Feedback,Result</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#action文件"><span class="nav-number">5.</span> <span class="nav-text">.action文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Catkin"><span class="nav-number">5.1.</span> <span class="nav-text">Catkin</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Results"><span class="nav-number">5.2.</span> <span class="nav-text">Results</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ActionClient的使用-C-SimpleActionClient"><span class="nav-number">6.</span> <span class="nav-text">ActionClient的使用-C++ SimpleActionClient</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ActionServer的使用-C-SimpleActionServer"><span class="nav-number">7.</span> <span class="nav-text">ActionServer的使用-C++ SimpleActionServer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#测试Action"><span class="nav-number">8.</span> <span class="nav-text">测试Action</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿翔</span>
+
+  
+</div>
+
+
+  <!--<div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz',
+        appKey: 'Dl5bC4kDveO2sUOJMNm3K8me',
+        placeholder: 'Just go go',
+        avatar:'/uploads/hexo.jpg',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz", "Dl5bC4kDveO2sUOJMNm3K8me");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

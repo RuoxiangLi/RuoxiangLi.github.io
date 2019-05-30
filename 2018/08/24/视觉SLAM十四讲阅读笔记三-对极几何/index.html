@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+      
+    
+    
+  <script src="tree"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SLAM基础,读书笔记,单目SLAM,对极几何,2D-2D,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="励志献身SLAM 的 阿翔" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="这篇文章是视觉SLAM十四讲第7讲对极几何部分阅读过程中总结和记录的学习内容，属于单目SLAM的基础理论内容。">
+<meta name="keywords" content="SLAM基础,读书笔记,单目SLAM,对极几何,2D-2D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="视觉SLAM十四讲阅读笔记三-单目相机中的对极几何">
+<meta property="og:url" content="http://ttshun.com/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/index.html">
+<meta property="og:site_name" content="励志献身SLAM 的 阿翔">
+<meta property="og:description" content="这篇文章是视觉SLAM十四讲第7讲对极几何部分阅读过程中总结和记录的学习内容，属于单目SLAM的基础理论内容。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ttshun.com/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/对极几何约束.png">
+<meta property="og:image" content="http://ttshun.com/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/本质矩阵的解.png">
+<meta property="og:updated_time" content="2019-05-30T12:29:26.303Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="视觉SLAM十四讲阅读笔记三-单目相机中的对极几何">
+<meta name="twitter:description" content="这篇文章是视觉SLAM十四讲第7讲对极几何部分阅读过程中总结和记录的学习内容，属于单目SLAM的基础理论内容。">
+<meta name="twitter:image" content="http://ttshun.com/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/对极几何约束.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ttshun.com/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/">
+
+
+
+
+
+  <title>视觉SLAM十四讲阅读笔记三-单目相机中的对极几何 | 励志献身SLAM 的 阿翔</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2167066263b4ea80e21ad5060efbc2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">励志献身SLAM 的 阿翔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ttshun.com/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="阿翔">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="励志献身SLAM 的 阿翔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">视觉SLAM十四讲阅读笔记三-单目相机中的对极几何</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-24T23:14:43+08:00">
+                2018-08-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/" itemprop="url" rel="index">
+                    <span itemprop="name">机器人</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SLAM</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/ORB-SLAM2/" itemprop="url" rel="index">
+                    <span itemprop="name">ORB_SLAM2</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/" class="leancloud_visitors" data-flag-title="视觉SLAM十四讲阅读笔记三-单目相机中的对极几何">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3,185
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>这篇文章是视觉SLAM十四讲第7讲对极几何部分阅读过程中总结和记录的学习内容，属于单目SLAM的基础理论内容。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在特征提取和匹配任务完成后，我们希望根据匹配的点对估计相机的运动。但是由于相机原理的不同需要采取不同的方法：</p>
+<ul>
+<li>对于单目相机，只知道2D的像素坐标，所以问题是根据<strong>两组2D点</strong>估计相机运动。该问题用对极几何解决。</li>
+<li>对于双目、RGB-D相机，或经某种方法得到了距离信息，问题就可以根据<strong>两组3D点</strong>估计运动。该问题用ICP解决。</li>
+<li>如果有3D点及其在相机的投影位置，也能估计相机的运动。该问题用PnP求解。</li>
+</ul>
+<p>在ORB_SLAM2系统中，单目初始化过程会使用专门的初始化器完成由两帧图像完成的初始化，该过程使用先后两帧满足关键点数条件的图像帧，使用对极几何约束方法进行求解，得到基础矩阵和单应矩阵，估计出相机的位姿；接着会使用三角测量，计算图像帧中特征点的空间位置。再往后的处理过程，在LocalMapping线程也会使用对极约束、三角测量生成新的地图点。因此，对极约束和三角测量在ORB_SLAM2系统中有着举足轻重的地位，有必要深入学习一下。</p>
+<h2 id="对极约束"><a href="#对极约束" class="headerlink" title="对极约束"></a>对极约束</h2><p>假设得到了一堆匹配好的特征点，如下图所示。如果由若干对（具体多少呢？）这样的匹配点，就可以通过这些二维图像点的对应关系，恢复出在两帧之间相机的运动（位姿）。</p>
+<img src="/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/对极几何约束.png">
+<p>在第一帧（左）图像的坐标系下，设$P$的空间位置为：</p>
+<p>$P=[X,Y,Z]^T$</p>
+<p>根据针孔相机模型可以得到两个像素点（特征点）$p_1$，$p_2$的像素位置为：</p>
+<p>$s_1p_1=KP$，$s_2p_2=K(RP+t)$</p>
+<p>其中$K$为相机内参矩阵，$R$，$t$为两个坐标系的相机运动，$s1$和$s2$分别表示两个像素点的深度。使用齐次坐标，可以把上式写成在乘以非零常数下成立的等式：</p>
+<p>$p_1=KP$，$p_2=K(RP+t)$</p>
+<p>在2D-2D问题中，我们只有像素坐标$p_1$和$p_2$，$P$是未知的，那该怎么办？ 此时可以引入一个归一化坐标的概念。取：</p>
+<p>$x_1=K^{-1}p_1$，$x_2=K^{-1}p_2$</p>
+<p>其中$x_1$，$x_2$是两个像素点的归一化平面上的坐标。带入上式，得：</p>
+<p>$x_2=Rx_1+t$</p>
+<p>两边同时左乘$t^\wedge$，根据$^\wedge$的定义，相当于两侧同时与$t$做外积：</p>
+<p>$t^\wedge x_2=t^\wedge Rx_1$</p>
+<p>两侧同时左乘$x^T_2$：</p>
+<p>$x^T_2t^\wedge x_2=x^T_2t^\wedge Rx_1$</p>
+<p>等式左侧$t^\wedge x_2$是一个与$t$和$x_2$都垂直的向量，再和$x_2$做内积时，将得到0。因此，有如下简洁的式子：</p>
+<p>$x^T_2t^\wedge Rx_1=0$</p>
+<p>重新代入$p_1$，$p_2$，有：</p>
+<p>$p^T_2K^{-T}t^\wedge RK^{-1}p_1=0$</p>
+<p>上述两个式子都称为<strong>对极约束</strong>，其几何意义是$O_1$，$P_1$，$O_2$三者共面。对极约束中同时包含了平移和旋转。把中间部分分别记作两个矩阵：<strong>基础矩阵（Fundamental Matrix）$F$</strong>和<strong>本质矩阵（Essential Matrix）$E$</strong>：</p>
+<p>$E=t^\wedge R$，$F=K^{-T}EK^{-1}$</p>
+<p>化简得到简化的对极约束：</p>
+<p>$x^T_2Ex_1=p^T_2Fp_1=0$</p>
+<p>对极约束简洁地给出了两个匹配点的空间位置关系。于是，相机位姿估计问题变为以下两步：</p>
+<ol>
+<li>根据配对点的像素位置求出$E$或者$F$；</li>
+<li>根据$E$或者$F$求出$R$，$t$。</li>
+</ol>
+<p>由于$E$和$F$相差了相机内参，而内参在SLAM中通常是已知的，所以实践中往往使用形式更加简单的$E$，当然了ORB_SLAM2中使用的是基础矩阵和单应矩阵。</p>
+<h2 id="本质矩阵-E-求解"><a href="#本质矩阵-E-求解" class="headerlink" title="本质矩阵$E$求解"></a>本质矩阵$E$求解</h2><p>本质矩阵$E=t^\wedge R$，它是一个$3×3$的矩阵，内有9个未知数。从$E$的构造方式看，它由几个重要的特性：</p>
+<ol>
+<li>本质矩阵是由对极约束定义的。由于对极约束是<strong>等式为0</strong>的约束，所以对$E$乘以任何非零常数后，<strong>对极约束依然满足</strong>。这一点被称为<strong>E在不同尺度下是等价的</strong>。</li>
+<li>根据$E=t^\wedge R$，可以证明，本质矩阵$E$的奇异值必定式$[\sigma, \sigma,0]^T$。这称为<strong>本质矩阵的内在性质</strong>。可以理解为：一个$3×3$的矩阵是本征矩阵的充要条件是对它奇异值分解后，它有两个相等的奇异值，并且第三个奇异值为0。</li>
+<li>由于平移和旋转各有3个自由度，所以$t^\wedge R$共有6个自由度。但由于尺度等价性，故$E$实际上只有5个自由度。</li>
+</ol>
+<p>现在，考虑一对匹配点的像素坐标$x_1$为$[u_1,v_1,1]$，$x_2$为$[u_2,v_2,1]$，则根据对极约束有：</p>
+<p>$\left[ \begin{matrix}u_1,v_1,1\end{matrix} \right]\left[ \begin{matrix}e_1 &amp; e_2 &amp;e_3\ e_4 &amp;  e_5 &amp; e_6 \e_7&amp;e_8&amp;e_9  \end{matrix} \right]\left [\begin{matrix}u_2,v_2,1\\end{matrix} \right]=0$</p>
+<p>另把矩阵$E$展开，写成向量的形式：</p>
+<p>$e=\left[ \begin{matrix}e_1,e_2,…,e_9\end{matrix} \right]^T$</p>
+<p>对极约束可以写成与$e$有关的线性形式：</p>
+<p>$\left[ \begin{matrix}u_1u_2,u_1v_2,u_1,v_1u_2,v_1v_2,v_1,u_2,v_2,1\end{matrix} \right]·e=0$</p>
+<p>对于这个线性方程，存在尺度等价性，即对$e$乘以任何常数，等式仍然成立。因此即使$e$有9个未知变量，只需要8个方程，构成<strong>线程方程组</strong>即可对$e$进行求解。这就是求解本质矩阵最经典的<strong>八点法</strong>。至此，我们求得了本质矩阵$E$。接下来的问题是如何根据已知估得的本质矩阵，恢复出相机的运动$R$，$t$。这个过程由奇异值分解（SVD）完成。设$E$的SVD分解为：</p>
+<p>$E=UΣV^T$</p>
+<p>根据$U$，$V$为正交阵，$Σ$为奇异值矩阵，即$Σ=diag(\sigma, \sigma,0)$。在SVD分解中，对于任意一个$E$，存在两个可能的$t$，$R$与它对应：</p>
+<p>$t^\wedge_1=UR_Z(\frac{\pi}2)ΣU^T,R_1=UR^T_Z(\frac{\pi}2)V^T$</p>
+<p>$t^\wedge_2=UR_Z(-\frac{\pi}2)ΣU^T,R_2=UR^T_Z(-\frac{\pi}2)V^T$</p>
+<p>其中$R_Z(\frac{\pi}2)$表示绕$Z$轴旋转90度得到的旋转矩阵。由于$-E$,$E$等价，所以对任意一个$t$取负号，也会得到同样的结果。因此，从$E$分解到$t$,$R$时，一共存在4个可能的解。如下图所示。</p>
+<img src="/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/本质矩阵的解.png">
+<p>幸运的是，只有一种解中$P$在两个相机中都具有正的深度。因此，只要把任意一点代入四种解中，检测该点在两个相机下的深度，就可以确定哪个解是正确的。用用</p>
+<blockquote>
+<p>利用本质矩阵的内在性质，它只有5个自由度，所以最小可以通过5对点来求解相机运动。然而这种做法形式复杂，从工程实现角度考虑，平时通常会有几十对甚至上百对匹配点，从8对减到5对意义并不明显。</p>
+</blockquote>
+<p>因为一些误差的存在，通过8点法计算得到的本质矩阵$E$可能不会严格满足本质矩阵的特性2，因此通常会对奇异值矩阵$Σ$做调整。通常的做法是，对八点法求得的$E$进行SVD分解后，会得到奇异值矩阵$Σ=diag(σ1,σ2,σ3)$。不妨设$σ1≥σ2≥σ3$，取：</p>
+<p>$ E=Udiag(\frac{σ1+σ2}2,\frac{σ1+σ2}2,0)V^T $</p>
+<p>这相当于是把求出来的矩阵投影到了$E$所在的流形上。由于$E$具有尺度等价性，因此更简单的做法是将奇异值矩阵取为$diag(1,1,0)$。</p>
+<h2 id="单应矩阵-H"><a href="#单应矩阵-H" class="headerlink" title="单应矩阵$H$"></a>单应矩阵$H$</h2><p>除了基本矩阵和本质矩阵T，还有一种单应矩阵$H$(Homography)，它描述了两个平面之间的映射关系。若场景中的特征点都落同一个平面上（比如墙，地面等），则可以通过单应性来进行运动估计。</p>
+<p><strong>单应矩阵通常描述处于共同平面上的一些点（3D点共面）在两张图像之间的变换关系。</strong></p>
+<p>考虑两帧图像上匹配到的特征点$p_1$，$p_2$，这些特征点落在平面$P$上，设这个平面满足方程：</p>
+<p>$n^TP+d=0$</p>
+<p>则：</p>
+<p>$-\frac{n^TP}d=1$</p>
+<p>推理可得：</p>
+<p>$p_2=K(R−\frac{tn^T}d)K^{−1}p_1$</p>
+<p>这里就得到了一个直接描述图像坐标$p_1$，$p_2$之间的变换，把中间这部分<strong>记作$H$</strong>（3×3矩阵），则有：</p>
+<p>$p_2=Hp_1$</p>
+<p>单应矩阵的定义与旋转、平移以及平面的参数有关。对上式展开可得：</p>
+<p>$\left[ \begin{matrix}u_2\v_2\1\end{matrix} \right]=\left[ \begin{matrix}h_1 &amp; h_2 &amp;h_3\ h_4 &amp;  h_5 &amp; h_6 \h_7&amp;h_8&amp;h_9  \end{matrix} \right]\left [\begin{matrix}u_1\v_1\1\\end{matrix} \right]$</p>
+<p> 转换为：</p>
+<p>$u_2=\frac{h_1v_1+h_2v_1+h_3}{h_7v_1+h_8v_1+h_9}$</p>
+<p>$v_2=\frac{h_4v_1+h_5v_1+h_6}{h_7v_1+h_8v_1+h_9}$</p>
+<p>这样一组匹配点就可以构造2个方程。因为像素坐标为齐次坐标，所以单应矩阵乘以任意常数项，等式仍然成立。因此即使单应矩阵的未知变量为9个，但其自由度为8。因此需要<strong>4组匹配点</strong>，构造8个方程，来对单应矩阵进行求解。与本质矩阵相似，求出单应矩阵后需要对其进行分解，才可以得到相应的旋转矩阵$R$和平移向量$t$。</p>
+<blockquote>
+<p>单应性在SLAM中具有重要意义。当特征点共面时或相机发生纯旋转时，基础矩阵的自由度下降，这就出现了所谓的退化。这时候继续用8点法求解基础矩阵会导致受到噪声的影响增加。<strong>为了避免这种情况，通常会同时估计基础矩阵$F$和单应矩阵$H$，选择重投影误差比较小的那个作为最终的运动估计矩阵。</strong></p>
+</blockquote>
+<h2 id="讨论—对极约束方法的局限性"><a href="#讨论—对极约束方法的局限性" class="headerlink" title="讨论—对极约束方法的局限性"></a>讨论—对极约束方法的局限性</h2><h3 id="尺度不确定性"><a href="#尺度不确定性" class="headerlink" title="尺度不确定性"></a>尺度不确定性</h3><p>首先由于E具有尺度等价性，因此它分解得到的$t$和$R$也有一个尺度等价性。而$R∈SO(3)$自身具有约束，因此可以认为$t$也具有尺度等价性。$t$的尺度等价性直接导致$t$的大小与现实世界中平移的大小并不是对应的。也就是说在单目SLAM中，每次都要确定$t$的尺度，通常的做法是对$t$进行归一化。这称为单目SLAM的<strong>初始化</strong>。<strong>初始化之后就可以用3D-2D来计算相机运动，初始化之后的轨迹和地图的单位，就是初始化时固定的尺度。 </strong></p>
+<blockquote>
+<ol>
+<li><p>如何理解上述最后一句话表达的过程？</p>
+<p>答：参见总结。</p>
+</li>
+<li><p>如何理解“$t$的尺度等价性”和“初始化时固定尺度”？</p>
+<p>答：参见参考资料3后面的内容。</p>
+</li>
+</ol>
+</blockquote>
+<h3 id="初始化的纯旋转问题"><a href="#初始化的纯旋转问题" class="headerlink" title="初始化的纯旋转问题"></a>初始化的纯旋转问题</h3><p>即使可以用单应矩阵来处理纯旋转的情况，但是由于纯旋转缺少位移，因此无法对空间点进行三角化。也就是说对于单目SLAM来说，初始化必须要有位移。</p>
+<h3 id="多于8对点的情况"><a href="#多于8对点的情况" class="headerlink" title="多于8对点的情况"></a>多于8对点的情况</h3><p>最后我们提到用8点法求解本质矩阵。但是实际中往往匹配点会远远多于8对，此时有两种求解思路。 当匹配正确率比较高的时候，可以构造<strong>最小二乘</strong>。当匹配错误率比较高的时候，可以用<strong>随机采样一致性（RANSAC）</strong>求解。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>由于对极几何方法需要使用8个或者8个以上的点对，并且存在上述需要初始化、纯旋转和尺度不确定性等问题。如果两帧图像中其中一帧图像特征点的3D位置已知，则最少可以使用3对点对（需要至少一个额外点验证结果）就可以估计相机运动。特征点的3D位置可以由三角化或者RGB-D相机的深度图确定。因此：</p>
+<ol>
+<li>双目或RGB-D的视觉里程计中，可以直接使用PnP估计相机运动。</li>
+<li>单目视觉里程计中，必须先进行初始化（这样就有了3D点），然后才能使用PnP。</li>
+</ol>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>视觉SLAM十四讲第7讲</li>
+<li><a href="http://zhehangt.win/2017/03/05/SLAM/EpipolarGeometry/" target="_blank" rel="noopener">单目相机中的对极几何</a></li>
+<li><a href="https://blog.csdn.net/heyijia0327/article/details/50758944" target="_blank" rel="noopener">Monocular slam 的理论基础(1)</a></li>
+<li><a href="https://blog.csdn.net/David_Han008/article/details/53560736" target="_blank" rel="noopener">视觉slam十四讲学习笔记</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/">视觉SLAM十四讲阅读笔记三-单目相机中的对极几何</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 阿翔 的个人博客">阿翔</a></p>
+  <p><span>发布时间:</span>2018年08月24日 - 23:08</p>
+  <p><span>最后更新:</span>2019年05月30日 - 20:05</p>
+  <p><span>原始链接:</span><a href="/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/" title="视觉SLAM十四讲阅读笔记三-单目相机中的对极几何">http://ttshun.com/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://ttshun.com/2018/08/24/视觉SLAM十四讲阅读笔记三-对极几何/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+      $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+        });
+    });  
+</script>
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>点击给我一些鼓励叭！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixin.jpg" alt="阿翔 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt="阿翔 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <div>
+    
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+    
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SLAM基础/" rel="tag"><i class="fa fa-tag"></i> SLAM基础</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"><i class="fa fa-tag"></i> 读书笔记</a>
+          
+            <a href="/tags/单目SLAM/" rel="tag"><i class="fa fa-tag"></i> 单目SLAM</a>
+          
+            <a href="/tags/对极几何/" rel="tag"><i class="fa fa-tag"></i> 对极几何</a>
+          
+            <a href="/tags/2D-2D/" rel="tag"><i class="fa fa-tag"></i> 2D-2D</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/23/ORB-SLAM2学习之源码分析七-LocalClosing/" rel="next" title="ORB_SLAM2学习之源码分析七-LocalClosing">
+                <i class="fa fa-chevron-left"></i> ORB_SLAM2学习之源码分析七-LocalClosing
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/29/ORB-SLAM2学习之源码分析八-单目初始化再学习/" rel="prev" title="ORB_SLAM2学习之源码分析八-单目初始化再学习">
+                ORB_SLAM2学习之源码分析八-单目初始化再学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/photo.jpg" alt="阿翔">
+            
+              <p class="site-author-name" itemprop="name">阿翔</p>
+              <p class="site-description motion-element" itemprop="description">每一阵风过，我们都互相致意</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">73</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/RuoxiangLi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ruoxianglee@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="896928771" target="_blank" title="QQ">
+                      
+                        <i class="fa fa-fw fa-qq"></i>QQ</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="15116319671" target="_blank" title="Wechat">
+                      
+                        <i class="fa fa-fw fa-weixin"></i>Wechat</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/wentanxing2182" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/loveyoupumy/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-bell-o"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://usthe.com" title="武林盟主" target="_blank">武林盟主</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zhehangt.win" title="一索哥传奇" target="_blank">一索哥传奇</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/mybrave" title="小怪兽哦" target="_blank">小怪兽哦</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/DarrenChan/" title="DarrenChan陈驰" target="_blank">DarrenChan陈驰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/xiangxianghehe" title="nudt_qxx" target="_blank">nudt_qxx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对极约束"><span class="nav-number">2.</span> <span class="nav-text">对极约束</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#本质矩阵-E-求解"><span class="nav-number">3.</span> <span class="nav-text">本质矩阵$E$求解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单应矩阵-H"><span class="nav-number">4.</span> <span class="nav-text">单应矩阵$H$</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#讨论—对极约束方法的局限性"><span class="nav-number">5.</span> <span class="nav-text">讨论—对极约束方法的局限性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#尺度不确定性"><span class="nav-number">5.1.</span> <span class="nav-text">尺度不确定性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化的纯旋转问题"><span class="nav-number">5.2.</span> <span class="nav-text">初始化的纯旋转问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多于8对点的情况"><span class="nav-number">5.3.</span> <span class="nav-text">多于8对点的情况</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">7.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿翔</span>
+
+  
+</div>
+
+
+  <!--<div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz',
+        appKey: 'Dl5bC4kDveO2sUOJMNm3K8me',
+        placeholder: 'Just go go',
+        avatar:'/uploads/hexo.jpg',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz", "Dl5bC4kDveO2sUOJMNm3K8me");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
