@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+      
+    
+    
+  <script src="tree"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="ORB_SLAM2,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="励志献身SLAM 的 阿翔" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="这篇文章是有关ORB_SLAM2系统源码分析的内容，主要记录ORB特征的简单原理和提取有关的内容。">
+<meta name="keywords" content="ORB_SLAM2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ORB_SLAM2学习之源码分析四-ORB特征及其提取">
+<meta property="og:url" content="http://ttshun.com/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/index.html">
+<meta property="og:site_name" content="励志献身SLAM 的 阿翔">
+<meta property="og:description" content="这篇文章是有关ORB_SLAM2系统源码分析的内容，主要记录ORB特征的简单原理和提取有关的内容。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-30T12:29:26.283Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ORB_SLAM2学习之源码分析四-ORB特征及其提取">
+<meta name="twitter:description" content="这篇文章是有关ORB_SLAM2系统源码分析的内容，主要记录ORB特征的简单原理和提取有关的内容。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ttshun.com/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/">
+
+
+
+
+
+  <title>ORB_SLAM2学习之源码分析四-ORB特征及其提取 | 励志献身SLAM 的 阿翔</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2167066263b4ea80e21ad5060efbc2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">励志献身SLAM 的 阿翔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ttshun.com/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="阿翔">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="励志献身SLAM 的 阿翔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ORB_SLAM2学习之源码分析四-ORB特征及其提取</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-08-19T13:21:54+08:00">
+                2018-08-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/" itemprop="url" rel="index">
+                    <span itemprop="name">机器人</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SLAM</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/ORB-SLAM2/" itemprop="url" rel="index">
+                    <span itemprop="name">ORB_SLAM2</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/" class="leancloud_visitors" data-flag-title="ORB_SLAM2学习之源码分析四-ORB特征及其提取">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,463
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  6
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>这篇文章是有关ORB_SLAM2系统源码分析的内容，主要记录ORB特征的简单原理和提取有关的内容。</p>
+<a id="more"></a>
+<h2 id="ORB特征提取（涉及到Fast关键点、rBRIEF描述子、SIFT特征）"><a href="#ORB特征提取（涉及到Fast关键点、rBRIEF描述子、SIFT特征）" class="headerlink" title="ORB特征提取（涉及到Fast关键点、rBRIEF描述子、SIFT特征）"></a>ORB特征提取（涉及到Fast关键点、rBRIEF描述子、SIFT特征）</h2><p>一种直观的提取特征的方式就是在不同图像之间辨认角点，确认它们的对应关系，角点就是所谓的特征。但是单纯的角点无法满足需求，为此设计的许多更加稳定的局部图像特征，如著名的SIFT、SURF、ORB，相比于朴素的角点这些人工设计的特征点具备可重复性、可区分性、高效率、本地性等优点。特征点由<strong>关键点（Key-point）</strong>和<strong>描述子（Descriptor）</strong>组成。如当提及SIFT特征时，是指“提取SIFT关键点，计算SIFT描述子”。</p>
+<p>ORB特征包括Oriented FAST关键点和rBRIEF描述子，是在FAST关键点和BRIEF描述描述子基础上改进而来。</p>
+<ul>
+<li>改进FAST关键点（它没有描述子）：FAST关键点不具有尺度不变性，ORB特征提取方法中，通过构建高斯金字塔，然后在每一层金字塔图像上检测角点，nlevels幅不同比例的图像提取特征点总和作为这幅图像的oFAST（FAST Keypoint Orientation，改进后的FAST关键点）关键点，来实现尺度不变性；FAST关键点也不具有旋转不变性，ORB特征提出使用<a href="https://www.cnblogs.com/ronny/p/3985810.html" target="_blank" rel="noopener">矩（moment）</a>法（灰度质心法）来确定FAST关键点的方向，即通过矩来计算特征点（该图像块的几何中心）以r为半径范围内的质心（该图像块的灰度质心），特征点坐标到质心形成一个向量作为该关键点的方向。</li>
+<li>改进BRIEF描述子：首先进行旋转不变性改进，加入旋转因子得到steered BRIEF；然后改进特征点描述子的相关性（即描述子可区分性，对误匹配率影响较大），得到rBRIEF特征描述子。</li>
+</ul>
+<h2 id="在SLAM视觉里程计中的应用—特征点法"><a href="#在SLAM视觉里程计中的应用—特征点法" class="headerlink" title="在SLAM视觉里程计中的应用—特征点法"></a>在SLAM视觉里程计中的应用—特征点法</h2>
+
+<h2 id="ORB-SLAM中的特征提取"><a href="#ORB-SLAM中的特征提取" class="headerlink" title="ORB_SLAM中的特征提取"></a>ORB_SLAM中的特征提取</h2><p>SLAM初始化过程，首先需要创建图像帧，其关键一步就是对图像进行ORB特征提取，调用函数<code>ExtractORB()</code>，其内部调用了<code>ORBextractor</code>类中的重载操作符<code>void operator()</code>，完成特征提取，提取结果被保存在<code>Frame</code>类的成员变量<code>std::vector&lt;cv:KeyPoint&gt; mvKeys</code>和<code>cv:Mat mDescriptors</code>中，即提取出特征的关键点和描述子。操作符重载的函数如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> ORBextractor::<span class="keyword">operator</span>()( InputArray _image, InputArray _mask, <span class="built_in">vector</span>&lt;KeyPoint&gt;&amp; _keypoints, OutputArray _descriptors)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(_image.empty())</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    Mat image = _image.getMat();</span><br><span class="line">    assert(image.type() == CV_8UC1 );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Pre-compute the scale pyramid</span></span><br><span class="line">    ComputePyramid(image);<span class="comment">//计算图像尺度金字塔</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">vector</span> &lt; <span class="built_in">vector</span>&lt;KeyPoint&gt; &gt; allKeypoints;</span><br><span class="line">    ComputeKeyPointsOctTree(allKeypoints);<span class="comment">//提取图像关键点 并保存在八叉树</span></span><br><span class="line">    <span class="comment">//ComputeKeyPointsOld(allKeypoints);</span></span><br><span class="line"></span><br><span class="line">    Mat descriptors;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> nkeypoints = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>; level &lt; nlevels; ++level)</span><br><span class="line">        nkeypoints += (<span class="keyword">int</span>)allKeypoints[level].size();</span><br><span class="line">    <span class="keyword">if</span>( nkeypoints == <span class="number">0</span> )</span><br><span class="line">        _descriptors.release();</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        _descriptors.create(nkeypoints, <span class="number">32</span>, CV_8U);</span><br><span class="line">        descriptors = _descriptors.getMat();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _keypoints.clear();</span><br><span class="line">    _keypoints.reserve(nkeypoints);</span><br><span class="line">	<span class="comment">//计算每个关键点对应的描述子</span></span><br><span class="line">    <span class="keyword">int</span> offset = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> level = <span class="number">0</span>; level &lt; nlevels; ++level)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;KeyPoint&gt;&amp; keypoints = allKeypoints[level];</span><br><span class="line">        <span class="keyword">int</span> nkeypointsLevel = (<span class="keyword">int</span>)keypoints.size();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(nkeypointsLevel==<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// preprocess the resized image 进行高斯模糊，用BORDER_REFLECT_101方法处理边缘</span></span><br><span class="line">        Mat workingMat = mvImagePyramid[level].clone();</span><br><span class="line">        GaussianBlur(workingMat, workingMat, Size(<span class="number">7</span>, <span class="number">7</span>), <span class="number">2</span>, <span class="number">2</span>, BORDER_REFLECT_101);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Compute the descriptors 计算描述子</span></span><br><span class="line">        Mat desc = descriptors.rowRange(offset, offset + nkeypointsLevel);</span><br><span class="line">        computeDescriptors(workingMat, keypoints, desc, pattern);</span><br><span class="line"></span><br><span class="line">        offset += nkeypointsLevel;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Scale keypoint coordinates</span></span><br><span class="line">        <span class="keyword">if</span> (level != <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">float</span> scale = mvScaleFactor[level]; <span class="comment">//getScale(level, firstLevel, scaleFactor);</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">vector</span>&lt;KeyPoint&gt;::iterator keypoint = keypoints.begin(),</span><br><span class="line">                 keypointEnd = keypoints.end(); keypoint != keypointEnd; ++keypoint)</span><br><span class="line">                keypoint-&gt;pt *= scale;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// And add the keypoints to the output</span></span><br><span class="line">        _keypoints.insert(_keypoints.end(), keypoints.begin(), keypoints.end());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ORB特征提取主要过程</p>
+<ul>
+<li>构建图像尺度金字塔（构造过程另作详细记录）</li>
+<li>提取ORB关键点、生成八叉树并保存关键点</li>
+<li>计算每个关键点对应的描述子</li>
+</ul>
+<p>提取ORB特征时，每一帧图像共提取1000个特征点，分布在金字塔8层中，层间尺度比例1.2，计算下来金字塔0层大约有217个特征点，7层大约有50个特征点。</p>
+<p>同时，为了提取出的特征点能够在图像中分布比较均匀（实际情况中，特征点通常分布得比较集中，这样不利于进行匹配，也不利于精确地求解相机间的位姿从而得到精确的VO轨迹），使用了八叉树（其实是平面上的四叉树）的数据结构来存储提取出的特征点。</p>
+<p>这部分内容在<code>ORBextractor.h</code>和<code>ORBextractor.cc</code>中，代码详细理解可以参考<a href="https://blog.csdn.net/qq_30356613/article/details/75231440" target="_blank" rel="noopener">一起学ORBSLAM2ORB特征点提取</a>这篇文章和参考资料11学习，有时间再详细学习。</p>
+<h2 id="参考资料（有待详细阅读）"><a href="#参考资料（有待详细阅读）" class="headerlink" title="参考资料（有待详细阅读）"></a>参考资料（有待详细阅读）</h2><ol>
+<li><a href="https://blog.csdn.net/zouzoupaopao229/article/details/52625678" target="_blank" rel="noopener">ORB特征提取详解</a></li>
+<li><a href="http://www.cnblogs.com/ronny/p/4083537.html" target="_blank" rel="noopener">ORB特征点检测</a>（墙裂推荐，作者博客里有很多图像特征检测相关的介绍，包括斑点、角点检测和SIFT特征、SURF特征、BRIEF特征描述子等）</li>
+<li>视觉SLAM十四讲P132-特征点法（推荐，关于特征点的内容比较清晰整洁）</li>
+<li><a href="https://blog.csdn.net/zhaocj/article/details/40301561" target="_blank" rel="noopener">Fast源码分析</a></li>
+<li><a href="http://opencv.jp/opencv-2.2_org/cpp/features2d_feature_detection_and_description.html?highlight=fast#StarDetector" target="_blank" rel="noopener">Fast API</a></li>
+<li><a href="https://www.cnblogs.com/shang-slam/p/6421940.html" target="_blank" rel="noopener">ORBextractor特征提取</a></li>
+<li>SIFT：<em>Distinctive image features from scale-invariant keypoints</em></li>
+<li>SURF：<em>Surf: Speededup robust features</em></li>
+<li>ORB：<em>Orb: an efficient alternative to sift or surf</em></li>
+<li>Brief：<em>Brief: Binary robust independent elementary features</em></li>
+</ol>
+<h2 id="尺度金字塔-Scale-pyramid-构建"><a href="#尺度金字塔-Scale-pyramid-构建" class="headerlink" title="尺度金字塔(Scale pyramid)构建"></a>尺度金字塔(Scale pyramid)构建</h2><blockquote>
+<p>层数(ScaleLevels)：金字塔层数，金字塔中包含的不同尺度的图像层数</p>
+<p>尺度因子(ScaleFactor)：金字塔层与层图像之间的尺度参数，缩放比例</p>
+</blockquote>
+<p><code>ORBextractor::ComputePyramid</code>就是根据尺度因子对图像进行缩放处理。</p>
+<h3 id="供学习参考资料"><a href="#供学习参考资料" class="headerlink" title="供学习参考资料"></a>供学习参考资料</h3><ol>
+<li><a href="http://www.cnblogs.com/ronny/p/3886013.html" target="_blank" rel="noopener">尺度空间理论</a></li>
+<li><a href="http://www.opencv.org.cn/opencvdoc/2.3.2/html/doc/tutorials/imgproc/pyramids/pyramids.html" target="_blank" rel="noopener">OpenCV 图像金字塔</a></li>
+<li><a href="https://blog.csdn.net/samkieth/article/details/50407655" target="_blank" rel="noopener">数字图像处理9—尺度空间</a></li>
+</ol>
+<h3 id><a href="#" class="headerlink" title=" "></a> </h3>
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/">ORB_SLAM2学习之源码分析四-ORB特征及其提取</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 阿翔 的个人博客">阿翔</a></p>
+  <p><span>发布时间:</span>2018年08月19日 - 13:08</p>
+  <p><span>最后更新:</span>2019年05月30日 - 20:05</p>
+  <p><span>原始链接:</span><a href="/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/" title="ORB_SLAM2学习之源码分析四-ORB特征及其提取">http://ttshun.com/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://ttshun.com/2018/08/19/ORB-SLAM2学习之源码分析四-ORB特征及其提取/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+      $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+        });
+    });  
+</script>
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>点击给我一些鼓励叭！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixin.jpg" alt="阿翔 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt="阿翔 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <div>
+    
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+    
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/ORB-SLAM2/" rel="tag"><i class="fa fa-tag"></i> ORB_SLAM2</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/18/ORB_SLAM2学习之源码分析三-优化/" rel="next" title="ORB_SLAM2学习之源码分析三-优化">
+                <i class="fa fa-chevron-left"></i> ORB_SLAM2学习之源码分析三-优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/20/ORB-SLAM2学习之源码分析五-一个变量引发的探索/" rel="prev" title="ORB-SLAM2学习之源码分析五-一个变量引发的探索">
+                ORB-SLAM2学习之源码分析五-一个变量引发的探索 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/photo.jpg" alt="阿翔">
+            
+              <p class="site-author-name" itemprop="name">阿翔</p>
+              <p class="site-description motion-element" itemprop="description">每一阵风过，我们都互相致意</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/RuoxiangLi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ruoxianglee@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="896928771" target="_blank" title="QQ">
+                      
+                        <i class="fa fa-fw fa-qq"></i>QQ</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="15116319671" target="_blank" title="Wechat">
+                      
+                        <i class="fa fa-fw fa-weixin"></i>Wechat</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/wentanxing2182" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/loveyoupumy/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-bell-o"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://usthe.com" title="武林盟主" target="_blank">武林盟主</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zhehangt.win" title="一索哥传奇" target="_blank">一索哥传奇</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/mybrave" title="小怪兽哦" target="_blank">小怪兽哦</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/DarrenChan/" title="DarrenChan陈驰" target="_blank">DarrenChan陈驰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/xiangxianghehe" title="nudt_qxx" target="_blank">nudt_qxx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ORB特征提取（涉及到Fast关键点、rBRIEF描述子、SIFT特征）"><span class="nav-number">1.</span> <span class="nav-text">ORB特征提取（涉及到Fast关键点、rBRIEF描述子、SIFT特征）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在SLAM视觉里程计中的应用—特征点法"><span class="nav-number">2.</span> <span class="nav-text">在SLAM视觉里程计中的应用—特征点法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ORB-SLAM中的特征提取"><span class="nav-number">3.</span> <span class="nav-text">ORB_SLAM中的特征提取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料（有待详细阅读）"><span class="nav-number">4.</span> <span class="nav-text">参考资料（有待详细阅读）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#尺度金字塔-Scale-pyramid-构建"><span class="nav-number">5.</span> <span class="nav-text">尺度金字塔(Scale pyramid)构建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#供学习参考资料"><span class="nav-number">5.1.</span> <span class="nav-text">供学习参考资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#"><span class="nav-number">5.2.</span> <span class="nav-text"> </span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿翔</span>
+
+  
+</div>
+
+
+  <!--<div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz',
+        appKey: 'Dl5bC4kDveO2sUOJMNm3K8me',
+        placeholder: 'Just go go',
+        avatar:'/uploads/hexo.jpg',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz", "Dl5bC4kDveO2sUOJMNm3K8me");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

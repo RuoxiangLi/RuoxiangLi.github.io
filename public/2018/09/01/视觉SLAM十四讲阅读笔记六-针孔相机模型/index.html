@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+      
+    
+    
+  <script src="tree"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SLAM基础,读书笔记,单目,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="励志献身SLAM 的 阿翔" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="这篇文章是视觉SLAM十四讲第5讲阅读过程中总结和记录的学习内容，主要记录针孔相机模型，这是视觉SLAM投影、坐标变换等内容的基础，一定要一次性全搞透。">
+<meta name="keywords" content="SLAM基础,读书笔记,单目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="视觉SLAM十四讲阅读笔记六-针孔相机模型">
+<meta property="og:url" content="http://ttshun.com/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/index.html">
+<meta property="og:site_name" content="励志献身SLAM 的 阿翔">
+<meta property="og:description" content="这篇文章是视觉SLAM十四讲第5讲阅读过程中总结和记录的学习内容，主要记录针孔相机模型，这是视觉SLAM投影、坐标变换等内容的基础，一定要一次性全搞透。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ttshun.com/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/针孔相机模型.png">
+<meta property="og:image" content="http://ttshun.com/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/像素坐标系.png">
+<meta property="og:updated_time" content="2019-05-30T12:29:26.307Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="视觉SLAM十四讲阅读笔记六-针孔相机模型">
+<meta name="twitter:description" content="这篇文章是视觉SLAM十四讲第5讲阅读过程中总结和记录的学习内容，主要记录针孔相机模型，这是视觉SLAM投影、坐标变换等内容的基础，一定要一次性全搞透。">
+<meta name="twitter:image" content="http://ttshun.com/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/针孔相机模型.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ttshun.com/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/">
+
+
+
+
+
+  <title>视觉SLAM十四讲阅读笔记六-针孔相机模型 | 励志献身SLAM 的 阿翔</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2167066263b4ea80e21ad5060efbc2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">励志献身SLAM 的 阿翔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ttshun.com/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="阿翔">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="励志献身SLAM 的 阿翔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">视觉SLAM十四讲阅读笔记六-针孔相机模型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-01T22:26:11+08:00">
+                2018-09-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/" itemprop="url" rel="index">
+                    <span itemprop="name">机器人</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SLAM</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/读书笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">读书笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/" class="leancloud_visitors" data-flag-title="视觉SLAM十四讲阅读笔记六-针孔相机模型">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,201
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>这篇文章是视觉SLAM十四讲第5讲阅读过程中总结和记录的学习内容，主要记录针孔相机模型，这是视觉SLAM投影、坐标变换等内容的基础，一定要一次性全搞透。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>“机器人如何表示自身位姿”属于SLAM经典模型的运动方程部分。“机器人如何观测外部世界”属于观测方程部分，以相机为主的视觉SLAM中，观测主要是指<strong>相机成像</strong>的过程，这里就涉及到相机的成像原理和成像模型。相机模型中常常涉及到四个坐标系：图像像素坐标系、成像平面坐标系、相机坐标系和世界坐标系。</p>
+<h2 id="针孔相机模型"><a href="#针孔相机模型" class="headerlink" title="针孔相机模型"></a>针孔相机模型</h2><img src="/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/针孔相机模型.png">
+<p>针孔相机模型如上图所示，其中，$O-x-y-x$是相机坐标系，$O$是相机的光心，$f$为相机焦距，$z$轴指向相机的正前方；$O’-x’-y’$是物理成像平面，三维世界中的点$P[X_w,Y_w,Z_w]$，相机坐标系的坐标为$[X_c,Y_c,Z_c]$，经过相机光心投影到物理成像平面上，形成成像点$P’[x,y]$。根据相似三角形原理，有：</p>
+<p>$\frac{Z_c}{f}=\frac{X_c}{x} =\frac{Y_c}{y}  \qquad (1)$</p>
+<p>整理得：</p>
+<p>$x=f\frac{X_c}{Z_c} ,y=f\frac{Y_c}{Z_c} \qquad (2)$</p>
+<h2 id="像素坐标系"><a href="#像素坐标系" class="headerlink" title="像素坐标系"></a>像素坐标系</h2><p>图像像素坐标系通常简称为图像坐标系或者像素坐标系。如下图所示：</p>
+<img src="/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/像素坐标系.png">
+<p>像素坐标系的平面为相机的成像平面，原点在图像的左上方，$u$轴向右与$x$轴平行，$v$轴向下与$y$轴平行。像素坐标系的单位是像素(pixel)，也就是我们常说的分辨率。</p>
+<h2 id="物理成像平面坐标系"><a href="#物理成像平面坐标系" class="headerlink" title="物理成像平面坐标系"></a>物理成像平面坐标系</h2><p>物理成像平面在距相机光心一倍焦距的平面上，和像素坐标系处于同一平面，原点是相机光轴与成像平面的交点，即成像平面的中点或者叫principal  point。单位为物理单位，比如毫米。因此成像平面坐标系和像素坐标系只是原点和度量单位不同，两个坐标系之间相差了一个缩放比例和一个原点的平移。</p>
+<p>假设某个像素点$P’$坐标为$($u,v$)$，$P’$对应的成像平面坐标为$($x,y$)$，设像素坐标在$u$轴上缩放了$\alpha$倍，在$v$轴上缩放了$\beta$倍（$\alpha,\beta$单位都为像素/米）。成像平面的原点在像素坐标系中的坐标为($c_x$,$c_y$)，则像素坐标系与成像平面坐标系之间有如下转换公式，用到齐次坐标：</p>
+<p>$\left{ \begin{array}{ll} u=\alpha x+c_x\v=\beta y+c_y \end{array} \right. \Rightarrow \left[\begin{matrix}u\v\1\end{matrix}\right]=\left[\begin{matrix}\alpha&amp;0&amp;c_x\0&amp;\beta&amp;c_y\0&amp;0&amp;1\end{matrix}\right]\left[\begin{matrix}x\y\1\end{matrix}\right] \qquad (3)$</p>
+<h2 id="相机坐标系"><a href="#相机坐标系" class="headerlink" title="相机坐标系"></a>相机坐标系</h2><p>相机坐标系的原点是相机光心，$X_c$和$Y_c$轴与像素坐标系$u$轴和$v$轴平行，$Z_c$轴为相机的光轴。光心到像素平面的距离为焦距$f$。</p>
+<p>由图可以看出相机坐标系上的点和成像平面坐标系上的点存在透视投影关系。根据相似三角形关系，成像平面坐标系与相机坐标系之间有如下转换关系：</p>
+<p>$\left{ \begin{array}{ll} x=f\frac{X_c}{Z_c}\y=f\frac{Y_c}{Z_c} \end{array} \right. \Rightarrow  Z_c\left[\begin{matrix}x\y\1\end{matrix}\right]=\left[\begin{matrix}f&amp;0&amp;0&amp;0\0&amp;f&amp;0&amp;0\0&amp;0&amp;1&amp;0\end{matrix}\right]\left[\begin{matrix}X_c\Y_c\Z_c\1\end{matrix}\right] \qquad (2)$</p>
+<p>根据(2)(3)两式，将$\alpha f$合并成$f_x$，$\beta f$合并成$f_y$，其中$f$称为物理焦距，单位为米，$f_x,f_y$称为像素焦距，单位为像素，得到：</p>
+<p>$\left{ \begin{array}{ll} u=f_x \frac{X_c}{Z_c}+c_x\v=f_y \frac{Y_c}{Z_c}+c_y \end{array} \right. \qquad (4)$</p>
+<p>写成矩阵的形式，用到齐次坐标：</p>
+<p>$\left[\begin{matrix}u\v\1\end{matrix}\right]=\frac1{Z_c}\left[\begin{matrix}\alpha&amp;0&amp;c_x\0&amp;\beta&amp;c_y\0&amp;0&amp;1\end{matrix}\right] \left[\begin{matrix}f&amp;0&amp;0&amp;0\0&amp;f&amp;0&amp;0\0&amp;0&amp;1&amp;0\end{matrix}\right]\left[\begin{matrix}X_c\Y_c\Z_c\1\end{matrix}\right]=\frac1{Z_c}\left[\begin{matrix}f_x&amp;0&amp;c_x&amp;0\0&amp;f_y&amp;c_y&amp;0\0&amp;0&amp;1&amp;0\end{matrix}\right]\left[\begin{matrix}X_c\Y_c\Z_c\1\end{matrix}\right]\triangleq\frac1{Z_c} KP_c \qquad (5)$</p>
+<p>传统习惯上把$Z_c$挪到左侧：</p>
+<p>$Z_c\left[\begin{matrix}u\v\1\end{matrix}\right]=\left[\begin{matrix}f_x&amp;0&amp;c_x&amp;0\0&amp;f_y&amp;c_y&amp;0\0&amp;0&amp;1&amp;0\end{matrix}\right]\left[\begin{matrix}X_c\Y_c\Z_c\1\end{matrix}\right]\triangleq KP_c \qquad(6)$</p>
+<h2 id="世界坐标系"><a href="#世界坐标系" class="headerlink" title="世界坐标系"></a>世界坐标系</h2><p>在环境中选择一个参考坐标系来描述相机和物体的位置，该坐标系称为世界坐标系，单位为m。相机坐标系和世界坐标系之间的关系可以用旋转矩阵$R$和平移向量$t$来描述。假设$P$在世界坐标系下的坐标为$(X_w,Y_w,Z_w)$，则相机坐标系与世界坐标系之间有如下转换关系：</p>
+<p>$\left[\begin{matrix}X_c\Y_c\Z_c\1\end{matrix}\right]=\left[\begin{matrix}R&amp;t\0&amp;1\end{matrix}\right]\left[\begin{matrix}X_w\Y_w\Z_w\1\end{matrix}\right] \qquad (7)$</p>
+<h2 id="坐标系转换"><a href="#坐标系转换" class="headerlink" title="坐标系转换"></a>坐标系转换</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">坐标系</th>
+<th style="text-align:center">单位</th>
+<th style="text-align:center">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">世界坐标系</td>
+<td style="text-align:center">m</td>
+<td style="text-align:center">描述相机位置</td>
+</tr>
+<tr>
+<td style="text-align:center">相机坐标系（可化为归一化相机坐标）</td>
+<td style="text-align:center">m</td>
+<td style="text-align:center">原点为相机光心</td>
+</tr>
+<tr>
+<td style="text-align:center">成像平面坐标系</td>
+<td style="text-align:center">mm</td>
+<td style="text-align:center">原点为图像中点</td>
+</tr>
+<tr>
+<td style="text-align:center">像素坐标系</td>
+<td style="text-align:center">pixel</td>
+<td style="text-align:center">原点为图像左上角</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>通过上述的四个坐标系可以实现从世界坐标系与像素坐标系之间的转换，如下所示：</p>
+<p>$Z_c\left[\begin{matrix}u\v\1\end{matrix}\right]=\left[\begin{matrix}\alpha&amp;0&amp;c_x\0&amp;\beta&amp;c_y\0&amp;0&amp;1\end{matrix}\right]\left[\begin{matrix}f&amp;0&amp;0&amp;0\0&amp;f&amp;0&amp;0\0&amp;0&amp;1&amp;0\end{matrix}\right]\left[\begin{matrix}R&amp;t\0&amp;1\end{matrix}\right]\left[\begin{matrix}X_w\Y_w\Z_w\1\end{matrix}\right]=\left[\begin{matrix}f_x&amp;0&amp;c_x&amp;0\0&amp;f_y&amp;c_y&amp;0\0&amp;0&amp;1&amp;0\end{matrix}\right]\left[\begin{matrix}R&amp;t\0&amp;1\end{matrix}\right]\left[\begin{matrix}X_w\Y_w\Z_w\1\end{matrix}\right] \qquad (8)$</p>
+<p>其中$\left[\begin{matrix}f_x&amp;0&amp;c_x&amp;0\0&amp;f_y&amp;c_y&amp;0\0&amp;0&amp;1&amp;0\end{matrix}\right]$称为内参数矩阵$K$，$\left[\begin{matrix}R&amp;t\0&amp;1\end{matrix}\right]$称为外参数矩阵$T$。</p>
+<p>上式简写成：</p>
+<p>$Z_c\left[\begin{matrix}u\v\1\end{matrix}\right]=KT\left[\begin{matrix}X_w\Y_w\Z_w\1\end{matrix}\right] \qquad (9)$</p>
+<p>到此，针孔相机成像模型就搞清楚了。</p>
+<p>相机的内参数矩阵往往是已知的并且是固定的，而外参数矩阵在SLAM问题中往往是需要求解的，用于相机的位姿定位。<br>从世界坐标系到像素坐标系之间的转换关系可知，已知世界坐标系下的三维点坐标，只要已知内外参矩阵，就可以求得像素坐标。而如果已知像素坐标，即使已知内外参矩阵，其世界坐标下的三维点也不是唯一确定的，而是空间的一条直线。即单目相机只能测平面信息，而不能获取深度信息。</p>
+<h2 id="归一化"><a href="#归一化" class="headerlink" title="归一化"></a>归一化</h2><p>在坐标变换过程中通常需要进行归一化处理，得到点在相机归一化平面上的投影，归一化平面是假想的。</p>
+<p>三维点在相机坐标系下表示形式为：</p>
+<p>$P_c=\left[\begin{matrix}x_c\y_c\z_c\end{matrix}\right]$</p>
+<p>所以有：</p>
+<p>$\left[ \begin{matrix}z_cu\z_cv\z_c\end{matrix}\right] = K\left[ \begin{matrix}x_c\y_c\z_c\end{matrix}\right]=KPc$</p>
+<p>由上式可知，三维点直接经过内参得到的坐标相当于$u,v$坐标在各自的方向上都放大了$z<em>c$倍。归一化平面是指位于相机前方z=1处的平面上，该平面称为归一化平面。归一化坐标就相当于在$z$的方向上当z=1时用一个平面截断，这时光心与3D点的连线在该面上的点即为该三维点的归一化点，记做$P</em>{c1}$：</p>
+<p>$P_{c1}=\left[\begin{matrix}\frac{x_c}{z_c}\\frac{y_c}{z_c}\1\end{matrix}\right]$</p>
+<p>由归一化坐标经过内参矩阵后就得到了像素坐标：</p>
+<p>$\left[\begin{matrix}u\v\1\end{matrix}\right]=K\left[\begin{matrix}\frac{x<em>c}{z_c}\\frac{y_c}{z_c}\1\end{matrix}\right]=KP</em>{c1}$</p>
+<p>因此可以把像素坐标看成对归一化平面上的点进行量化测量的结果。</p>
+<h2 id="畸变"><a href="#畸变" class="headerlink" title="畸变"></a>畸变</h2><p>由于相机透镜的使用，会引入径向畸变，主要分为桶型畸变和枕型畸变 ；由于相机透镜组装过程的误差，导致透镜与成像平面不能严格平行，会引入切向畸变。严格意义上，还需要对这些畸变进行畸变矫正。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>视觉SLAM十四讲第5讲</li>
+<li><a href="http://zhehangt.win/2017/02/16/SLAM/CameraModel/" target="_blank" rel="noopener">针孔相机模型</a></li>
+<li><a href="https://blog.csdn.net/chentravelling/article/details/53558096" target="_blank" rel="noopener">计算机视觉：相机成像原理：世界坐标系、相机坐标系、图像坐标系、像素坐标系之间的转换</a></li>
+<li><a href="https://blog.csdn.net/huangjingwei13/article/details/71439293" target="_blank" rel="noopener">相机成像模型</a></li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/">视觉SLAM十四讲阅读笔记六-针孔相机模型</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 阿翔 的个人博客">阿翔</a></p>
+  <p><span>发布时间:</span>2018年09月01日 - 22:09</p>
+  <p><span>最后更新:</span>2019年05月30日 - 20:05</p>
+  <p><span>原始链接:</span><a href="/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/" title="视觉SLAM十四讲阅读笔记六-针孔相机模型">http://ttshun.com/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://ttshun.com/2018/09/01/视觉SLAM十四讲阅读笔记六-针孔相机模型/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+      $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+        });
+    });  
+</script>
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>点击给我一些鼓励叭！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixin.jpg" alt="阿翔 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt="阿翔 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <div>
+    
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+    
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SLAM基础/" rel="tag"><i class="fa fa-tag"></i> SLAM基础</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"><i class="fa fa-tag"></i> 读书笔记</a>
+          
+            <a href="/tags/单目/" rel="tag"><i class="fa fa-tag"></i> 单目</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/31/视觉SLAM十四讲阅读笔记五-图优化与g2o基础/" rel="next" title="视觉SLAM十四讲阅读笔记五-图优化与g2o基础">
+                <i class="fa fa-chevron-left"></i> 视觉SLAM十四讲阅读笔记五-图优化与g2o基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/01/视觉SLAM十四讲阅读笔记七-双目相机模型/" rel="prev" title="视觉SLAM十四讲阅读笔记七-双目相机模型">
+                视觉SLAM十四讲阅读笔记七-双目相机模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/photo.jpg" alt="阿翔">
+            
+              <p class="site-author-name" itemprop="name">阿翔</p>
+              <p class="site-description motion-element" itemprop="description">每一阵风过，我们都互相致意</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/RuoxiangLi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ruoxianglee@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="896928771" target="_blank" title="QQ">
+                      
+                        <i class="fa fa-fw fa-qq"></i>QQ</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="15116319671" target="_blank" title="Wechat">
+                      
+                        <i class="fa fa-fw fa-weixin"></i>Wechat</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/wentanxing2182" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/loveyoupumy/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-bell-o"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://usthe.com" title="武林盟主" target="_blank">武林盟主</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zhehangt.win" title="一索哥传奇" target="_blank">一索哥传奇</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/mybrave" title="小怪兽哦" target="_blank">小怪兽哦</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/DarrenChan/" title="DarrenChan陈驰" target="_blank">DarrenChan陈驰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/xiangxianghehe" title="nudt_qxx" target="_blank">nudt_qxx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#针孔相机模型"><span class="nav-number">2.</span> <span class="nav-text">针孔相机模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#像素坐标系"><span class="nav-number">3.</span> <span class="nav-text">像素坐标系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#物理成像平面坐标系"><span class="nav-number">4.</span> <span class="nav-text">物理成像平面坐标系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相机坐标系"><span class="nav-number">5.</span> <span class="nav-text">相机坐标系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#世界坐标系"><span class="nav-number">6.</span> <span class="nav-text">世界坐标系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#坐标系转换"><span class="nav-number">7.</span> <span class="nav-text">坐标系转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#归一化"><span class="nav-number">8.</span> <span class="nav-text">归一化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#畸变"><span class="nav-number">9.</span> <span class="nav-text">畸变</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿翔</span>
+
+  
+</div>
+
+
+  <!--<div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz',
+        appKey: 'Dl5bC4kDveO2sUOJMNm3K8me',
+        placeholder: 'Just go go',
+        avatar:'/uploads/hexo.jpg',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz", "Dl5bC4kDveO2sUOJMNm3K8me");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

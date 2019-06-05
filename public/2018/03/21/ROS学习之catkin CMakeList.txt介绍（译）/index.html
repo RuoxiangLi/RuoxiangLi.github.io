@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+      
+    
+    
+  <script src="tree"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="CMake,ROS,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="励志献身SLAM 的 阿翔" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="这篇文章是有关ROS中catkin CMakeLists.txt使用的内容。">
+<meta name="keywords" content="CMake,ROS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS学习之catkin CMakeList.txt介绍（译）">
+<meta property="og:url" content="http://ttshun.com/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/index.html">
+<meta property="og:site_name" content="励志献身SLAM 的 阿翔">
+<meta property="og:description" content="这篇文章是有关ROS中catkin CMakeLists.txt使用的内容。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-30T12:29:26.299Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ROS学习之catkin CMakeList.txt介绍（译）">
+<meta name="twitter:description" content="这篇文章是有关ROS中catkin CMakeLists.txt使用的内容。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ttshun.com/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/">
+
+
+
+
+
+  <title>ROS学习之catkin CMakeList.txt介绍（译） | 励志献身SLAM 的 阿翔</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2167066263b4ea80e21ad5060efbc2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">励志献身SLAM 的 阿翔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ttshun.com/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="阿翔">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="励志献身SLAM 的 阿翔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">ROS学习之catkin CMakeList.txt介绍（译）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-21T22:04:00+08:00">
+                2018-03-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/" itemprop="url" rel="index">
+                    <span itemprop="name">机器人</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/ROS/" itemprop="url" rel="index">
+                    <span itemprop="name">ROS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/" class="leancloud_visitors" data-flag-title="ROS学习之catkin CMakeList.txt介绍（译）">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4,740
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  20
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>这篇文章是有关ROS中catkin CMakeLists.txt使用的内容。</p>
+<a id="more"></a>
+<p>​    本文翻译自ROS官网关于catkin CMakeList.txt的介绍，<strong><a href="http://wiki.ros.org/catkin/CMakeLists.txt" target="_blank" rel="noopener">官网原文链接</a></strong>，由于直接阅读英文文档感觉自己理解不透彻、收获不多，所以决定一边翻译一边学习。其中零星的加入了一些译者个人使用过程中的体会以及在阅读《机器人操作系统（ROS）浅析》（Jason M.O’Kane著 肖军浩译）一书时学习到的内容，帮助自己更好地理解catkin编译生成的过程，留作今后复习完善。</p>
+<h2 id="概况"><a href="#概况" class="headerlink" title="概况"></a>概况</h2><p>​    CMakeList.txt文件是CMake编译系统编译软件包过程的输入文件。任何CMake兼容包都包含一个或多个CMakeLists.txt文件，这些文件描述了如何编译代码以及将其安装到哪里。将CMakeLists.txt文件应用于一个catkin项目时，它就作为<strong>一个标准的附带一些限制条件的vanilla CMakeLists.txt文件。</strong>使用CMake编译程序时，<code>cmake</code>指令依据CMakeLists.txt 文件生成makefiles文件，<code>make</code>命令再依据makefiles文件编译链接生成可执行文件。</p>
+<p>​    catkin是ROS官方的一个编译构建系统，是原本的ROS的编译构建系统rosbuild的发展。<code>catkin_make</code>是将<code>cmake</code>与<code>make</code>的编译方式做了一个封装的指令工具，规范了工作路径与生成文件路径。</p>
+<h2 id="总体结构和顺序"><a href="#总体结构和顺序" class="headerlink" title="总体结构和顺序"></a>总体结构和顺序</h2><p>​    CMakeList.txt文件必须遵循如下的格式，不然就无法正确地编译（译者遇到一些编译ros软件包时提示“ros未定义的引用”的错误，原因就是CMakeList.txt文件中命令顺序不正确）。</p>
+<ul>
+<li>必需的CMake版本：<code>cmake_minimum_required()</code></li>
+<li>软件包名：<code>project()</code></li>
+<li>查找编译依赖的其他CMake/Catkin包（声明依赖库）：<code>find_package()</code></li>
+<li>启动Python模块支持：<code>catkin_python_package()</code></li>
+<li>消息/服务/操作(Message/Service/Action)生成器：<code>add_message_files()</code>,<code>add_service_files()</code>,<code>add_action_files()</code></li>
+<li>调用消息/服务/操作生成：<code>generate_messages()</code></li>
+<li>指定包编译信息导出：<code>catkin_package()</code></li>
+<li>添加要编译的库和可执行文件：<code>add_library()</code>/<code>add_executable()</code>/<code>target_link_libraries()</code></li>
+<li>测试编译：<code>catkin_add_gtest()</code></li>
+<li>安装规则：<code>install()</code></li>
+</ul>
+<h2 id="CMake版本"><a href="#CMake版本" class="headerlink" title="CMake版本"></a>CMake版本</h2><p>​    每一个catkin CMakeList.txt文件必须以所需的CMake版本说明语句开始，Catkin需要2.8.3或者更高的版本</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">2.8</span>.<span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="软件包包名"><a href="#软件包包名" class="headerlink" title="软件包包名"></a>软件包包名</h2><p>​    软件包报名使用CMake的   <code>project()</code>函数指明，例如以robot_brain命名一个软件包：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">project</span>(robot_brain)</span><br></pre></td></tr></table></figure>
+<p>​    CMake中，可以通过使用变量      <code>${PROJECT_NAME}</code>在CMake脚本后面的任何位置引用项目名称。</p>
+<h2 id="查找编译依赖的CMake包"><a href="#查找编译依赖的CMake包" class="headerlink" title="查找编译依赖的CMake包"></a>查找编译依赖的CMake包</h2><p>​    编译一个项目，需要使用CMake 的   <code>find_package</code>函数确定依赖的其他CMake包并找到它们，一般情况下至少会有一个catkin依赖：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(catkin REQUIRED)</span><br></pre></td></tr></table></figure>
+<p>​    除此之外，项目依赖的其他软件包，都会自动成为catkin的组件（components）（就CMake而言）。因此可以将这些依赖包指定为catkin的组件，而不必再使用<code>find_package</code>，这样将会变得简单，例如依赖包nodelet：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(catkin REQUIRED COMPONENTS nodelet)</span><br></pre></td></tr></table></figure>
+<p>​    <strong>注意：只能<code>find_package</code>那些想要编译标志的组件，不能添加运行时（runtime）依赖。</strong></p>
+<p>​    当然也可以写成下面的方式，但不方便:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(catkin REQUIRED)</span><br><span class="line"><span class="keyword">find_package</span>(nodelet REQUIRED)- ?</span><br></pre></td></tr></table></figure>
+<h3 id="find-package-做了什么？"><a href="#find-package-做了什么？" class="headerlink" title="find_package()做了什么？"></a>find_package()做了什么？</h3><p>​    如果CMake通过  <code>find_package()</code>查找到一个软件包，它就会创建几个CMake环境变量，以提供有关已查找到的软件包的信息。这些环境变量可以在后面的CMake脚本中使用，它们表示软件包导出的头文件所在的位置、源文件所在的位置、软件包依赖的库以及这些库的查找路径，环境变量的名字遵循<code>&lt;PACKAGENAME&gt;_&lt;PROPERTY&gt;</code>，即包名-属性：</p>
+<ul>
+<li><code>&lt;NAME&gt;_FOUND</code>：当库被查找到时置为true，否则为false</li>
+<li><code>&lt;NAME&gt;_INCLUDE_DIRS</code>或<code>&lt;NAME&gt;_INCLUDES</code>：软件包导出的头文件路径</li>
+<li><code>&lt;NAME&gt;_LIBRARIES</code>或<code>&lt;NAME&gt;_LIBS</code>：软件包导出的库的路径</li>
+<li><code>&lt;NAME&gt;_DEFINITIONS</code>：？</li>
+</ul>
+<h3 id="为何将Catkin软件包指定为组件？"><a href="#为何将Catkin软件包指定为组件？" class="headerlink" title="为何将Catkin软件包指定为组件？"></a>为何将Catkin软件包指定为组件？</h3><p>​    Catkin软件包严格意义上并不是catkin的组件，而且，CMake的功能组件功能被用于catkin的设计，以节省大量的打字时间。</p>
+<p>​    对于catkin软件包，以catkin的组件的方式  <code>find_package</code>它们是有好处的，因为这个过程以catkin_prefix的形式创建了一组环境变量。例如，在程序中要使用nodelet软件包，推荐查找软件包的方式是：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(catkin REQUIRED COMPONENTS nodelet)</span><br></pre></td></tr></table></figure>
+<p>​    这就意味着nodelet导出的头文件路径、库等都会附加到  <code>catkin_variables</code>上，比如，<code>catkin_INCLUDE_DIRS</code>不仅包含catkin的头文件路径，也包含了nodelet软件包的头文件路径，这在后面会派上用场。</p>
+<p>​    如果单独的<code>find_package nodelet</code>：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(nodelet)</span><br></pre></td></tr></table></figure>
+<p>​    这意味着nodelet的头文件路径、库及其他文件都不会包含在  <code>catkin_variables</code>中，对于<code>nodelet_INCLUDE_DIRS</code>,<code>nodelet_LIBRARIES</code>及其他变量也是如此。相同的变量也可以通过下面的方式创建：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(catkin REQUIRED COMPONENTS nodelet)</span><br></pre></td></tr></table></figure>
+<h3 id="Boost库"><a href="#Boost库" class="headerlink" title="Boost库"></a>Boost库</h3><p>​    如果使用C++和Boost库，需要在Boost上调用  <code>find_package()</code>，并指定Boost中将要作为组件的那部分。例如，如果想要使用Boost的线程，可以用：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(Boost REQUIRED COMPONENTS thread)</span><br></pre></td></tr></table></figure>
+<h2 id="catkin-package"><a href="#catkin-package" class="headerlink" title="catkin_package()"></a>catkin_package()</h2><p>​    <code>catkin_package()</code>是一个由catkin提供的CMake宏。需要指定特定的catkin信息到编译系统，而这些信息又会被用于生成pkg-config和CMake文件。</p>
+<p>​    该函数必须在使用     <code>add_library()</code>或<code>add_executable()</code>声明任何targets之前调用。其5个可选参数：</p>
+<ul>
+<li><code>INCLUDE_DIRS</code>：软件包导出的头文件路径（例如cflags）</li>
+<li><code>LIBRARIES</code>：项目导出的库</li>
+<li><code>CATKIN_DEPENDS</code>：当前项目依赖的其他catkin项目</li>
+<li><code>DEPENDS</code>：当前项目依赖的非catkin CMake项目，详细解释参见<a href="answers.ros.org/question/58498/what-is-the-purpose-of-catkin_depends/">这里</a></li>
+<li><p><code>CFG_EXTRAS</code>：其他的配置选项</p>
+<pre><code>  完整的宏文件参见[这里](#catkin-package)。
+</code></pre><p>  例子：</p>
+</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">catkin_package( INCLUDE_DIRS <span class="keyword">include</span>  </span><br><span class="line">                LIBRARIES <span class="variable">$&#123;PROJECT_NAME&#125;</span>   </span><br><span class="line">                CATKIN_DEPENDS roscpp nodelet   </span><br><span class="line">                DEPENDS eigen opencv)</span><br></pre></td></tr></table></figure>
+<p>​    这里表明软件包文件夹中的include文件夹是导出头文件的位置，CMake环境变量   <code>${PROJECT_NAME}</code>将会鉴定之前传递给<code>project()</code>函数的所有内容，在这种情况下它作为“robot_brain”。“roscpp”+“nodelet”是编译/运行此程序包需要存在的软件包，“eigen”+“opencv”是编译/运行此程序包时需要存在的系统依赖项（ROS packages有时会需要操作系统提供一些外部函数库，这些函数库就是所谓的“系统依赖项”）。</p>
+<h2 id="明确编译的目标"><a href="#明确编译的目标" class="headerlink" title="明确编译的目标"></a>明确编译的目标</h2><p>​    编译目标可以采取多种形式，但通常它们代表两种可能性之一：    </p>
+<ul>
+<li>可执行目标：可以运行的程序</li>
+<li>库目标：在编译和/或运行时可以由可执行目标使用的库</li>
+</ul>
+<h3 id="目标命名"><a href="#目标命名" class="headerlink" title="目标命名"></a>目标命名</h3><p>​    非常重要的一点是，不管编译/安装到哪个文件夹中，编译目标在catkin中的名称都必须是唯一的。这是CMake的一项要求，但目标唯一的名称又只是在CMake内部是必需的。可以使用<code>set_target_properties()</code>函数对目标重命名，例子：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set_target_properties</span>(rviz_image_view </span><br><span class="line">		      		  PROPERTIES OUTPUT_NAME image_view</span><br><span class="line">                      PREFIX <span class="string">""</span>)</span><br></pre></td></tr></table></figure>
+<p>​    这会在编译和安装输出中将目标     <code>rviz_image_view</code>的名称改为<code>image_view</code>。</p>
+<h3 id="自定义输出目录"><a href="#自定义输出目录" class="headerlink" title="自定义输出目录"></a>自定义输出目录</h3><p>​    可执行文件和库的默认输出目录通常设置为了合理的值，但在某些情况下必须进行自定义，例如，包含Python绑定的库必须放置在不同的文件夹中才能在Python中导入。</p>
+<p>​    例子：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set_target_properties</span>(python_module_library  PROPERTIES LIBRARY_OUTPUT_DIRECTORY 								  &#123;CATKIN_DEVEL_PREFIX&#125;/&#123;CATKIN_PACKAGE_PYTHON_DESTINATION&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="头文件和库路径"><a href="#头文件和库路径" class="headerlink" title="头文件和库路径"></a>头文件和库路径</h3><p>​    在指定目标之前，需要指定可以为所述目标找到资源的位置，特别是头文件和库：</p>
+<ul>
+<li>头文件目录：将要编译的代码（C/C++）所需的头文件路径    </li>
+<li>库目录：可执行目标编译指向的库路径</li>
+<li><code>include_directories(&lt;dir1&gt;, &lt;dir2&gt;, ..., &lt;dirN&gt;)</code></li>
+<li><code>link_directories(&lt;dir1&gt;, &lt;dir2&gt;, ..., &lt;dirN&gt;)</code></li>
+</ul>
+<h4 id="include-directories"><a href="#include-directories" class="headerlink" title="include_directories()"></a>include_directories()</h4><p>​    <code>include_directories</code>的参数应该是由调用<code>find_package</code>生成的<code>* _INCLUDE_DIRS</code>变量以及需要包含的任何其他目录。如果使用<code>catkin</code>和<code>Boost</code>，<code>include_directories()</code>的调用为：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">include_directories</span>(<span class="keyword">include</span> &#123;Boost_INCLUDE_DIRS&#125; &#123;catkin_INCLUDE_DIRS&#125;)</span><br></pre></td></tr></table></figure>
+<p>​    第一个参数“include”表示包中的include/目录也是路径的一部分。</p>
+<h4 id="link-directories"><a href="#link-directories" class="headerlink" title="link_directories()"></a>link_directories()</h4><p>​    CMake的   <code>link_directories()</code>函数可以添加其他的库目录，然而，并不推荐这么做。所有的catkin和CMake包在<code>find_package</code>时都会自动添加链接信息。只需链接到<code>target_link_libraries()</code>中的库。</p>
+<p>​    例子：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">link_directories</span>(~/my_libs)</span><br></pre></td></tr></table></figure>
+<p>​    详细信息参加<a href="http://www.cmake.org/pipermail/cmake/2011-May/044295.html" target="_blank" rel="noopener">这里</a>。</p>
+<h3 id="可执行目标"><a href="#可执行目标" class="headerlink" title="可执行目标"></a>可执行目标</h3><p>​    要指定必须编译的可执行目标，必须使用CMake函数   <code>add_executable()</code>。声明想要的可执行文件的文件名，以此生成此可执行文件所需的源文件列表，如果有多个源文件，用空格区分开。例如：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_executable</span>(myProgram src/main.cpp src/some_file.cpp src/another_file.cpp)</span><br></pre></td></tr></table></figure>
+<p>​    该命令会编译名为   <code>myProgram</code>的可执行文件，它是由后面的三个源文件共同编译生成的。</p>
+<h3 id="库目标"><a href="#库目标" class="headerlink" title="库目标"></a>库目标</h3><p>​    CMake函数   <code>add_library()</code>指定用于编译的库文件，默认情况下，catkin编译共享库。    </p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_library</span>(&#123;PROJECT_NAME&#125; &#123;<span class="variable">$&#123;PROJECT_NAME&#125;</span>_SRCS&#125;)</span><br></pre></td></tr></table></figure>
+<h2 id="target-link-libraries"><a href="#target-link-libraries" class="headerlink" title="target_link_libraries"></a>target_link_libraries</h2><p>​    使用   <code>target_link_libraries()</code>函数指定可执行目标所要链接的库，即告诉CMake当链接此可执行文件时需要链接哪些库（这些库在上面的<code>find_package</code>中定义），通常在调用完<code>add_executable()</code>后被调用。如果出现<a href="#post-id-63674">ros未定义的引用</a>错误，则添加<code>${catkin_LIBRARIES}</code>。</p>
+<p>​    语法：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">target_link_libraries</span>(&lt;executableTargetName&gt;, &lt;lib1&gt;, &lt;lib2&gt;, ... &lt;libN&gt;)</span><br></pre></td></tr></table></figure>
+<p>​    例子:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_executable</span>(foo src/foo.cpp)</span><br><span class="line"><span class="keyword">add_library</span>(moo src/moo.cpp)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(foo moo)</span><br></pre></td></tr></table></figure>
+<p>​    上面的例子将     <code>foo</code>与<code>libmoo.so</code>链接起来</p>
+<p>​    <strong>注意，在大多数使用情况下，没有必要使用<code>link_directories()</code>，因为该信息通过<code>find_package()</code>已经自动提取到了。</strong> </p>
+<h2 id="消息、服务和操作目标"><a href="#消息、服务和操作目标" class="headerlink" title="消息、服务和操作目标"></a>消息、服务和操作目标</h2><p>​    在被ROS软件包编译和使用之前，ROS中的消息（.msg）、服务（.srv）和操作（.action）文件需要特殊的预处理器编译步骤。这些宏的要点是生成编程语言特定的文件，以便可以在编程语言中使用消息、服务和操作。编译系统将使用所有可用的生成器（例如gencpp、genpy、genlisp）生成绑定。</p>
+<p>​    提供了三个宏来分别处理消息，服务和操作：</p>
+<ul>
+<li>add_message_files</li>
+<li>add_service_files</li>
+<li><p>add_action_files</p>
+<pre><code>  这些宏后面必须调用一个调用生成的宏：
+</code></pre></li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">generate_messages()</span><br></pre></td></tr></table></figure>
+<h3 id="重要的前提和限制"><a href="#重要的前提和限制" class="headerlink" title="重要的前提和限制"></a>重要的前提和限制</h3><ol>
+<li>这些宏必须在调用<code>catkin_package()</code>之前被调用，以正确地完成生成工作。</li>
+</ol>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(catkin REQUIRED COMPONENTS ...) </span><br><span class="line">add_message_files(...) </span><br><span class="line">add_service_files(...) </span><br><span class="line">add_action_files(...) </span><br><span class="line">generate_messages(...) </span><br><span class="line">catkin_package(...) ...</span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>catkin_package()</code>宏必须包含一个在<code>message_runtime</code>上的<code>CATKIN_DEPENDS</code>依赖。</li>
+</ol>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">catkin_package( ... </span><br><span class="line">                CATKIN_DEPENDS message_runtime ... </span><br><span class="line">                ...)</span><br></pre></td></tr></table></figure>
+<ol>
+<li>必须对软件包<code>message_generation</code>使用<code>find_package()</code>，可单独或者作为catkin的组件使用：</li>
+</ol>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">find_package</span>(catkin REQUIRED COMPONENTS message_generation)</span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>package.xml</code>文件必须包含一个在<code>message_generation</code>上的编译依赖和一个在<code>message_runtime</code>上的运行时依赖，如果从其他包中传递依赖关系，则这不是必需的。</li>
+<li>如果有一个目标（甚至是过渡性的）依赖于需要建立消息/服务/动作的其他目标，需要在目标<code>catkin_EXPORTED_TARGETS</code>上添加显式依赖项，以使它们按照正确的顺序编译。这种情况几乎总是适用，除非你的软件包真的不使用ROS的任何部分。不幸的是，这种依赖不能自动传播。（some_target是由<code>add_executable()</code>设置的目标的名字）</li>
+</ol>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_dependencies</span>(some_target <span class="variable">$&#123;catkin_EXPORTED_TARGETS&#125;</span>)</span><br></pre></td></tr></table></figure>
+<ol>
+<li>如果有编译消息和/或服务的软件包以及使用这些软件的可执行文件，则需要在自动生成的消息目标上创建明确的依赖关系，以便它们按正确的顺序编译。（some_target是由<code>add_executable()</code>设置的目标的名字）</li>
+</ol>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_dependencies</span>(some_target <span class="variable">$&#123;$&#123;PROJECT_NAME&#125;</span>_EXPORTED_TARGETS&#125;)</span><br></pre></td></tr></table></figure>
+<ol>
+<li>如果软件包满足上述两个条件，则需要添加两个依赖项，即：</li>
+</ol>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_dependencies</span>(some_target &#123;<span class="variable">$&#123;PROJECT_NAME&#125;</span>_EXPORTED_TARGETS&#125;   		      	 &#123;catkin_EXPORTED_TARGETS&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>​    如果在msg目录下有两个消息文件       <code>MyMessage1.msg</code>和<code>MyMessage2.msg</code>，并且这些消息依赖于<code>std_msgs</code>和<code>sensor_msgs</code>，另外在srv目录下有一个服务文件<code>MyService.srv</code>，就可以使用这些消息、服务定义可执行<code>message_program</code>，和可执行的程序<code>does_not_use_local_messages_program</code>，这个过程使用了ROS的某些部分，但不包含此包中定义的消息/服务。需要在CMakeList.txt文件中加上一下内容：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Get the information about this package's buildtime dependencies  find_package(catkin REQUIRED    COMPONENTS message_generation std_msgs sensor_msgs)  </span></span><br><span class="line"><span class="comment"># Declare the message files to be built  </span></span><br><span class="line">add_message_files(FILES    MyMessage1.msg    MyMessage2.msg  )  </span><br><span class="line"><span class="comment"># Declare the service files to be built  add_service_files(FILES    MyService.srv  )  </span></span><br><span class="line"><span class="comment"># Actually generate the language-specific message and service files  generate_messages(DEPENDENCIES std_msgs sensor_msgs)  </span></span><br><span class="line"><span class="comment"># Declare that this catkin package's runtime dependencies  catkin_package(   CATKIN_DEPENDS message_runtime std_msgs sensor_msgs  )  </span></span><br><span class="line"><span class="comment"># define executable using MyMessage1 etc.  add_executable(message_program src/main.cpp)  add_dependencies(message_program &#123;$&#123;PROJECT_NAME&#125;_EXPORTED_TARGETS&#125; &#123;catkin_EXPORTED_TARGETS&#125;)  </span></span><br><span class="line"><span class="comment"># define executable not using any messages/services provided by this package  </span></span><br><span class="line"><span class="keyword">add_executable</span>(does_not_use_local_messages_program src/main.cpp)  <span class="keyword">add_dependencies</span>(does_not_use_local_messages_program <span class="variable">$&#123;catkin_EXPORTED_TARGETS&#125;</span>)</span><br></pre></td></tr></table></figure>
+<p>​    另外如果需要编译actionlib操作，并且在action目录下有一个名为<code>MyAction.action</code>的操作规范文件，就必须要添加<code>actionlib_msgs</code>到组件列表中，该组件列表就是<code>find_package</code>中catkin的组件，并在调用<code>generate_messages()</code>之前调用：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">add_action_files(FILES MyAction.action)</span><br></pre></td></tr></table></figure>
+<p>​    此外，该包必须对   <code>actionlib_msgs</code>具有编译依赖关系。</p>
+<h2 id="启动Python模块支持"><a href="#启动Python模块支持" class="headerlink" title="启动Python模块支持"></a>启动Python模块支持</h2><p>​    如果ROS软件包提供了一些Python模块，就要创建一个<code>setup.py</code>文件并调用：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">catkin_python_setup()</span><br></pre></td></tr></table></figure>
+<p>​    该调用要在<code>generate_message()</code>和<code>catkin_package()</code>的调用之前。</p>
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><p>​    特定的catkin宏   <code>catkin_add_gtest()</code>用于处理基于gtest的单元测试：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">catkin_add_gtest(myUnitTest test/utest.cpp)</span><br></pre></td></tr></table></figure>
+<h2 id="可选步骤：明确安装目标"><a href="#可选步骤：明确安装目标" class="headerlink" title="可选步骤：明确安装目标"></a>可选步骤：明确安装目标</h2><p>​    编译完成后，目标被放入catkin工作空间下的devel目录。一般希望将目标安装到系统上，以使其他用户使用，或者安装到本地目录来测试系统级别的安装。也就是说，如果希望能够对代码进行<code>make install</code>，就需要明确目标结束的位置。</p>
+<p>​    上述过程可以使用CMake的   <code>install()</code>函数实现，该函数的参数有：</p>
+<ul>
+<li><code>TARGETS</code>：要安装的目标</li>
+<li><code>ARCHIVE DESTINATION</code>：静态库和动态链接库DLL(Windows).lib存根</li>
+<li><code>LIBRARY DESTINATION</code>：非DLL共享库和模块</li>
+<li><p><code>RUNTIME DESTINATION</code>：可执行目标和DLL(Windows)模式共享库</p>
+<pre><code>  例子：
+</code></pre></li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">install</span>(TARGETS <span class="variable">$&#123;PROJECT_NAME&#125;</span>  </span><br><span class="line">        ARCHIVE DESTINATION <span class="variable">$&#123;CATKIN_PACKAGE_LIB_DESTINATION&#125;</span>  </span><br><span class="line">        LIBRARY DESTINATION <span class="variable">$&#123;CATKIN_PACKAGE_LIB_DESTINATION&#125;</span>  </span><br><span class="line">        RUNTIME DESTINATION <span class="variable">$&#123;CATKIN_PACKAGE_BIN_DESTINATION&#125;</span>)</span><br></pre></td></tr></table></figure>
+<p>​    除了这些标准的目标，还要安装一些文件到特定的目录下，即一个包含Python绑定的库必须要安装到另外的不同的目录下，这对Python是重要的：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">install</span>(TARGETS python_module_library  </span><br><span class="line">        ARCHIVE DESTINATION <span class="variable">$&#123;CATKIN_PACKAGE_PYTHON_DESTINATION&#125;</span>  </span><br><span class="line">        LIBRARY DESTINATION <span class="variable">$&#123;CATKIN_PACKAGE_PYTHON_DESTINATION&#125;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="安装Python可执行脚本"><a href="#安装Python可执行脚本" class="headerlink" title="安装Python可执行脚本"></a>安装Python可执行脚本</h3><p>​    Python代码的安装规则有些不同，它不需要使用     <code>add_library()</code>和<code>add_executable()</code>函数来告知CMake哪个文件是目标文件、目标文件是什么类型的。而是使用如下的CMakeList.txt文件：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">catkin_install_python(PROGRAMS scripts/myscript  </span><br><span class="line">					  DESTINATION <span class="variable">$&#123;CATKIN_PACKAGE_BIN_DESTINATION&#125;</span>)</span><br></pre></td></tr></table></figure>
+<p>​    如果只是安装了Python的脚本，不提供任何模块的话，就不用创建上文提到的   <code>setup.py</code>文件，也不用调用<code>catkin_python_setup()</code>。</p>
+<h3 id="安装头文件"><a href="#安装头文件" class="headerlink" title="安装头文件"></a>安装头文件</h3><p>​    头文件必须安装到include目录下，这通常通过安装整个文件夹的文件来完成（可以根据文件名模式进行过滤，并排除SVN子文件夹）。可以通过一下安装规则实现：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">install</span>(DIRECTORY <span class="keyword">include</span>/<span class="variable">$&#123;PROJECT_NAME&#125;</span>/  </span><br><span class="line">        DESTINATION <span class="variable">$&#123;CATKIN_PACKAGE_INCLUDE_DESTINATION&#125;</span>  </span><br><span class="line">        PATTERN <span class="string">".svn"</span> EXCLUDE)</span><br></pre></td></tr></table></figure>
+<p>​    或者如果include目录下的子文件夹无法和软件包名匹配时：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">install</span>(DIRECTORY <span class="keyword">include</span>/  </span><br><span class="line">        DESTINATION <span class="variable">$&#123;CATKIN_GLOBAL_INCLUDE_DESTINATION&#125;</span>  </span><br><span class="line">        PATTERN <span class="string">".svn"</span> EXCLUDE)</span><br></pre></td></tr></table></figure>
+<h3 id="安装roslaunch文件或其他源"><a href="#安装roslaunch文件或其他源" class="headerlink" title="安装roslaunch文件或其他源"></a>安装roslaunch文件或其他源</h3><p>​    其他像launchfiles的资源可以安装到   <code>${CATKIN_PACKAGE_SHARE_DESTINATION}</code>：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">install</span>(DIRECTORY launch/  </span><br><span class="line">        DESTINATION <span class="variable">$&#123;CATKIN_PACKAGE_SHARE_DESTINATION&#125;</span>/launch  </span><br><span class="line">        PATTERN <span class="string">".svn"</span> EXCLUDE)</span><br></pre></td></tr></table></figure>
+<h2 id="CMakeLists-txt文件书写模板"><a href="#CMakeLists-txt文件书写模板" class="headerlink" title="CMakeLists.txt文件书写模板"></a>CMakeLists.txt文件书写模板</h2><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">2.8</span>.<span class="number">3</span>)</span><br><span class="line"><span class="keyword">project</span>(my_p)</span><br><span class="line"></span><br><span class="line"><span class="comment">## Compile as C++11, supported in ROS Kinetic and newer</span></span><br><span class="line"><span class="comment"># add_compile_options(-std=c++11)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Find catkin macros and libraries</span></span><br><span class="line"><span class="comment">## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)</span></span><br><span class="line"><span class="comment">## is used, also find other catkin packages</span></span><br><span class="line"><span class="keyword">find_package</span>(catkin REQUIRED COMPONENTS</span><br><span class="line">  roscpp</span><br><span class="line">  rospy</span><br><span class="line">  std_msgs</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">## System dependencies are found with CMake's conventions</span></span><br><span class="line"><span class="comment"># find_package(Boost REQUIRED COMPONENTS system)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">## Uncomment this if the package has a setup.py. This macro ensures</span></span><br><span class="line"><span class="comment">## modules and global scripts declared therein get installed</span></span><br><span class="line"><span class="comment">## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html</span></span><br><span class="line"><span class="comment"># catkin_python_setup()</span></span><br><span class="line"></span><br><span class="line"><span class="comment">################################################</span></span><br><span class="line"><span class="comment">## Declare ROS messages, services and actions ##</span></span><br><span class="line"><span class="comment">################################################</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## To declare and build messages, services or actions from within this</span></span><br><span class="line"><span class="comment">## package, follow these steps:</span></span><br><span class="line"><span class="comment">## * Let MSG_DEP_SET be the set of packages whose message types you use in</span></span><br><span class="line"><span class="comment">##   your messages/services/actions (e.g. std_msgs, actionlib_msgs, ...).</span></span><br><span class="line"><span class="comment">## * In the file package.xml:</span></span><br><span class="line"><span class="comment">##   * add a build_depend tag for "message_generation"</span></span><br><span class="line"><span class="comment">##   * add a build_depend and a run_depend tag for each package in MSG_DEP_SET</span></span><br><span class="line"><span class="comment">##   * If MSG_DEP_SET isn't empty the following dependency has been pulled in</span></span><br><span class="line"><span class="comment">##     but can be declared for certainty nonetheless:</span></span><br><span class="line"><span class="comment">##     * add a run_depend tag for "message_runtime"</span></span><br><span class="line"><span class="comment">## * In this file (CMakeLists.txt):</span></span><br><span class="line"><span class="comment">##   * add "message_generation" and every package in MSG_DEP_SET to</span></span><br><span class="line"><span class="comment">##     find_package(catkin REQUIRED COMPONENTS ...)</span></span><br><span class="line"><span class="comment">##   * add "message_runtime" and every package in MSG_DEP_SET to</span></span><br><span class="line"><span class="comment">##     catkin_package(CATKIN_DEPENDS ...)</span></span><br><span class="line"><span class="comment">##   * uncomment the add_*_files sections below as needed</span></span><br><span class="line"><span class="comment">##     and list every .msg/.srv/.action file to be processed</span></span><br><span class="line"><span class="comment">##   * uncomment the generate_messages entry below</span></span><br><span class="line"><span class="comment">##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Generate messages in the 'msg' folder</span></span><br><span class="line"><span class="comment"># add_message_files(</span></span><br><span class="line"><span class="comment">#   FILES</span></span><br><span class="line"><span class="comment">#   Message1.msg</span></span><br><span class="line"><span class="comment">#   Message2.msg</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Generate services in the 'srv' folder</span></span><br><span class="line"><span class="comment"># add_service_files(</span></span><br><span class="line"><span class="comment">#   FILES</span></span><br><span class="line"><span class="comment">#   Service1.srv</span></span><br><span class="line"><span class="comment">#   Service2.srv</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Generate actions in the 'action' folder</span></span><br><span class="line"><span class="comment"># add_action_files(</span></span><br><span class="line"><span class="comment">#   FILES</span></span><br><span class="line"><span class="comment">#   Action1.action</span></span><br><span class="line"><span class="comment">#   Action2.action</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Generate added messages and services with any dependencies listed here</span></span><br><span class="line"><span class="comment"># generate_messages(</span></span><br><span class="line"><span class="comment">#   DEPENDENCIES</span></span><br><span class="line"><span class="comment">#   std_msgs</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">################################################</span></span><br><span class="line"><span class="comment">## Declare ROS dynamic reconfigure parameters ##</span></span><br><span class="line"><span class="comment">################################################</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## To declare and build dynamic reconfigure parameters within this</span></span><br><span class="line"><span class="comment">## package, follow these steps:</span></span><br><span class="line"><span class="comment">## * In the file package.xml:</span></span><br><span class="line"><span class="comment">##   * add a build_depend and a run_depend tag for "dynamic_reconfigure"</span></span><br><span class="line"><span class="comment">## * In this file (CMakeLists.txt):</span></span><br><span class="line"><span class="comment">##   * add "dynamic_reconfigure" to</span></span><br><span class="line"><span class="comment">##     find_package(catkin REQUIRED COMPONENTS ...)</span></span><br><span class="line"><span class="comment">##   * uncomment the "generate_dynamic_reconfigure_options" section below</span></span><br><span class="line"><span class="comment">##     and list every .cfg file to be processed</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Generate dynamic reconfigure parameters in the 'cfg' folder</span></span><br><span class="line"><span class="comment"># generate_dynamic_reconfigure_options(</span></span><br><span class="line"><span class="comment">#   cfg/DynReconf1.cfg</span></span><br><span class="line"><span class="comment">#   cfg/DynReconf2.cfg</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">###################################</span></span><br><span class="line"><span class="comment">## catkin specific configuration ##</span></span><br><span class="line"><span class="comment">###################################</span></span><br><span class="line"><span class="comment">## The catkin_package macro generates cmake config files for your package</span></span><br><span class="line"><span class="comment">## Declare things to be passed to dependent projects</span></span><br><span class="line"><span class="comment">## INCLUDE_DIRS: uncomment this if your package contains header files</span></span><br><span class="line"><span class="comment">## LIBRARIES: libraries you create in this project that dependent projects also need</span></span><br><span class="line"><span class="comment">## CATKIN_DEPENDS: catkin_packages dependent projects also need</span></span><br><span class="line"><span class="comment">## DEPENDS: system dependencies of this project that dependent projects also need</span></span><br><span class="line">catkin_package(</span><br><span class="line"><span class="comment">#  INCLUDE_DIRS include</span></span><br><span class="line"><span class="comment">#  LIBRARIES my_p</span></span><br><span class="line"><span class="comment">#  CATKIN_DEPENDS roscpp rospy std_msgs</span></span><br><span class="line"><span class="comment">#  DEPENDS system_lib</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">###########</span></span><br><span class="line"><span class="comment">## Build ##</span></span><br><span class="line"><span class="comment">###########</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Specify additional locations of header files</span></span><br><span class="line"><span class="comment">## Your package locations should be listed before other locations</span></span><br><span class="line"><span class="keyword">include_directories</span>(</span><br><span class="line"><span class="comment"># include</span></span><br><span class="line">  <span class="variable">$&#123;catkin_INCLUDE_DIRS&#125;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">## Declare a C++ library</span></span><br><span class="line"><span class="comment"># add_library($&#123;PROJECT_NAME&#125;</span></span><br><span class="line"><span class="comment">#   src/$&#123;PROJECT_NAME&#125;/my_p.cpp</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Add cmake target dependencies of the library</span></span><br><span class="line"><span class="comment">## as an example, code may need to be generated before libraries</span></span><br><span class="line"><span class="comment">## either from message generation or dynamic reconfigure</span></span><br><span class="line"><span class="comment"># add_dependencies($&#123;PROJECT_NAME&#125; $&#123;$&#123;PROJECT_NAME&#125;_EXPORTED_TARGETS&#125; $&#123;catkin_EXPORTED_TARGETS&#125;)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Declare a C++ executable</span></span><br><span class="line"><span class="comment">## With catkin_make all packages are built within a single CMake context</span></span><br><span class="line"><span class="comment">## The recommended prefix ensures that target names across packages don't collide</span></span><br><span class="line"><span class="comment"># add_executable($&#123;PROJECT_NAME&#125;_node src/my_p_node.cpp)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Rename C++ executable without prefix</span></span><br><span class="line"><span class="comment">## The above recommended prefix causes long target names, the following renames the</span></span><br><span class="line"><span class="comment">## target back to the shorter version for ease of user use</span></span><br><span class="line"><span class="comment">## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"</span></span><br><span class="line"><span class="comment"># set_target_properties($&#123;PROJECT_NAME&#125;_node PROPERTIES OUTPUT_NAME node PREFIX "")</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Add cmake target dependencies of the executable</span></span><br><span class="line"><span class="comment">## same as for the library above</span></span><br><span class="line"><span class="comment"># add_dependencies($&#123;PROJECT_NAME&#125;_node $&#123;$&#123;PROJECT_NAME&#125;_EXPORTED_TARGETS&#125; $&#123;catkin_EXPORTED_TARGETS&#125;)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Specify libraries to link a library or executable target against</span></span><br><span class="line"><span class="comment"># target_link_libraries($&#123;PROJECT_NAME&#125;_node</span></span><br><span class="line"><span class="comment">#   $&#123;catkin_LIBRARIES&#125;</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#############</span></span><br><span class="line"><span class="comment">## Install ##</span></span><br><span class="line"><span class="comment">#############</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># all install targets should use catkin DESTINATION variables</span></span><br><span class="line"><span class="comment"># See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Mark executable scripts (Python etc.) for installation</span></span><br><span class="line"><span class="comment">## in contrast to setup.py, you can choose the destination</span></span><br><span class="line"><span class="comment"># install(PROGRAMS</span></span><br><span class="line"><span class="comment">#   scripts/my_python_script</span></span><br><span class="line"><span class="comment">#   DESTINATION $&#123;CATKIN_PACKAGE_BIN_DESTINATION&#125;</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Mark executables and/or libraries for installation</span></span><br><span class="line"><span class="comment"># install(TARGETS $&#123;PROJECT_NAME&#125; $&#123;PROJECT_NAME&#125;_node</span></span><br><span class="line"><span class="comment">#   ARCHIVE DESTINATION $&#123;CATKIN_PACKAGE_LIB_DESTINATION&#125;</span></span><br><span class="line"><span class="comment">#   LIBRARY DESTINATION $&#123;CATKIN_PACKAGE_LIB_DESTINATION&#125;</span></span><br><span class="line"><span class="comment">#   RUNTIME DESTINATION $&#123;CATKIN_PACKAGE_BIN_DESTINATION&#125;</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Mark cpp header files for installation</span></span><br><span class="line"><span class="comment"># install(DIRECTORY include/$&#123;PROJECT_NAME&#125;/</span></span><br><span class="line"><span class="comment">#   DESTINATION $&#123;CATKIN_PACKAGE_INCLUDE_DESTINATION&#125;</span></span><br><span class="line"><span class="comment">#   FILES_MATCHING PATTERN "*.h"</span></span><br><span class="line"><span class="comment">#   PATTERN ".svn" EXCLUDE</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Mark other files for installation (e.g. launch and bag files, etc.)</span></span><br><span class="line"><span class="comment"># install(FILES</span></span><br><span class="line"><span class="comment">#   # myfile1</span></span><br><span class="line"><span class="comment">#   # myfile2</span></span><br><span class="line"><span class="comment">#   DESTINATION $&#123;CATKIN_PACKAGE_SHARE_DESTINATION&#125;</span></span><br><span class="line"><span class="comment"># )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#############</span></span><br><span class="line"><span class="comment">## Testing ##</span></span><br><span class="line"><span class="comment">#############</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Add gtest based cpp test target and link libraries</span></span><br><span class="line"><span class="comment"># catkin_add_gtest($&#123;PROJECT_NAME&#125;-test test/test_my_p.cpp)</span></span><br><span class="line"><span class="comment"># if(TARGET $&#123;PROJECT_NAME&#125;-test)</span></span><br><span class="line"><span class="comment">#   target_link_libraries($&#123;PROJECT_NAME&#125;-test $&#123;PROJECT_NAME&#125;)</span></span><br><span class="line"><span class="comment"># endif()</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## Add folders to be run by python nosetests</span></span><br><span class="line"><span class="comment"># catkin_add_nosetests(test)</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/">ROS学习之catkin CMakeList.txt介绍（译）</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 阿翔 的个人博客">阿翔</a></p>
+  <p><span>发布时间:</span>2018年03月21日 - 22:03</p>
+  <p><span>最后更新:</span>2019年05月30日 - 20:05</p>
+  <p><span>原始链接:</span><a href="/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/" title="ROS学习之catkin CMakeList.txt介绍（译）">http://ttshun.com/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://ttshun.com/2018/03/21/ROS学习之catkin CMakeList.txt介绍（译）/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+      $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+        });
+    });  
+</script>
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>点击给我一些鼓励叭！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixin.jpg" alt="阿翔 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt="阿翔 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <div>
+    
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+    
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/CMake/" rel="tag"><i class="fa fa-tag"></i> CMake</a>
+          
+            <a href="/tags/ROS/" rel="tag"><i class="fa fa-tag"></i> ROS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/21/ubuntu16.04 Hexo+github+Typora搭建博客/" rel="prev" title="ubuntu16.04 Hexo+github+Typora搭建博客">
+                ubuntu16.04 Hexo+github+Typora搭建博客 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/photo.jpg" alt="阿翔">
+            
+              <p class="site-author-name" itemprop="name">阿翔</p>
+              <p class="site-description motion-element" itemprop="description">每一阵风过，我们都互相致意</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/RuoxiangLi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ruoxianglee@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="896928771" target="_blank" title="QQ">
+                      
+                        <i class="fa fa-fw fa-qq"></i>QQ</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="15116319671" target="_blank" title="Wechat">
+                      
+                        <i class="fa fa-fw fa-weixin"></i>Wechat</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/wentanxing2182" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/loveyoupumy/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-bell-o"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://usthe.com" title="武林盟主" target="_blank">武林盟主</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zhehangt.win" title="一索哥传奇" target="_blank">一索哥传奇</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/mybrave" title="小怪兽哦" target="_blank">小怪兽哦</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/DarrenChan/" title="DarrenChan陈驰" target="_blank">DarrenChan陈驰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/xiangxianghehe" title="nudt_qxx" target="_blank">nudt_qxx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概况"><span class="nav-number">1.</span> <span class="nav-text">概况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总体结构和顺序"><span class="nav-number">2.</span> <span class="nav-text">总体结构和顺序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMake版本"><span class="nav-number">3.</span> <span class="nav-text">CMake版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#软件包包名"><span class="nav-number">4.</span> <span class="nav-text">软件包包名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#查找编译依赖的CMake包"><span class="nav-number">5.</span> <span class="nav-text">查找编译依赖的CMake包</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#find-package-做了什么？"><span class="nav-number">5.1.</span> <span class="nav-text">find_package()做了什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为何将Catkin软件包指定为组件？"><span class="nav-number">5.2.</span> <span class="nav-text">为何将Catkin软件包指定为组件？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Boost库"><span class="nav-number">5.3.</span> <span class="nav-text">Boost库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#catkin-package"><span class="nav-number">6.</span> <span class="nav-text">catkin_package()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#明确编译的目标"><span class="nav-number">7.</span> <span class="nav-text">明确编译的目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目标命名"><span class="nav-number">7.1.</span> <span class="nav-text">目标命名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义输出目录"><span class="nav-number">7.2.</span> <span class="nav-text">自定义输出目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#头文件和库路径"><span class="nav-number">7.3.</span> <span class="nav-text">头文件和库路径</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#include-directories"><span class="nav-number">7.3.1.</span> <span class="nav-text">include_directories()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#link-directories"><span class="nav-number">7.3.2.</span> <span class="nav-text">link_directories()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可执行目标"><span class="nav-number">7.4.</span> <span class="nav-text">可执行目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#库目标"><span class="nav-number">7.5.</span> <span class="nav-text">库目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#target-link-libraries"><span class="nav-number">8.</span> <span class="nav-text">target_link_libraries</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#消息、服务和操作目标"><span class="nav-number">9.</span> <span class="nav-text">消息、服务和操作目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重要的前提和限制"><span class="nav-number">9.1.</span> <span class="nav-text">重要的前提和限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">9.2.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动Python模块支持"><span class="nav-number">10.</span> <span class="nav-text">启动Python模块支持</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单元测试"><span class="nav-number">11.</span> <span class="nav-text">单元测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可选步骤：明确安装目标"><span class="nav-number">12.</span> <span class="nav-text">可选步骤：明确安装目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Python可执行脚本"><span class="nav-number">12.1.</span> <span class="nav-text">安装Python可执行脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装头文件"><span class="nav-number">12.2.</span> <span class="nav-text">安装头文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装roslaunch文件或其他源"><span class="nav-number">12.3.</span> <span class="nav-text">安装roslaunch文件或其他源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CMakeLists-txt文件书写模板"><span class="nav-number">13.</span> <span class="nav-text">CMakeLists.txt文件书写模板</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿翔</span>
+
+  
+</div>
+
+
+  <!--<div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz',
+        appKey: 'Dl5bC4kDveO2sUOJMNm3K8me',
+        placeholder: 'Just go go',
+        avatar:'/uploads/hexo.jpg',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz", "Dl5bC4kDveO2sUOJMNm3K8me");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>

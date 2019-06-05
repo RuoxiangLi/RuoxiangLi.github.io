@@ -1,0 +1,1669 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+      
+    
+    
+  <script src="tree"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Lidar SLAM,Cartographer,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="励志献身SLAM 的 阿翔" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本篇文章记录阅读Google开源Cartographer SLAM系统论文过程中的学习内容。">
+<meta name="keywords" content="Lidar SLAM,Cartographer">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cartographer学习一论文阅读">
+<meta property="og:url" content="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/index.html">
+<meta property="og:site_name" content="励志献身SLAM 的 阿翔">
+<meta property="og:description" content="本篇文章记录阅读Google开源Cartographer SLAM系统论文过程中的学习内容。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/submap.png">
+<meta property="og:image" content="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/暴力搜索.png">
+<meta property="og:image" content="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/算法2.png">
+<meta property="og:image" content="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/算法3.png">
+<meta property="og:image" content="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/系统图.png">
+<meta property="og:updated_time" content="2019-05-30T12:29:26.267Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Cartographer学习一论文阅读">
+<meta name="twitter:description" content="本篇文章记录阅读Google开源Cartographer SLAM系统论文过程中的学习内容。">
+<meta name="twitter:image" content="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/submap.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/">
+
+
+
+
+
+  <title>Cartographer学习一论文阅读 | 励志献身SLAM 的 阿翔</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2167066263b4ea80e21ad5060efbc2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">励志献身SLAM 的 阿翔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="阿翔">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="励志献身SLAM 的 阿翔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Cartographer学习一论文阅读</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-12T16:56:16+08:00">
+                2018-09-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/" itemprop="url" rel="index">
+                    <span itemprop="name">机器人</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SLAM</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/Cartographer/" itemprop="url" rel="index">
+                    <span itemprop="name">Cartographer</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/09/12/Cartographer学习一论文阅读/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/09/12/Cartographer学习一论文阅读/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/09/12/Cartographer学习一论文阅读/" class="leancloud_visitors" data-flag-title="Cartographer学习一论文阅读">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  4,958
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  21
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>本篇文章记录阅读Google开源Cartographer SLAM系统论文过程中的学习内容。</p>
+<a id="more"></a>
+<h2 id="概况"><a href="#概况" class="headerlink" title="概况"></a>概况</h2><p><code>Real-time loop closure in 2D LIDAR SLAM</code>是Google发表在ICRA2016上的一篇论文，开源的系统是大名鼎鼎的Cartographer，目前该系统已经有大神改到Cartographer-ROS版本。本文在阅读论文的基础上，参考其他网络博客资料，学习并记录论文的一些要点，通过这个过程希望能够理解论文的核心内容和系统的实现。</p>
+<h3 id="主要论文"><a href="#主要论文" class="headerlink" title="主要论文"></a>主要论文</h3><ul>
+<li><p>Real-Time Loop Closure in 2D LIDAR SLAM , ICRA 2016</p>
+</li>
+<li><p>Efficient Sparse Pose Adjustment for 2D Mapping  (SPA)</p>
+</li>
+<li><p>Real-Time Correlative Scan Matching  (BBS)</p>
+</li>
+</ul>
+<h3 id="文章重点"><a href="#文章重点" class="headerlink" title="文章重点"></a>文章重点</h3><ul>
+<li><p>第四部分：local 2d slam，主要是将局部地图的scan matching作为一个最小二乘优化问题，由ceres slover解决。       </p>
+</li>
+<li><p>第五部分： closing loop， 采用了 SPA（Sparse Pose Adjustment）进行后端loop  closure。 这个过程中有一个很重要的过程是的scan和 submap的匹配，这里采用了BBS（Branch-and-bound scan  matching）, 它可大幅提高精度和速度。</p>
+</li>
+</ul>
+<h2 id="文章贡献"><a href="#文章贡献" class="headerlink" title="文章贡献"></a>文章贡献</h2><p>文章的重点不是关注SLAM本身，而是提出了一种基于激光的5cm分辨率实时建图和回环检测方法，减少了计算量，满足实时的大场景地图构建以及大规模的实时优化的性能需求。</p>
+<p>为了达到实时闭环检测，文章使用了分支上界法来计算scan-to-submap的匹配作为约束。</p>
+<h2 id="Scan-Matching方法介绍"><a href="#Scan-Matching方法介绍" class="headerlink" title="Scan Matching方法介绍"></a>Scan Matching方法介绍</h2><p>涉及到的相关文献在文后列出，以便以后学习。</p>
+<ol>
+<li><p>scan-to-scan matching：基于激光的SLAM中最常用来估计相关位姿的方法。但是非常容易造成累积误差。[1,2,3,4]</p>
+</li>
+<li><p>scan-to-map matching：可以较少累计误差。其中一种方法是使用Gauss-Newton法在线性插值地图上找到局部最优值，前提是获取到了最优的初始位姿估计，这就需要使用有足够高数据获取速率的激光雷达，以保证局部优化的scan-to-map匹配是高效并且鲁棒的。在不稳定的平台上，需要使用惯性测量单元（IMU）将激光扫描投影到水平面上以估计重力方向。[5]</p>
+</li>
+<li><p>pixel-accurate scan matching：可以进一步减少局部误差，但是计算量比较大。这个方法同样可以用来检测回环。[1]</p>
+</li>
+<li><p>从laser scans中提取特征做匹配，从而减少计算量[4]。</p>
+</li>
+<li><p>histogram-based matching用于回环检测[6]。</p>
+</li>
+<li><p>用机器学习做laser scan data的特征检测[7]。</p>
+</li>
+</ol>
+<h2 id="累积误差处理方式"><a href="#累积误差处理方式" class="headerlink" title="累积误差处理方式"></a>累积误差处理方式</h2><ol>
+<li><p>基于粒子滤波（Particle Filter）的优化。粒子滤波在处理大场景地图时，由于粒子数的极具增长造成资源密集。[8,9,10]</p>
+</li>
+<li><p>基于位姿图的优化（<strong>Graph-based SLAM</strong>）。与视觉SLAM的位姿图优化大同小异，主要是在观测方程上的区别。[2,11,12,13]</p>
+</li>
+</ol>
+<h2 id="系统概述"><a href="#系统概述" class="headerlink" title="系统概述"></a>系统概述</h2><ol>
+<li><p>Cartographer是实时的室内建图系统，系统生成5cm分辨率的2D栅格地图地图。</p>
+</li>
+<li><p>laser scans数据被插入到submap中的最佳估计位置，并假定最佳估计位置在短时间内足够准确。</p>
+</li>
+<li><p>scan matching针对最近的submap发生，因此它只取决于最近的scans和全局帧位姿估计中累计的误差。</p>
+</li>
+<li><p>系统使用pose optimization处理误差累计。</p>
+</li>
+<li><p>submap一旦构建完成，就不会再插入新的scans。submap会用于回环检测过程的scan matching，其实回环检测会将所有已经构建完成的submaps和scans考虑在内。</p>
+<p>如果scan和submap在当前位姿估计下足够接近的话，scan matcher会尝试在submap中寻找回环scan。</p>
+<blockquote>
+<p>当一个新的laser scan加入到地图中时，如果该laser scan的估计位姿与地图中某个submap的某个laser scan的位姿比较接近的话，那么通过某种 scan match策略就会找到该闭环。</p>
+</blockquote>
+<p>为了减少计算量，Cartographer设计了特殊的策略来找到回环scan。这个策略就是在当前的位姿估计附近设置搜索窗口，在这个搜索窗口内执行branch-and-bound方法来寻找回环scan，如果在搜索窗口中找到了一个足够好的匹配，则会将该匹配作为回环检测约束条件添加到优化问题中。</p>
+</li>
+<li><p>系统通过使用branch-and-bound方法，并对每个生成的submap预计算出几个栅格地图，保证回环优化的快速完成，快到可以在加入新的scans之前就完成优化，从而保证了一种软实时约束。</p>
+</li>
+<li><p>cartographer的整体架构是典型的 前端建图 （局部地图）+后端优化。 </p>
+</li>
+</ol>
+<h2 id="符号说明"><a href="#符号说明" class="headerlink" title="符号说明"></a>符号说明</h2><ul>
+<li>位姿表示：$\xi=(\xi<em>x,\xi_y,\xi</em>{\theta})$</li>
+<li>扫描scan：$H={h<em>k}</em>{k=1,…,K},h_k \in \mathbb{R^2}​$</li>
+<li>scan-to-submap变换矩阵：$T_\xi​$</li>
+<li>scan-to-submap变换：$T<em>{\xi }h_k=\underbrace{\left(\begin{matrix}cos\xi</em>\theta&amp;-sin\xi<em>\theta\sin\xi</em>\theta&amp;cos\xi<em>\theta\end{matrix} \right)}</em>{R<em>\xi}h_k+\underbrace{\left(\begin{matrix}\xi_x\\xi_y\end{matrix}\right)}</em>{t_\xi}​$</li>
+<li>概率栅格地图概率值：$M:r\mathbb{Z}\times r\mathbb{Z} \to [p<em>{min},p</em>{max}]$</li>
+<li>submap世界坐标系下的位姿（m代表map）：$\Xi^m={\xi^m<em>i}</em>{i=1,…,m}​$</li>
+<li>scan世界坐标系下的位姿（s代表scan）：$\Xi^s={\xi^s<em>j}</em>{j=1,…,n}​$</li>
+<li>scan $i​$在匹配到的submap $j​$坐标系下的位姿：$\xi_{ij}​$</li>
+<li>与scan $i​$和submap $j​$相对应的协方差矩阵：$\sum_{ij}​$</li>
+</ul>
+<h2 id="Local-2D-SLAM"><a href="#Local-2D-SLAM" class="headerlink" title="Local 2D SLAM"></a>Local 2D SLAM</h2><p>系统将局部和全局方法结合到2D SLAM中，两种方法都对LIDAR观测到的位姿进行了优化。这一部分介绍局部地图的scan matching，该问题被构造成最小二乘问题，使用ceres solver解决。</p>
+<p>位姿表示为$\xi=(\xi<em>x,\xi_y,\xi</em>{\theta})$，这个位姿表示包括$(x,y)$坐标变换（注意这里是二维坐标），以及角度的旋转$\xi_\theta$，对观测位姿的优化实际上就是对scans的优化。平台采用IMU测量重力方向，将水平安装的LIDAR观测到的scans映射到2D平面。 </p>
+<blockquote>
+<h4 id="scan-matching"><a href="#scan-matching" class="headerlink" title="scan matching"></a>scan matching</h4><p>局部方法中，将每个连续的scan点集和整个地图的一部分进行匹配，就是和submap $M$进行匹配。这个过程中使用了一种非线性的优化方法将submap和scan点集对齐，这也是scan matching的过程。局部方法积累的误差在全局方法消除，即回环检测。</p>
+</blockquote>
+<h3 id="A-Scans"><a href="#A-Scans" class="headerlink" title="A. Scans"></a>A. Scans</h3><p>submap的构建是一个不断将scan和submap坐标系对齐的迭代过程。</p>
+<p>一个scan包含一个起点和很多个终点，起点称为scan origin，终点称为scan points，将scan表示为$H={h<em>k}</em>{k=1,…,K},h_k \in \mathbb{R^2}$。在scan坐标系下，origin就是坐标原点，scan points就是在scan坐标系下的坐标。</p>
+<p>当把一个scans插入到一个submap中时，假设scan坐标系到submap坐标系的坐标转换表示为$T<em>\xi$（即scan坐标系在submap坐标系下的位姿$\xi$表示为变换矩阵$T</em>\xi$），即激光传感器在submap坐标系下的位姿。</p>
+<p>每个$h<em>k$在submap坐标系下的坐标为：$T</em>{\xi }h<em>k=\underbrace{\left(\begin{matrix}cos\xi</em>\theta&amp;-sin\xi<em>\theta\sin\xi</em>\theta&amp;cos\xi<em>\theta\end{matrix} \right)}</em>{R<em>\xi}h_k+\underbrace{\left(\begin{matrix}\xi_x\\xi_y\end{matrix}\right)}</em>{t_\xi}$</p>
+<h3 id="B-Submaps"><a href="#B-Submaps" class="headerlink" title="B. Submaps"></a>B. Submaps</h3><p>一些连续的scans组成submap。采用概率栅格地图的形式表示这些submaps，$M:r\mathbb{Z}\times r\mathbb{Z} \to [p<em>{min},p</em>{max}]$，以给定的分辨率（例如5cm）将离散栅格地图点映射到值，这些值可以记作栅格地图点被占用的概率。对于每个栅格地图点，都定义一个相应的pixel，这个piexl是针对于分辨率来说的，对于5cm的分辨率来说，一个pixel相当于一个5*5的方格，那么对应于scan中应该有很多个point，即论文中定义的：pixel包含了所有靠近这个栅格地图点的points。</p>
+
+<blockquote>
+<h4 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h4><ol>
+<li><p>这里栅格地图点和像素的定义不明白？</p>
+<p>答：栅格地图点就是上图中的叉号处，像素定义为叉号周围所有的点的集合，即小方框。</p>
+</li>
+<li><p>submaps是扫描点的集合？？概率栅格地图表示submaps怎么理解？？</p>
+<p>看源码理解。</p>
+</li>
+</ol>
+</blockquote>
+<p>对于每个要插入submap的scan，都会产生一组称为hits的grid point和一组称为misses的grid point。如下图所示。</p>
+<img src="/2018/09/12/Cartographer学习一论文阅读/submap.png">
+<p>其中阴影带叉的是hit，加入hits集合；阴影不带叉的是miss（scan origin和scan points连线经过的grid points，排除在hits中的），加入misses集合。每个hits中的grid point被赋予初始值$M=p<em>{hit}$，每个misses中的grid point被赋予初始值$M=p</em>{miss}$。如果grid point已经有$p$值，则用下述公式更新：</p>
+<p>$odds(p)=\frac{p}{1−p}$</p>
+<p>$M<em>{new(x)}=clamp(odds^{−1}(odds(M</em>{old}(x))⋅odds(p_{hit})))$</p>
+<blockquote>
+<p>Clamp函数可以将随机变化的数值限制在一个给定的区间[min, max]内，小于min的数值返回min，大于max的数值返回max。</p>
+</blockquote>
+<p>miss集合的更新也是类似的。</p>
+<h3 id="C-Ceres-scan-matching"><a href="#C-Ceres-scan-matching" class="headerlink" title="C. Ceres scan matching"></a>C. Ceres scan matching</h3><p>将scan插入submap之前，需要通过scan matching对scan的位姿$ \xi $进行优化（优化过程参照当前局部submap），优化过程使用基于Ceres库的scan matcher。scan matcher的任务就是找到一个scan的位姿，能够满足scan points在submap中有最大概率值。这里涉及到的优化问题为非线性最小二乘问题，通过Ceres库进行求解。使得scan在栅格地图中的概率值最大，那么就需要使得（cs）最小，非线性最小二乘问题目标函数构造形式如下：</p>
+<p>$\mathop{\arg\min} \limits<em>{\xi}\sum \limits</em>{k=1}^K(1−M<em>{smooth}(T</em>{\xi}h_k))^2 \qquad\qquad(CS)​$</p>
+<p>平滑函数$M_{smooth}$完成了局部submap中概率值从2D到1D的平滑，将值限制在$[0; 1]$范围内，使用双三次插值法（bicubic interpolation）。通常情况下，这种平滑函数的数学优化比栅格地图的分辨率能够提供更好的精度。</p>
+<p>对于局部优化问题，一个相对精确的初始估计非常重要。因此如果通过IMU提供角度信息（角速度），来估计scan matching中位姿的旋转分量$\theta$，可以提高优化的准确性。在缺少IMU的情况下，高频率的scan matching或者pixel-accurate scan matching也可以提高准确性，但会增加时间复杂度。</p>
+<h2 id="Closing-Loops"><a href="#Closing-Loops" class="headerlink" title="Closing Loops"></a>Closing Loops</h2><blockquote>
+<p>closing loop采用了 SPA（Sparse Pose Adjustment）进行后端loop closure。 这个过程中有一个很重要的过程是的scan和 submap的匹配，采用的算法是BBS（Branch-and-bound scan matching）, 它可大幅提高精度和速度。</p>
+</blockquote>
+<h3 id="SPA"><a href="#SPA" class="headerlink" title="SPA"></a>SPA</h3><p>由于scans只和一个包含最近的几个scans的submap进行匹配，上面所讲的scan matcher会产生比较小的累计误差。</p>
+<p>系统通过创建一个个小的submaps实现大的场景地图构建，并使用Sparse Pose Adjustment方法[2]优化所有scans和submaps的位姿，提高精准度。</p>
+<h3 id="BBS"><a href="#BBS" class="headerlink" title="BBS"></a>BBS</h3><p>将scans插入处的相关位姿保存在内存中，以便在回环检测优化时使用。此外，所有其他的包含一个scan和一个submap组合，一旦submap不再变化，都会被用于回环检测。一个scan matcher会在后台一直不断的运行，当一个好的scan match被找到，该匹配的约束也会被加入到优化问题（是指回环优化问题）中。</p>
+<blockquote>
+<p><strong>上面这一段内容理解的还不是特别清楚？</strong></p>
+<p>其实是下文要提到的$\xi_{ij}$的求解过程。</p>
+</blockquote>
+<h3 id="A-优化问题"><a href="#A-优化问题" class="headerlink" title="A. 优化问题"></a>A. 优化问题</h3><p>回环的优化问题与scan matching的优化问题类似，都是通过构造非线性最小二乘的方式进行的，允许方便地添加残差以考虑附加的数据。每隔几秒，就使用Ceres计算下式的解：</p>
+
+
+$\mathop{\arg\min} \limits_{{\Xi^m},{\Xi^s}} \frac{1}{2}\sum \limits_{ij}\rho(E^2(\xi^m_i,\xi^s_j;\sum \limits_{ij},\xi_{ij})) \qquad(SPA)$ [15]
+
+
+<p>$\rho$是一个损失函数，比如Huber loss等。使用损失函数的目的是减少加入到优化问题中的离群点对于系统的影响，这种情况在局部对称的环境，如办公室走廊容易发生，scan matching会将错误的约束加入到优化问题。</p>
+<p>$\Xi^m={\xi^m<em>i}</em>{i=1,…,m}$是submap的位姿，$\Xi^s={\xi^s<em>j}</em>{j=1,…,n}$是scan的位姿，submap位姿和scan位姿都是世界坐标系下的，并且它们之间存在约束条件（这个约束条件是指什么？）用于完成优化。</p>
+<p>对于submap $i$和scan $j$，$\xi<em>{ij}$表示scan在匹配到的submap坐标系下的位姿（$j$在$i$坐标系下的位姿，求解方法在下一节介绍），$\sum</em>{ij}$是相应的协方差矩阵，这个协方差矩阵可以通过[14]的方式获得，也可以通过(CS)公式获得。残差$E$的计算：</p>
+<p>$E^2(\xi^m<em>i,\xi^s_j;\sum</em>{ij},\xi<em>{ij})=e(\xi^m_i,\xi^s_j;\xi</em>{ij})^T\sum<em>{ij}^{-1}e(\xi^m_i,\xi^s_j;\xi</em>{ij})$</p>
+<p>$e(\xi^m<em>i,\xi^s_j;\xi</em>{ij})=\xi<em>{ij}-\left(\begin{matrix}R^{-1}</em>{\xi^m<em>i}(t</em>{\xi^m<em>i}-t</em>{\xi^s<em>j}) \ \xi^m</em>{i;\theta}-\xi^s_{j;\theta}\end{matrix}\right)$</p>
+<blockquote>
+<h3 id="协方差"><a href="#协方差" class="headerlink" title="协方差"></a>协方差</h3><p>统计学中，标准差、方差一般是用来描述一维数据的。对于多维数据，一般使用协方差度量两个随机变量关系。</p>
+<p>方差定义：$var(X)=\frac{\sum \limits_{i=1}^{n}(X_i-\overline X)(X_i-\overline X)}{n-1}$</p>
+<p>协方差定义：$cov(X,Y)=\frac{\sum \limits (X_i-\overline X)(Y_i-\overline Y)}{n-1}$</p>
+<p>使用协方差来度量各个维度偏离其均值的程度。如果协方差为正，两个变量是正相关；为负，负相关；为0，无关，即相互独立。</p>
+<h3 id="协方差矩阵"><a href="#协方差矩阵" class="headerlink" title="协方差矩阵"></a>协方差矩阵</h3><p>协方差只能处理二维问题，对于多维数据，就需要计算多个协方差。一般使用协方差矩阵组织。</p>
+<p>协方差矩阵定义：$C<em>{n\times n}=(c</em>{i,j},c_{i,j}=cov(Dim_i,Dim_j))$</p>
+<p>如三维数据的协方差矩阵为：$C=\left(\begin{matrix}cov(x,x)&amp;cov(x,y)&amp;cov(x,z)\cov(y,x)&amp;cov(y,y)&amp;cov(y,z)\cov(z,x)&amp;cov(z,y)&amp;cov(z,z)\end{matrix}\right)$</p>
+<p>协方差矩阵是一个对称的矩阵，而且对角线是各个维度的方差。</p>
+</blockquote>
+<h3 id="B-Branch-and-bound-scan-matching"><a href="#B-Branch-and-bound-scan-matching" class="headerlink" title="B. Branch-and-bound scan matching"></a>B. Branch-and-bound scan matching</h3><p>之前提到的回环约束关系$ξij$（scan $j$在submap $i$坐标系中的位姿）就是通过这里的方法得到的，也是整篇论文最核心的地方。首先看一下pixel-accurate match的匹配过程：</p>
+<p>$\xi^*=\mathop{\arg\max} \limits<em>{\xi \in W}\sum\limits</em>{k=1}^{K}M<em>{nearest}(T</em>\xi h_k)\qquad\ \ (BBS)$  [14]</p>
+<p>其中$W$是搜索空间（搜索窗口），$M_{nearest}$就是该pixel对应的grid point的M值。之后可以通过(CS)公式进一步提高$\xi$匹配的准确度。</p>
+<p>搜索空间和搜索步长的选择是决定pixel-accurate match是否高效的关键。搜索步长的计算方式：</p>
+<p>$d<em>{max}=\mathop{max}\limits</em>{k=1,…,K} \ \ | \mathrm{h} _k|$</p>
+<p>$\delta<em>\theta=arccos(1-\frac{r^2}{2d^2</em>{max}})$</p>
+<p>$w<em>x=\lceil \frac{W_x}{r} \rceil$,  $w_y=\lceil \frac{W_y}{r} \rceil$,  $w</em>\theta=\lceil \frac{W<em>\theta}{\delta</em>\theta} \rceil$</p>
+<p>其中$d<em>{max}$是所有scan点集中跨度最大的那个值，$Wx=Wy=7m$，$W</em>θ=30^\circ$，因此搜索空间就可以确定了。此时搜索空间的大小是7m*7m。</p>
+<p>$\overline{W}={-w<em>x,…,w_x}\times{-w_y,…,w_y}\times{-w</em>\theta,…,w_\theta}$</p>
+<p>$W={\xi<em>0+(rj_x,rj_y,\delta</em>\theta j<em>\theta):(j_x,j_y,j</em>\theta)\in\overline{W}}​$</p>
+<p>有了搜索空间和搜索步长，就可以得到最原始的暴力搜索方式。算法1如下图所示：</p>
+<img src="/2018/09/12/Cartographer学习一论文阅读/暴力搜索.png">
+<p>为了进一步提高搜索效率，Cartograoher采用了branch and bound approach的方式。branch and bound<br>approach是一种在问题的解空间树上搜索问题的解的方法，被Google套用在最优位姿的搜索中，从而将无法实时化暴力解优化到可以满足实时化。分支上界法就是每个分支代表一种可能，使用DFS找到最佳位置即可，和算法1解决的是相同的问题。只不过这个节点的score是可能的最大值而已。</p>
+<p>分支上界法分为以下几步：<strong>节点选择、分支、计算上限</strong>。对于这三步，论文中有具体讲解。节点选择采用的是DFS，分支算法，采用的是算法2。算法3是将节点选择和分支结合到一起之后的算法。<br><img src="/2018/09/12/Cartographer学习一论文阅读/算法2.png"></p>
+<img src="/2018/09/12/Cartographer学习一论文阅读/算法3.png">
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>论文阐述了一个2D的SLAM系统，系统采用闭环检测的scan-to-submap matching，同时还有图优化（graph<br>optimization）。一个submap的创建使用的是局部的、基于栅格地图的（grid-based）SLAM方法。在后台，所有的点集与相近的submap的匹配使用的是pixel-accurate scan matching的方法，然后建立闭环检测的约束。这个约束图（基于submap和scan pose的）都会周期性的被后台更改。这个操作是采用GPU加速将已完成的submap和当前的submap进行结合。系统图引用的<a href="https://blog.csdn.net/jsgaobiao/article/details/53116042" target="_blank" rel="noopener">博客</a>中的。</p>
+<img src="/2018/09/12/Cartographer学习一论文阅读/系统图.png">
+<p>Scan是激光扫描的单帧数据，通过累加Scan来构建局部地图（Submap），采用的是grid-based 的SLAM方法。生成约束关系的scan和submap的匹配算法采用的是pixel-accurate scan matching的方法。Cartographer的实现并没有采用滤波方法，而是采用了类似图优化的模型进行Pose estimation，具体的实现是用了Ceres scan matching(Ceres是Google自家的库) 。 这样构造出来的很多很多submap是会产生累计误差的，最后通过Loop closing来消除这些误差，完成闭环。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>Real-time loop closure in 2D LIDAR SLAM</li>
+<li><a href="https://blog.csdn.net/lilynothing/article/details/60875825" target="_blank" rel="noopener">google cartographer的论文《real-time loop closure in 2D LIDAR SLAM》翻译</a></li>
+<li><a href="https://note.youdao.com/share/?id=d8d15963d4577236399aa52c2cd968a7&amp;type=note#/" target="_blank" rel="noopener">cartographer对应论文的琢磨(2)</a></li>
+<li><a href="https://zhehangt.github.io/2017/05/01/SLAM/CartographerPaper/" target="_blank" rel="noopener">Real-Time Loop Closure in 2D LIDAR SLAM 论文笔记</a></li>
+<li><a href="https://blog.csdn.net/sean_xyz/article/details/68957747" target="_blank" rel="noopener">cartographer算法简析</a></li>
+<li><a href="https://blog.csdn.net/jsgaobiao/article/details/53116042" target="_blank" rel="noopener">【SLAM】（一）Google Cartographer的初步尝试</a></li>
+<li><a href="https://www.cnblogs.com/chaosimple/p/3182157.html" target="_blank" rel="noopener">[转]浅谈协方差矩阵</a> </li>
+</ol>
+<h2 id="相关文献"><a href="#相关文献" class="headerlink" title="相关文献"></a>相关文献</h2><p>[1] E. Olson, “M3RSM: Many-to-many multi-resolution scan matching,” in Proceedings of the IEEE International Conference on Robotics and Automation (ICRA), June 2015.<br>[2] K. Konolige, G. Grisetti, R. Kümmerle, W. Burgard, B. Limketkai, and R. Vincent, “Sparse pose adjustment for 2D mapping,” in IROS, Taipei, Taiwan, 10/2010 2010.<br>[3] F. Lu and E. Milios, “Globally consistent range scan alignment for environment mapping,” Autonomous robots, vol. 4, no. 4, pp. 333–349, 1997.<br>[4] F. Martı́n, R. Triebel, L. Moreno, and R. Siegwart, “Two different tools for three-dimensional mapping: DE-based scan matching and feature-based loop detection,” Robotica, vol. 32, no. 01, pp. 19–41,2014.<br>[5] S. Kohlbrecher, J. Meyer, O. von Stryk, and U. Klingauf, “A flexible and scalable SLAM system with full 3D motion<br>estimation,” in Proc. IEEE International Symposium on Safety, Security and Rescue Robotics (SSRR). IEEE, November 2011.<br>[6] M. Himstedt, J. Frost, S. Hellbach, H.-J. Böhme, and E. Maehle, “Large scale place recognition in 2D LIDAR scans using geometrical landmark relations,” in Intelligent Robots and Systems (IROS 2014),2014 IEEE/RSJ International<br>Conference on. IEEE, 2014, pp. 5030–5035.<br>[7] K. Granström, T. B. Schön, J. I. Nieto, and F. T. Ramos, “Learning to close loops from range data,” The International Journal of Robotics Research, vol. 30, no. 14, pp. 1728–1754, 2011.<br>[8] G. Grisetti, C. Stachniss, and W. Burgard, “Improving grid-based SLAM with Rao-Blackwellized particle filters by adaptive proposals and selective resampling,” in Robotics and Automation, 2005. ICRA 2005. Proceedings of the 2005 IEEE International Conference on. IEEE, 2005, pp. 2432–2437.<br>[9] G. D. Tipaldi, M. Braun, and K. O. Arras, “FLIRT: Interest regions for 2D range data with applications to robot navigation,” in Experimental Robotics. Springer, 2014, pp. 695–710.<br>[10] J. Strom and E. Olson, “Occupancy grid rasterization in large environments for teams of robots,” in Intelligent<br> Robots and Systems (IROS),2011 IEEE/RSJ International Conference on. IEEE, 2011, pp. 4271–4276.<br>[11] R. Kümmerle, G. Grisetti, H. Strasdat, K. Konolige, and W. Burgard,“g2o: A general framework for graph optimization,” in Robotics and Automation (ICRA), 2011 IEEE International Conference on. IEEE,2011, pp. 3607–3613.<br>[12] L. Carlone, R. Aragues, J. A. Castellanos, and B. Bona, “A fast and accurate approximation for planar pose graph optimization,” The International Journal of Robotics Research, pp. 965–987, 2014.<br>[13] M. Bosse and R. Zlot, “Map matching and data association for large-scale two-dimensional laser scan-based SLAM,” The International Journal of Robotics Research, vol. 27, no. 6, pp. 667–691, 2008.<br>[14] E. B. Olson, “Real-time correlative scan matching,” in Robotics and Automation, 2009. ICRA’09. IEEE International Conference on. IEEE, 2009, pp. 4387–4393.</p>
+<p>[15]Efficient Sparse Pose Adjustment for 2D Mapping</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/09/12/Cartographer学习一论文阅读/">Cartographer学习一论文阅读</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 阿翔 的个人博客">阿翔</a></p>
+  <p><span>发布时间:</span>2018年09月12日 - 16:09</p>
+  <p><span>最后更新:</span>2019年05月30日 - 20:05</p>
+  <p><span>原始链接:</span><a href="/2018/09/12/Cartographer学习一论文阅读/" title="Cartographer学习一论文阅读">http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://ttshun.com/2018/09/12/Cartographer学习一论文阅读/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+      $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+        });
+    });  
+</script>
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>点击给我一些鼓励叭！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixin.jpg" alt="阿翔 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt="阿翔 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <div>
+    
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+    
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Lidar-SLAM/" rel="tag"><i class="fa fa-tag"></i> Lidar SLAM</a>
+          
+            <a href="/tags/Cartographer/" rel="tag"><i class="fa fa-tag"></i> Cartographer</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/08/Caffe的GPU模式安装/" rel="next" title="Caffe的GPU模式安装">
+                <i class="fa fa-chevron-left"></i> Caffe的GPU模式安装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/16/Cartographer学习二源码分析之核心代码/" rel="prev" title="Cartographer学习二源码分析之核心代码">
+                Cartographer学习二源码分析之核心代码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/photo.jpg" alt="阿翔">
+            
+              <p class="site-author-name" itemprop="name">阿翔</p>
+              <p class="site-description motion-element" itemprop="description">每一阵风过，我们都互相致意</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/RuoxiangLi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ruoxianglee@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="896928771" target="_blank" title="QQ">
+                      
+                        <i class="fa fa-fw fa-qq"></i>QQ</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="15116319671" target="_blank" title="Wechat">
+                      
+                        <i class="fa fa-fw fa-weixin"></i>Wechat</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/wentanxing2182" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/loveyoupumy/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-bell-o"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://usthe.com" title="武林盟主" target="_blank">武林盟主</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zhehangt.win" title="一索哥传奇" target="_blank">一索哥传奇</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/mybrave" title="小怪兽哦" target="_blank">小怪兽哦</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/DarrenChan/" title="DarrenChan陈驰" target="_blank">DarrenChan陈驰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/xiangxianghehe" title="nudt_qxx" target="_blank">nudt_qxx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概况"><span class="nav-number">1.</span> <span class="nav-text">概况</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主要论文"><span class="nav-number">1.1.</span> <span class="nav-text">主要论文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文章重点"><span class="nav-number">1.2.</span> <span class="nav-text">文章重点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文章贡献"><span class="nav-number">2.</span> <span class="nav-text">文章贡献</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scan-Matching方法介绍"><span class="nav-number">3.</span> <span class="nav-text">Scan Matching方法介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#累积误差处理方式"><span class="nav-number">4.</span> <span class="nav-text">累积误差处理方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#系统概述"><span class="nav-number">5.</span> <span class="nav-text">系统概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#符号说明"><span class="nav-number">6.</span> <span class="nav-text">符号说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Local-2D-SLAM"><span class="nav-number">7.</span> <span class="nav-text">Local 2D SLAM</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#scan-matching"><span class="nav-number">7.0.1.</span> <span class="nav-text">scan matching</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-Scans"><span class="nav-number">7.1.</span> <span class="nav-text">A. Scans</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Submaps"><span class="nav-number">7.2.</span> <span class="nav-text">B. Submaps</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#疑问"><span class="nav-number">7.2.1.</span> <span class="nav-text">疑问</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C-Ceres-scan-matching"><span class="nav-number">7.3.</span> <span class="nav-text">C. Ceres scan matching</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#Closing-Loops"><span class="nav-number">8.</span> <span class="nav-text">Closing Loops</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SPA"><span class="nav-number">8.1.</span> <span class="nav-text">SPA</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BBS"><span class="nav-number">8.2.</span> <span class="nav-text">BBS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#A-优化问题"><span class="nav-number">8.3.</span> <span class="nav-text">A. 优化问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协方差"><span class="nav-number">8.4.</span> <span class="nav-text">协方差</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协方差矩阵"><span class="nav-number">8.5.</span> <span class="nav-text">协方差矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Branch-and-bound-scan-matching"><span class="nav-number">8.6.</span> <span class="nav-text">B. Branch-and-bound scan matching</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关文献"><span class="nav-number">11.</span> <span class="nav-text">相关文献</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿翔</span>
+
+  
+</div>
+
+
+  <!--<div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz',
+        appKey: 'Dl5bC4kDveO2sUOJMNm3K8me',
+        placeholder: 'Just go go',
+        avatar:'/uploads/hexo.jpg',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz", "Dl5bC4kDveO2sUOJMNm3K8me");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

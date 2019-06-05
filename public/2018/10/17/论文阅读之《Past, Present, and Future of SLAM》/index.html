@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+
+
+
+
+<html class="theme-next pisces" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+      
+    
+    
+  <script src="tree"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="SLAM,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="励志献身SLAM 的 阿翔" type="application/atom+xml">
+
+
+
+
+
+
+<meta name="description" content="本篇文章记录SLAM综述性文章《Past, Present, and Future of Simultaneous Localization And Mapping: Towards the Robust-Perception Age》，只对重点部分作详细翻译，其余为本人根据自己的理解对内容概括性的总结。">
+<meta name="keywords" content="SLAM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文阅读之《Past, Present, and Future of SLAM》">
+<meta property="og:url" content="http://ttshun.com/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/index.html">
+<meta property="og:site_name" content="励志献身SLAM 的 阿翔">
+<meta property="og:description" content="本篇文章记录SLAM综述性文章《Past, Present, and Future of Simultaneous Localization And Mapping: Towards the Robust-Perception Age》，只对重点部分作详细翻译，其余为本人根据自己的理解对内容概括性的总结。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-05-30T12:29:26.307Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="论文阅读之《Past, Present, and Future of SLAM》">
+<meta name="twitter:description" content="本篇文章记录SLAM综述性文章《Past, Present, and Future of Simultaneous Localization And Mapping: Towards the Robust-Perception Age》，只对重点部分作详细翻译，其余为本人根据自己的理解对内容概括性的总结。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"always","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ttshun.com/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/">
+
+
+
+
+
+  <title>论文阅读之《Past, Present, and Future of SLAM》 | 励志献身SLAM 的 阿翔</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?2167066263b4ea80e21ad5060efbc2a6";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">励志献身SLAM 的 阿翔</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ttshun.com/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="阿翔">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/photo.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="励志献身SLAM 的 阿翔">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">论文阅读之《Past, Present, and Future of SLAM》</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-17T22:48:59+08:00">
+                2018-10-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/" itemprop="url" rel="index">
+                    <span itemprop="name">机器人</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/" itemprop="url" rel="index">
+                    <span itemprop="name">SLAM</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/机器人/SLAM/论文阅读/" itemprop="url" rel="index">
+                    <span itemprop="name">论文阅读</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/" class="leancloud_visitors" data-flag-title="论文阅读之《Past, Present, and Future of SLAM》">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  5,481
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  19
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<p>本篇文章记录SLAM综述性文章《Past, Present, and Future of Simultaneous Localization And Mapping: Towards the Robust-Perception Age》，只对重点部分作详细翻译，其余为本人根据自己的理解对内容概括性的总结。</p>
+<a id="more"></a>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>一、介绍SLAM现行制定的标准</p>
+<p>二、总结相关工作（包括一系列关于<strong>长时间建图中的鲁棒性和可扩展性</strong>、<strong>用于建图的度量和语义表示</strong>、理论上的性能保证、主动SLAM和探索、以及其他的前沿技术）</p>
+<p>三、介绍开放的挑战和新的研究问题</p>
+<p>四、作者对两个问题的看法，即机器人需要SLAM吗？SLAM问题解决了嘛？</p>
+<h2 id="Introduciton"><a href="#Introduciton" class="headerlink" title="Introduciton"></a><strong>Introduciton</strong></h2><p>SLAM包括同时的机器人状态估计和环境模型（地图）重建，机器人配置片上传感器，重建的环境是由机器人传感器感知到的。简单的情况下，机器人的状态使用其位姿（位置和方向/姿态）表示，当然机器人的状态还会包含其他的量，如机器人速度、传感器偏差、校准参数。地图是用于描述机器人所处环境的我们感兴趣部分（如路标点位置、障碍物）的表示。</p>
+<p>需要构建环境地图的原因包括两方面。首先，地图经常被用于支撑其他任务；例如，一个地图可以通知路径规划或者提供可供用户操作的直观的可视化。其次地图能够限制机器人状态估计中积累的误差。没有地图时轨迹估计很快就会发生漂移；如果由地图，机器人就可以通过再次访问已访问的区域对位置错误进行重置，即所谓的回环检测。SLAM适用于所有没有先验经验需要创建地图的场景应用。</p>
+<p>一些机器人的应用中环境地图是作为已知的先验经验。</p>
+<p>SLAM问题的普及源于移动机器人的室内应用的出现。室内的操作就要排除GPS的使用，GPS是可以用于限制位置偏差的。SLAM为用户构建的地图提供了一个吸引人的替代方案，显示出在没有专门的本地化基础架构的情况下，机器人操作是可能的。</p>
+<p><strong>古典时代</strong>（1986-2004）（<strong>the</strong> <strong>classical</strong> <strong>age</strong>）：对SLAM的主要概率公式进行了介绍，包括基于扩展卡尔曼滤波器的方法、RaoBlackwellised粒子滤波器和最大似然估计；而且还描绘了与效率和强大数据关联相关的基本挑战。[14、94、299、298]</p>
+<p><strong>算法分析时代</strong>（2004-2015）（<strong>the</strong> <strong>algorithmic-analysis</strong> <strong>age</strong>）：研究了SLAM的基本性质，包括可观测性、收敛性和一致性。该时期对稀疏性对于高效SLAM求解器的关键作用有了理解，并发展出主要的开源SLAM库。[89]</p>
+<ul>
+<li><p>底层SLAM（前端）涵盖了其他的研究领域，如机器视觉和信号处理；</p>
+</li>
+<li><p>在高层的后端，SLAM是几何学、图论、优化和概率的组合。而且，对于一个SLAM专家必须处理实际的从传感器建模到系统集成等各个方面的问题。</p>
+</li>
+</ul>
+<p><strong>Do autonomous robots really need SLAM?</strong></p>
+<p>本文对SLAM的现状进行了广泛的概述，并提供了部分社区对SLAM研究的开放性问题和未来发展方向的看法。其他关于SLAM的综述性文章：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Year</th>
+<th>Topic</th>
+<th style="text-align:center">Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2006</td>
+<td>Probabilistic approaches and data association</td>
+<td style="text-align:center">Durrant-Whyte and Bailey [14, 94]</td>
+</tr>
+<tr>
+<td>2008</td>
+<td>Filtering approaches</td>
+<td style="text-align:center">Aulinas et al. [12]</td>
+</tr>
+<tr>
+<td>2008</td>
+<td>Visual SLAM</td>
+<td style="text-align:center">Neira et al. (special issue) [220]</td>
+</tr>
+<tr>
+<td>2011</td>
+<td>SLAM back-end</td>
+<td style="text-align:center">Grisetti et al. [129]</td>
+</tr>
+<tr>
+<td>2011</td>
+<td>Observability, consistency and convergence</td>
+<td style="text-align:center">Dissanayake et al. [89]</td>
+</tr>
+<tr>
+<td>2012</td>
+<td>Visual odometry</td>
+<td style="text-align:center">Scaramuzza and Fraundofer [115, 274]</td>
+</tr>
+<tr>
+<td>2016</td>
+<td>Multi robot SLAM</td>
+<td style="text-align:center">Saeedi et al. [271]</td>
+</tr>
+<tr>
+<td>2016</td>
+<td>Visual place recognition</td>
+<td style="text-align:center">Lowry et al. [198]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Do-autonomous-robots-really-need-SLAM"><a href="#Do-autonomous-robots-really-need-SLAM" class="headerlink" title="Do autonomous robots really need SLAM?"></a><strong>Do autonomous robots really need SLAM?</strong></h3><p>回答这个问题需要理解SLAM特殊在哪。SLAM旨在利用自身运动的测量和回环检测建立场景的全局一致的表示。关键点在于回环检测：如果忽略了回环检测，SLAM退化为里程计。在早期的应用中，里程计是通过整合在车轮上的编码器获取到的，通过车轮里程计获取到的位姿检测很快就会发生漂移，使得估计在运动数米后就不可用。这也是推动SLAM发展的主要原因之一：外界场景路标点的观测对于消除轨迹漂移是有帮助的，能够尽可能的矫正轨迹。然而，目前更多的里程计算法都是基于视觉和惯性信息，具有很少的漂移（&lt;轨迹长度的0.5%）。这种情况下是否需要SLAM呢？分三方面回答。</p>
+<ul>
+<li>过去十年中完成的SLAM研究工作是产生目前代表现有技术状态的视觉-惯性里程计算法；在这个意义上，视觉惯性导航（VIN）就是SLAM：VIN可以看作是忽略掉回环检测或者位置识别模块的简化SLAM系统。更一般意义上，SLAM导致在比其他知识领域（例如，航天工程中的惯性导航）更早地考虑到的更具挑战性配置（即，没有GPS，低质量传感器）下研究传感器融合。</li>
+<li>关于回环检测。忽略回环检测执行里程计的情况下，机器人会把世界解释成一个没有尽头的走廊，机器人在里面一直无限地对新的区域进行探测。回环检测事件能够告诉机器人该走廊是保持相交的。这样回环检测的好处就清楚了：通过回环检测，机器人能够理解环境真实的拓扑结构，并且能够找到位置间的快捷/最短路径。因此，如果得到正确的环境拓扑结构是SLAM的优点之一，为什么不简单地忽略度量信息，只是做位置识别/回环检测呢？答案是：度量信息使得位置识别更简单、更健壮；度量重建使得机器人有闭环检测的机会，并允许丢弃虚假闭环。因此，SLAM在原则上是多余的（一个oracle位置识别模块就足以进行拓扑映射），SLAM为错误的数据关联和感知别名提供了一个自然的防御，与环境中的不同位置相对应的相似的场景会欺骗位置识别模块。SLAM地图提供了一种预测并验证未来的测量的机制：该机制对于健壮性测量是关键的。</li>
+<li>由于许多应用隐式或显式地需要全局一致的地图，因此需要使用SLAM。例如在很多军事和民用应用中，机器人的目标是探测环境，并提供一个可供用户操作的地图。另一个例子是，机器人必须执行结构检测（例如建筑、桥梁等）；还有需要进行全局一致的3D重建时。</li>
+</ul>
+<p>因此，机器人研究者需要设计一个SLAM系统时，他将面对多种设计选择。例如，一个拓扑地图能够用于分析给定地点的可达性，但是并不适合于路径规划和底层的控制；一个局部一致的度量地图非常适合用于避障以及局部与环境的交互作用，但牺牲了精确性；一个全局一致的度量地图允许机器人执行全局的路径规划，但是计算和维护地图又是高计算复杂度性的。一个更通用的选择更合适的SLAM系统的方法是将SLAM看作是一种机制，完成足够的统计计算来总结机器人的所有已观测到的数据，在这种情况下，在这个压缩表示中保留哪些信息是非常依赖于任务本身的。</p>
+<h3 id="Is-SLAM-solved"><a href="#Is-SLAM-solved" class="headerlink" title="Is SLAM solved?"></a><strong>Is SLAM solved?</strong></h3><p>这是机器人社区经常被问到的问题。回答该问题的难度在于问题本身：SLAM是一个非常开放的话题，这个问题只适用于给定的机器人/环境/性能组合。尤其是，一旦下面几方面内容明确了，我们就可以评估SLAM问题的成熟度：</p>
+<ul>
+<li><strong>机器人</strong>(<strong>robot</strong>)：运动的类型（例如动态、最大速度）、可用传感器（例如分辨率、采样率）、可用的计算资源；</li>
+<li><strong>场景</strong>/<strong>环境</strong>（<strong>environment</strong>）：平面或三维空间、自然或人造路标点的存在、动态元素的数量、对称性的量和感知混叠的风险。请注意，这些中的许多方面实际上取决于传感器-环境对：例如，对于2D激光扫描仪，两个房间可能看起来相同（感知别名），而相机可能会根据外观线索辨别；</li>
+<li><strong>性能要求</strong>（<strong>performance requirements</strong>）：机器人状态估计中的精确性要求、环境表示的精确性和类型（例如基于路标点的或稠密的）、成功率（满足精度范围的测试的百分比）、估计延迟、最大可操作时间、建图区域的最大尺寸范围。</li>
+</ul>
+<p>例如，在保证足够的精确性（&lt;10cm）以及足够的健壮性（即低错误率）的前提下，使用一个装有车轮编码器和激光扫描器的机器人构建2D室内场景的地图，可以认为是基本可以解决的（一个工业系统执行SLAM的例子是the <em>Kuka Navigation Solution</em>）。同样地，基于缓慢移动的机器人的视觉SLAM和视觉-惯性测量法都可以认为是成熟的研究领域。另一方面，其他的机器人/环境/性能组合仍需要大量的基础性研究。在机器人移动或者环境极具挑战性时（例如快速机器人动态、高度动态的环境），目前的SLAM算法很容易就会失败。同时，SLAM算法经常无法应对严格的性能要求，例如，快速闭环控制的高速率估计。本文将提供这些公开问题的综合概述，等等。</p>
+<p>我们在这一节最后对SLAM的未来进行更广泛的考虑。我们认为，SLAM正在进入第三个时代，即<strong>鲁棒感知时代</strong>（<strong>the</strong> <strong>robust-perception</strong> <strong>age</strong>），其特点是具有以下关键要求：</p>
+<ul>
+<li><strong>性能强劲</strong>（<strong>robust performance</strong>）：SLAM系统能够在广泛的环境中以较低的故障率长时间运行；系统具备故障安全机制和自我调整功能，这样能够做出适应不同场景的系统参数的选择；</li>
+<li><strong>高层次的理解力</strong>（<strong>high-level understanding</strong>）：SLAM系统超越基础的几何重建，能够获取到对环境的一个更高层次的理解，例如语义、可用性、高级几何、物理；</li>
+<li><strong>资源意识</strong>（<strong>resource awareness</strong>）：SLAM系统可以针对可用的传感和计算资源量身定制，并可以提供根据可用资源调整计算负载的方法；</li>
+<li><strong>任务驱动推理</strong>（<strong>task-driven inference</strong>）：SLAM系统产生自适应地图表示，其复杂性可以根据机器人必须执行的任务而改变。</li>
+</ul>
+<h3 id="论文组织结构"><a href="#论文组织结构" class="headerlink" title="论文组织结构"></a>论文组织结构</h3><p><strong>SectionII：</strong>SLAM标准的制定和体系结构</p>
+<p><strong>Section III：</strong>解决终身（长时间）SLAM中的鲁棒性</p>
+<p><strong>Section IV：</strong>处理可扩展性</p>
+<p><strong>Section V：</strong>讨论如何表示环境的几何形状</p>
+<p><strong>Section VI：</strong>将环境表征的问题扩展到语义信息的建模。</p>
+<p><strong>Section VII：</strong>提供了关于SLAM的理论方面的当前成就的概述</p>
+<p><strong>Section VIII：</strong>扩大了讨论范围，并回顾了使用决策来改善SLAM结果质量的活动SLAM问题</p>
+<p><strong>Section IX：</strong>概述了SLAM的最新趋势，包括非常规传感器的使用</p>
+<p><strong>Section X：</strong>提供最后的评论 </p>
+<p>尽管SLAM有其独特的特性，但它是与计算机视觉、计算几何、控制理论中有关问题相关的，这些领域的交叉使用是实现快速发展的必要条件。</p>
+<h2 id="III-LONG-TERM-AUTONOMY-I-ROBUSTNESS"><a href="#III-LONG-TERM-AUTONOMY-I-ROBUSTNESS" class="headerlink" title="III. LONG-TERM AUTONOMY I: ROBUSTNESS"></a>III. LONG-TERM AUTONOMY I: ROBUSTNESS</h2><p>影响SLAM系统鲁棒性因素：算法层面、硬件层面、软件层面。</p>
+<h3 id="算法层面"><a href="#算法层面" class="headerlink" title="算法层面"></a>算法层面</h3><p>现有SLAM算法的限制，如无法处理动态环境、极端场景。</p>
+<h4 id="数据关联（data-association）与感知混淆"><a href="#数据关联（data-association）与感知混淆" class="headerlink" title="数据关联（data association）与感知混淆"></a>数据关联（data association）与感知混淆</h4><p>涉及的一个重要原因就是数据关联错误。如基于特征的vSLAM需要关联每一个视觉特征点到确定的路标点，<strong>感知混淆（Perceptual aliasing）</strong>（即对于不同的传感器输入引起相同的传感器信号）会使得问题解决变得困难，导致产生错误测量状态匹配（外点、错误匹配等），进一步影响后端优化；另外，数据关联如果错误地将测量数据判断为错误测量，就只能以估算的精度为代价，使用较少的测量值进行估算了。</p>
+<h5 id="short-term数据关联"><a href="#short-term数据关联" class="headerlink" title="short-term数据关联"></a>short-term数据关联</h5><p>传感器采样速率相对于机器人运动变化足够大，直观上可以认为传感器视角不会发生剧烈的变化，因此可以完成诸如特征匹配或光流法，从而避免错误的数据关联。</p>
+<h5 id="long-term数据关联"><a href="#long-term数据关联" class="headerlink" title="long-term数据关联"></a>long-term数据关联</h5><p>更具挑战性，涉及到闭合回环检测及验证。<br>蛮力的方法处理回环检测是不切实际的。基于视觉特征的Bag-of-words方法[282]通过引入分层的词汇树、量化特征空间，使得搜索更加高效。但是不能处理严重的照明变化。因此提出了一些新的方式，如匹配序列[213]，将不同的视觉外观聚集成统一的表示[69]，或使用空间和外观信息[140]，关于此类的综述见[198]。<br>闭合回环验证使用几何验证的方法确定闭合回环的质量。基于视觉的应用中，RANSAC[274]用于几何验证和异常值剔除。基于激光的方法可以通过检测当前scan与已有的地图的匹配度验证闭合回环，例如<strong>残差</strong>。<br>当然，错误的闭合回环也是无法避免的。</p>
+<h4 id="动态场景"><a href="#动态场景" class="headerlink" title="动态场景"></a>动态场景</h4><p>挑战一：SLAM系统必须要检测、剔除、追踪环境的变化，主流的方法就是剔除场景的动态变化部分，一些方法将动态元素一同建模。<br>挑战二：SLAM系统必须对永久性或半永久性变化进行建模，并理解如何、何时更新地图。</p>
+<h3 id="硬件层面"><a href="#硬件层面" class="headerlink" title="硬件层面"></a>硬件层面</h3><p>传感器本身、执行器退化引起。如何检测降级的传感器操作？ 如何调整传感器噪声统计数据（协方差，偏见）？</p>
+<h3 id="软件层面"><a href="#软件层面" class="headerlink" title="软件层面"></a>软件层面</h3><p>集成和测试是SLAM和机器人技术的关键方面，它们同样会引起误差。</p>
+<h2 id="V-REPRESENTATION-I-METRIC-REASONING"><a href="#V-REPRESENTATION-I-METRIC-REASONING" class="headerlink" title="V. REPRESENTATION I: METRIC REASONING"></a>V. REPRESENTATION I: METRIC REASONING</h2><p>介绍SLAM中的模型几何，即度量表达方法。2D情况有基于路标的地图表达和占用网格地图表达。</p>
+<ul>
+<li><p>基于路标的稀疏表达方式。可以是环境中可分辨特征相关联的3D路标点，例如线、角。前提是路标是可区分的，例如描述子。目前大部分的研究关注点特征的估计，也扩展到线、线段、圆弧[200]。</p>
+</li>
+<li><p>低层次的原始稠密表达。可以提供3D物体的高分辨率模型，适用于机器人研究中的避障和路径规划或者可视化、渲染。原始表达使用点云或多边形、面元地图（surfels maps）描述3D几何物体。这种方式比较笨重，因为需要存储大量的数据信息。</p>
+</li>
+<li><p>边界和空间划分密集表示。明确地表示surfaces (or boundaries) and volumes。空间划分表示方法最具代表性的是spatial-occupancy enumeration，该方法将三维空间划分为相同的立方体（体素）并排列在规则的3D网格中。其他方法还包括octree（应用于3D）、Polygonal Map octree和Binary Space-Partitioning tree等。</p>
+<blockquote>
+<p>vSLAM中关于稀疏（基于特征的）表达方式与稠密表达方式、直接法的比较。</p>
+<ul>
+<li>基于特征的方法取决于特征的类型。</li>
+<li><p>稠密、直接表达方式更适用于低纹理、散焦和运动模糊的场景，但需要高计算能力和实时性能。</p>
+</li>
+<li><p>半稠密方法克服了稠密法高计算需求的缺点。</p>
+</li>
+<li>半直接法一定程度上同时使用了稀疏特征和直接法（被证明更高效，SVO[113]），允许结构和运动同时估计。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>高层次的基于物体的表达。<br>SLAM++。</p>
+<h2 id="VI-REPRESENTATION-II-SEMANTIC-REASONING"><a href="#VI-REPRESENTATION-II-SEMANTIC-REASONING" class="headerlink" title="VI. REPRESENTATION II: SEMANTIC REASONING"></a>VI. REPRESENTATION II: SEMANTIC REASONING</h2></li>
+</ul>
+<p>基于视觉的拓扑地图SLAM系统综述[198]。</p>
+<h3 id="SLAM-help-Semantics"><a href="#SLAM-help-Semantics" class="headerlink" title="SLAM help Semantics"></a>SLAM help Semantics</h3><p>比较早的关于分割度量地图的方法[215]，offline的方法，使用2D激光扫描器构建几何地图。<br>online语义地图构建系统[257、258]，将传感、分类、位置识别组合，使用激光和相机构建环境的语义地图。<br>[41]使用了运动优化，将粗略的语义分割与不同的对象检测器互。<br>[249]使用单目SLAM系统提高视频中对象识别任务的性能。</p>
+<h3 id="Semantics-helps-SLAM"><a href="#Semantics-helps-SLAM" class="headerlink" title="Semantics helps SLAM"></a>Semantics helps SLAM</h3><p>既然可以在SLAM构建的地图中识别物体，那也可以使用关于物体的几何先验知识去优化地图的估计。这方面的研究：<br>[63、71]基于稀疏特征的单目SLAM系统，应用于小尺度环境中。<br>[84]稠密的地图表达。<br>[272]使用RGB-D传感器提出一个SLAM系统，该系统是基于对环境中的已知物体的检测。</p>
+<h3 id="Joint-SLAM-and-Semantics-inference"><a href="#Joint-SLAM-and-Semantics-inference" class="headerlink" title="Joint SLAM and Semantics inference"></a>Joint SLAM and Semantics inference</h3><p>将单目SLAM和地图分割联合。</p>
+<p>online系统[106]构建模型，使用曼哈顿世界假设，针对室内环境分割主要平面部分的地图。</p>
+<p>[16]提出使用场景的几何和语义属性估计相机参数和场景点、物体标签，offline。</p>
+<p>[136、184、275]offline、[310]online。</p>
+<h2 id="研究点思考"><a href="#研究点思考" class="headerlink" title="研究点思考"></a>研究点思考</h2><p>首先，对于SLAM问题，我们需要考虑的四个方面：</p>
+<ul>
+<li>机器人</li>
+<li>环境</li>
+<li>传感器-环境组合</li>
+<li>性能需求</li>
+</ul>
+<p>因此可以考虑不同的机器人/环境/性能组合进行基础性研究的可能性。同时，在机器人移动或者环境极具挑战性时（例如快速机器人动态、高度动态的环境），目前的SLAM算法很容易失败。此外，SLAM算法经常无法应对严格的性能要求，例如，快速闭环控制的高速率估计。<br>目前，针对SLAM系统的研究可以从下面几个方面中开展：</p>
+<ul>
+<li><strong>鲁棒性性能研究</strong>：故障安全机制和自我调整功能，这样能够做出适应不同场景的系统参数的选择</li>
+<li>高层次的提升研究：超越基础的几何重建，能够获取到对环境的一个更高层次的理解，例如语义、可用性、高级几何、物理；</li>
+<li><strong>资源利用研究</strong>：针对可用的传感和计算资源量身定制，并可以提供根据可用资源调整计算负载的方法；</li>
+<li><strong>任务驱动方向研究</strong>：自适应地图表示，其复杂性可以根据机器人必须执行的任务而改变。</li>
+</ul>
+<p>具体的研究点思考如下。</p>
+<h3 id="鲁棒性研究"><a href="#鲁棒性研究" class="headerlink" title="鲁棒性研究"></a>鲁棒性研究</h3><p>动态环境下的处理，如何检测、提出、追踪变化，可以将变化剔除[221]、考虑到模型[266, 312, 313]<br>如何应对白天和晚上剧烈的光照变化、季节的变化、环境结构的变化（新建筑物-&gt;旧建筑物）白天、夜晚回环检测的应对方法[69, 213、223]<br>对于数据异常情况（外点的出现）的处理，目前SLAM系统不具备提前感知即将面临的失败的能力、无法提供恢复机制应对已经发生的失败情况<br>硬件环境、传感器异常情况的处理？如何检测？如何调整？<br>极端环境下的研究，例如水下[20, 100, 102, 166]<br>非刚性物体的应对方法，非刚性地图的研究[245, 246] 、[36] and [304]、[4, 5, 128]、[225]</p>
+<h3 id="可扩展性研究"><a href="#可扩展性研究" class="headerlink" title="可扩展性研究"></a>可扩展性研究</h3><p>因子图优化复杂性降低方法<br>地图的存储[201、172]<br>多机器人[271]<br>多机器人回环检测的研究，机器人之间可能无法共享同一个参考图像帧，机器人传感器探测视角也有所不同[151]<br>地图中哪些信息需要丢弃、更新、保存，该以怎样的频率更新地图信息？？？<br>在面对严格的带宽限制和通信中断时，保证多机器人团队的可靠运行？？？ [70] </p>
+<h3 id="度量表达研究"><a href="#度量表达研究" class="headerlink" title="度量表达研究"></a>度量表达研究</h3><p>基于路标的地图<br>占用网格地图，地图标准[147]<br>高层次的表达方式，机器人不能识别出自己所处的环境类型，例如room vs. corridor，当然可以使用更复杂的模型（如parameterized primitive instancing）解决这种问题。<br>更紧凑的表达方法可以降低大尺度环境的地图大小。<br>最佳的（可选择性的）表示，简单的室内环境使用参数化的原语、负责的室外环境选择mesh模型，如何比较不同的表达方式、如何选择最有的表达方式？？？[262、285]<br>自动的自适应的表达方式，希望机器人可以根据人物和环境的复杂性自主地选择更复杂或更简单的表达方式。这将对长时间的导航带来很大的帮助。</p>
+<h3 id="语义表达"><a href="#语义表达" class="headerlink" title="语义表达"></a>语义表达</h3><p>不仅仅是分类。</p>
+<h2 id="引用文献"><a href="#引用文献" class="headerlink" title="引用文献"></a>引用文献</h2><p>14<br>299<br>298<br>89<br>94<br>12<br>220<br>129<br>115<br>274<br>271<br>198<br>282</p>
+
+      
+    </div>
+    
+    
+    
+
+    <div>
+      
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script src="https://cdn.bootcss.com/jquery/2.0.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <p><span>本文标题:</span><a href="/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/">论文阅读之《Past, Present, and Future of SLAM》</a></p>
+  <p><span>文章作者:</span><a href="/" title="访问 阿翔 的个人博客">阿翔</a></p>
+  <p><span>发布时间:</span>2018年10月17日 - 22:10</p>
+  <p><span>最后更新:</span>2019年05月30日 - 20:05</p>
+  <p><span>原始链接:</span><a href="/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/" title="论文阅读之《Past, Present, and Future of SLAM》">http://ttshun.com/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="http://ttshun.com/2018/10/17/论文阅读之《Past, Present, and Future of SLAM》/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+      $(".fa-clipboard").click(function(){
+      clipboard.on('success', function(){
+        swal({   
+          title: "",   
+          text: '复制成功',
+          icon: "success", 
+          showConfirmButton: true
+          });
+        });
+    });  
+</script>
+
+      
+    </div>
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>点击给我一些鼓励叭！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/weixin.jpg" alt="阿翔 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/zhifubao.jpg" alt="阿翔 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <div>
+    
+      <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+    
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/SLAM/" rel="tag"><i class="fa fa-tag"></i> SLAM</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/14/ORB-SLAM2系统Rviz可视化方案/" rel="next" title="ORB_SLAM2系统Rviz可视化方案">
+                <i class="fa fa-chevron-left"></i> ORB_SLAM2系统Rviz可视化方案
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/29/VSCode调试C-代码/" rel="prev" title="VSCode调试C++代码">
+                VSCode调试C++代码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/photo.jpg" alt="阿翔">
+            
+              <p class="site-author-name" itemprop="name">阿翔</p>
+              <p class="site-description motion-element" itemprop="description">每一阵风过，我们都互相致意</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">23</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/RuoxiangLi" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:ruoxianglee@163.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="896928771" target="_blank" title="QQ">
+                      
+                        <i class="fa fa-fw fa-qq"></i>QQ</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="15116319671" target="_blank" title="Wechat">
+                      
+                        <i class="fa fa-fw fa-weixin"></i>Wechat</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://blog.csdn.net/wentanxing2182" target="_blank" title="CSDN">
+                      
+                        <i class="fa fa-fw fa-copyright"></i>CSDN</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/loveyoupumy/activities" target="_blank" title="知乎">
+                      
+                        <i class="fa fa-fw fa-bell-o"></i>知乎</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://usthe.com" title="武林盟主" target="_blank">武林盟主</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://zhehangt.win" title="一索哥传奇" target="_blank">一索哥传奇</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/mybrave" title="小怪兽哦" target="_blank">小怪兽哦</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://www.cnblogs.com/DarrenChan/" title="DarrenChan陈驰" target="_blank">DarrenChan陈驰</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/xiangxianghehe" title="nudt_qxx" target="_blank">nudt_qxx</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduciton"><span class="nav-number">2.</span> <span class="nav-text">Introduciton</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Do-autonomous-robots-really-need-SLAM"><span class="nav-number">2.1.</span> <span class="nav-text">Do autonomous robots really need SLAM?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Is-SLAM-solved"><span class="nav-number">2.2.</span> <span class="nav-text">Is SLAM solved?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#论文组织结构"><span class="nav-number">2.3.</span> <span class="nav-text">论文组织结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#III-LONG-TERM-AUTONOMY-I-ROBUSTNESS"><span class="nav-number">3.</span> <span class="nav-text">III. LONG-TERM AUTONOMY I: ROBUSTNESS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#算法层面"><span class="nav-number">3.1.</span> <span class="nav-text">算法层面</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#数据关联（data-association）与感知混淆"><span class="nav-number">3.1.1.</span> <span class="nav-text">数据关联（data association）与感知混淆</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#short-term数据关联"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">short-term数据关联</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#long-term数据关联"><span class="nav-number">3.1.1.2.</span> <span class="nav-text">long-term数据关联</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态场景"><span class="nav-number">3.1.2.</span> <span class="nav-text">动态场景</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#硬件层面"><span class="nav-number">3.2.</span> <span class="nav-text">硬件层面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#软件层面"><span class="nav-number">3.3.</span> <span class="nav-text">软件层面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#V-REPRESENTATION-I-METRIC-REASONING"><span class="nav-number">4.</span> <span class="nav-text">V. REPRESENTATION I: METRIC REASONING</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#VI-REPRESENTATION-II-SEMANTIC-REASONING"><span class="nav-number">5.</span> <span class="nav-text">VI. REPRESENTATION II: SEMANTIC REASONING</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SLAM-help-Semantics"><span class="nav-number">5.1.</span> <span class="nav-text">SLAM help Semantics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Semantics-helps-SLAM"><span class="nav-number">5.2.</span> <span class="nav-text">Semantics helps SLAM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Joint-SLAM-and-Semantics-inference"><span class="nav-number">5.3.</span> <span class="nav-text">Joint SLAM and Semantics inference</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#研究点思考"><span class="nav-number">6.</span> <span class="nav-text">研究点思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#鲁棒性研究"><span class="nav-number">6.1.</span> <span class="nav-text">鲁棒性研究</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可扩展性研究"><span class="nav-number">6.2.</span> <span class="nav-text">可扩展性研究</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#度量表达研究"><span class="nav-number">6.3.</span> <span class="nav-text">度量表达研究</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#语义表达"><span class="nav-number">6.4.</span> <span class="nav-text">语义表达</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#引用文献"><span class="nav-number">7.</span> <span class="nav-text">引用文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">阿翔</span>
+
+  
+</div>
+
+
+  <!--<div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+-->
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+  
+  <script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: '7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz',
+        appKey: 'Dl5bC4kDveO2sUOJMNm3K8me',
+        placeholder: 'Just go go',
+        avatar:'/uploads/hexo.jpg',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+  </script>
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("7pBndReuUlyPiNAAQjRmAQXQ-gzGzoHsz", "Dl5bC4kDveO2sUOJMNm3K8me");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+
+  
+
+  
+
+</body>
+</html>
