@@ -37,6 +37,12 @@ tensorflow环境搭建过程：
 - 激活虚拟环境：`source ~/envs/tensorflow/bin/activate`
 - 安装tensorflow：`pip install tensorflow`
 
+在`~/.bashrc`文件中添加命令：
+
+`alias tensorflow="source ~/envs/tensorflow/bin/activate"`
+
+这样就可以在shell中使用`tensorflow`命令激活虚拟环境。
+
 在tensorflow虚拟环境中搭建Jupyter Notebook环境
 
 - 激活virtualenv：`tensorflow`
