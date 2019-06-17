@@ -43,7 +43,7 @@ tensorflow环境搭建过程：
 
 这样就可以在shell中使用`tensorflow`命令激活虚拟环境。
 
-在tensorflow虚拟环境中搭建Jupyter Notebook环境
+在tensorflow虚拟环境中搭建Jupyter Notebook环境：
 
 - 激活virtualenv：`tensorflow`
 - 执行：`sudo pip3 install jupyter ipython`
