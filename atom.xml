@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ttshun.com/"/>
-  <updated>2019-05-30T12:43:38.939Z</updated>
+  <updated>2019-06-13T06:26:57.217Z</updated>
   <id>http://ttshun.com/</id>
   
   <author>
@@ -15,6 +15,85 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Tensorflow学习笔记</title>
+    <link href="http://ttshun.com/2019/06/13/Tensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <id>http://ttshun.com/2019/06/13/Tensorflow学习笔记/</id>
+    <published>2019-06-13T05:55:22.000Z</published>
+    <updated>2019-06-13T06:26:57.217Z</updated>
+    
+    <content type="html"><![CDATA[<hr><p>记录学习Tensorflow过程中的一些重要内容。<br><a id="more"></a></p><h2 id="卷积神经网络"><a href="#卷积神经网络" class="headerlink" title="卷积神经网络"></a>卷积神经网络</h2><h2 id="图像数据处理"><a href="#图像数据处理" class="headerlink" title="图像数据处理"></a>图像数据处理</h2><p>虽然，复杂的预处理过程会减慢整个训练过程。但，通过对图像的预处理，可以尽量避免模型收到无关因素的影响。在大部分图像识别问题中，通过图像预处理过程可以提高模型的准确率。Tensorflow中的图像处理函数：</p><ul><li>图像解码处理：<code>tf.image.decode_jpeg</code>、<code>tf.image.decode_png</code></li><li>图像编码处理：<code>tf.image.encode_jpeg</code>、<code>tf.image.encode_png</code></li><li>图像大小调整：<code>tf.image.resize_images</code>，可以选择双线性插值、最近邻居法、双三插值法、面积插值法</li><li>图像数据转化为实数类型：<code>tf.image.convert_image_dtype</code></li><li>图像裁剪或填充：<code>tf.image.resize_image_with_crop_or_pad</code></li><li>图像大小按比例调整：<code>tf.image.central_crop</code></li><li>图像翻转：<code>tf.image.flip_up_down</code>、<code>tf.image.flip_left_right</code>、<code>tf.image.random_flip_up_down</code>、<code>tf.image.random_flip_left_right</code></li><li>图像色彩调整：<code>tf.image.adjust_brightness</code>、<code>tf.image.random_brightness</code></li><li>图像对比度调整：<code>tf.image.adjust_contrast</code>、<code>tf.image.random_contrast</code></li><li>图像色相调整：<code>tf.image.adjust_hue</code>、<code>tf.image.random_hue</code></li><li>图像饱和度调整：<code>tf.image.adjust_saturation</code>、<code>tf.image.random_saturation</code></li></ul><h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><p>Tensorflow提供<code>FIFOQueue</code>、<code>RandomShuffleQueue</code>两种队列，前者是先进先出队列，后者是随机队列，即每次出队列操作得到的是当前队列所有元素中随机选择的一个元素。队列的作用总结如下：</p><ul><li>一种数据结构</li><li>也是异步计算张量取值的一个重要机制，如多线程可同时向一个队列中写元素，或同时读取一个队列中的元素。</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      &lt;hr&gt;
+&lt;p&gt;记录学习Tensorflow过程中的一些重要内容。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="深度学习" scheme="http://ttshun.com/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+      <category term="Tensorflow" scheme="http://ttshun.com/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/Tensorflow/"/>
+    
+    
+      <category term="Tensorflow" scheme="http://ttshun.com/tags/Tensorflow/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Event-based特征追踪评估方法</title>
+    <link href="http://ttshun.com/2019/06/13/Event-based%E7%89%B9%E5%BE%81%E8%BF%BD%E8%B8%AA%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95/"/>
+    <id>http://ttshun.com/2019/06/13/Event-based特征追踪评估方法/</id>
+    <published>2019-06-13T05:55:04.000Z</published>
+    <updated>2019-08-14T01:52:50.472Z</updated>
+    
+    <content type="html"><![CDATA[<hr><p>记录UZH机器感知实验室的一个Github项目学习过程，该项目目的是对Event-based特征追踪算法进行评估，包括轨迹的显示、误差、追踪时间的统计评测等。<br><a id="more"></a></p><p>Github项目地址：<a href="https://github.com/uzh-rpg/rpg_feature_tracking_analysis" target="_blank" rel="noopener">https://github.com/uzh-rpg/rpg_feature_tracking_analysis</a></p><h2 id="基于Event的特征追踪算法评估工作流程"><a href="#基于Event的特征追踪算法评估工作流程" class="headerlink" title="基于Event的特征追踪算法评估工作流程"></a>基于Event的特征追踪算法评估工作流程</h2><h3 id="评估特征追踪轨迹Ground-Truth的两个方法"><a href="#评估特征追踪轨迹Ground-Truth的两个方法" class="headerlink" title="评估特征追踪轨迹Ground Truth的两个方法"></a>评估特征追踪轨迹Ground Truth的两个方法</h3><ul><li>基于同步图像帧和event的KLT特征追踪</li><li>基于路标点反投影的特征追踪</li></ul><h3 id="算法功能"><a href="#算法功能" class="headerlink" title="算法功能"></a>算法功能</h3><ul><li>使用上述方法之一评估用户的特征追踪方法</li><li>生成随时间变化的特征追踪误差图（可用于论文插图）</li><li>生成特征追踪的三维时空图</li><li>生成特征追踪视频</li><li>将用户的特征追踪方法与其他方法进行比较</li><li>生成单个特征的跟踪误差图</li></ul><h3 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h3><p>特征追踪评估两个步骤：</p><ul><li>Ground Truth Tracker初始化</li><li>Tracking</li></ul><p>基于KLT追踪方法获取Ground Truth，该算法的输入为测试数据集图像帧序列（以rosbag文件的形式，rostopic为<code>/dvs/image_raw</code>），算法执行步骤：</p><ul><li>对于每个特征轨迹，确定其初始时间</li><li>在初始化时，或者初始化之后找到第一帧灰度图像</li><li>特征的x、y位置坐标插值到轨迹中，对应当前帧的时间戳</li><li>KLT方法追踪该特征，直到该特征丢失；对于每一帧图像都要更新模板</li></ul><p>在阅读代码后，总结算法执行流程如下：</p><ul><li>对于追踪算法得到的特征轨迹，提取每一个特征轨迹的第一个特征的时间戳</li><li>根据图像帧时间戳，找到与初始特征时间戳距离最近的图像帧，时间差不超过1e-5，否则选择比初始特征时间戳大的最小时间戳对应的图像</li><li>一维线性插值找到图像帧时间戳时刻对应的特征点的坐标，[id, t_image, x_interp, y_interp]组成元组，构成一个图像帧中的特征</li><li>收集到所有的初始图像帧特征，保存留作备用</li><li>找到初始图像帧特征中的时间戳最小值，选择该值1e-4范围内的所有特征作为初始活跃特征</li><li>使用LK光流法在前两帧图像中追踪这些特征</li><li>追踪到的特征作为新的特征与收集到的所有初始特征中的部分特征进行合并，参与合并的部分初始特征是第二帧图像周围的特征，然后在第三帧图像中追踪合并的特征</li><li>重复上述过程，直到所有图像帧使用完毕</li></ul><p>基于Ground Truth的重投影，算法执行步骤：</p><ul><li>对于每个特征轨迹，确定初始时间和位置</li><li>使用插值方法，确定每次初始化时的深度和位姿</li><li>使用位姿、深度、相机标定参数，back-projected特征</li><li>对于之后的每个位姿，将路标点重投影至图像帧中，生成特征轨迹</li><li>超出图像帧平面范围的特征将被丢弃</li></ul><p>基于追踪的重投影过程不支持相机的畸变。</p><h2 id="数据输入"><a href="#数据输入" class="headerlink" title="数据输入"></a>数据输入</h2><p>需要使用<code>.txt</code>文件提供特征轨迹数据，内容包括特征ID（追踪到的属于同一个特征的event使用相同的ID）、特征位置坐标、特征时间戳。如下所示：</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># feature_id timestamp x y</span></span><br><span class="line"><span class="number">25</span> <span class="number">1.403636580013555527e+09</span> <span class="number">125.827</span> <span class="number">15.615</span> </span><br><span class="line"><span class="number">13</span> <span class="number">1.403636580015467890e+09</span> <span class="number">20.453</span> <span class="number">90.142</span> </span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure><p>用于Ground Truth生成的图像、位姿、深度图、相机参数必须以rosbag的格式提供。各数据的信息格式如下：</p><ul><li>images: <code>sensor_msgs/Image</code></li><li>poses: <code>geometry_msgs/PoseStamped</code></li><li>depth maps: <code>sensor_msgs/Image</code>-<code>CV_32F</code></li></ul><p>有关ros话题和rosbag文件信息，使用<code>dataset.yaml</code>文件提供。</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">type:</span> <span class="string">bag</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">relative/path/to/ros.bag</span>  <span class="comment"># relative path of bag</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># For KLT based tracking </span></span><br><span class="line"><span class="attr">image_topic:</span> <span class="string">/dvs/image_raw</span>  </span><br><span class="line"></span><br><span class="line"><span class="comment"># For reprojection based tracking</span></span><br><span class="line"><span class="attr">depth_map_topic:</span> <span class="string">/dvs/depthmap</span></span><br><span class="line"><span class="attr">pose_topic:</span> <span class="string">/dvs/pose</span></span><br><span class="line"><span class="attr">camera_info_topic:</span> <span class="string">/dvs/camera_info</span></span><br></pre></td></tr></table></figure><h3 id="执行命令"><a href="#执行命令" class="headerlink" title="执行命令"></a>执行命令</h3><h4 id="测试特征追踪算法"><a href="#测试特征追踪算法" class="headerlink" title="测试特征追踪算法"></a>测试特征追踪算法</h4><p>需要进行如下步骤：</p><ul><li><p><code>--file /path/to/tracks.txt</code>：给定用户自己的特征追踪算法生成的特征追踪结果</p></li><li><p><code>--dataset /path/to/your_dataset.yaml</code>：给定测试数据集的配置文件，文件内容如下</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">type:</span> <span class="string">"bag"</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">"your_dataset.bag"</span>  <span class="comment"># 测试数据集rosbag文件名</span></span><br><span class="line"><span class="attr">image_topic:</span> <span class="string">"/dvs/image_raw"</span><span class="comment"># rosbag文件图像相关话题（ETH数据集rosbag图像话题都是这个）</span></span><br></pre></td></tr></table></figure></li><li><p><code>--root /path/to/bags</code>：测试数据所在路径（到测试数据集rosbag文件的父目录）</p></li></ul><p>测试执行命令举例：</p><ol><li>测试1：<code>python evaluate_tracks.py --error_threshold 10 --tracker_type KLT --file ./example/tracks/bicycles_gehrig_eccv_18/tracks.txt --dataset ./example/dataset_params/bicycles.yaml --root ./example/bags --plot_3d --plot_errors --video_preview</code></li><li>测试2：<code>python evaluate_tracks.py --error_threshold 10 --tracker_type KLT --file ./example/tracks/bicycles_kueng_iros_16/tracks.txt --dataset ./example/dataset_params/bicycles.yaml --root ./example/bags --plot_3d --plot_errors --video_preview</code></li></ol><p>执行命令解释：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">python evaluate_tracks.py # 评估用户特征追踪算法</span><br><span class="line">--error_threshold 10 # 用在可视化和画图时的阈值，追踪误差超过该阈值的特征将被丢弃</span><br><span class="line">--tracker_type KLT # 特征ground truth追踪方法</span><br><span class="line">--file ./example/tracks/bicycles_gehrig_eccv_18/tracks.txt # 用户特征追踪算法得到的特征轨迹</span><br><span class="line">--dataset ./example/dataset_params/bicycles.yaml # 保存测试数据集的类型、名称、ros话题</span><br><span class="line">--root ./example/bags # 测试数据集保存路径</span><br><span class="line">--plot_3d </span><br><span class="line">--plot_errors </span><br><span class="line">--video_preview</span><br></pre></td></tr></table></figure><h4 id="对比特征追踪方法"><a href="#对比特征追踪方法" class="headerlink" title="对比特征追踪方法"></a>对比特征追踪方法</h4><p>测试执行命令：</p><ol><li>测试1：<code>python compare_tracks.py --error_threshold 10 --root ./example/tracks/ --config ./example/comparison_params/bicycles.yaml --results_directory ./example/comparison_results/bicycles_gehrig_eccv_18_kueng_iros_16</code></li></ol><p>执行命令解释：</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">python compare_tracks.py </span><br><span class="line">--error_threshold 10 </span><br><span class="line">--root ./example/tracks/ </span><br><span class="line">--config ./example/comparison_params/bicycles.yaml </span><br><span class="line">--results_directory ./example/comparison_results</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;hr&gt;
+&lt;p&gt;记录UZH机器感知实验室的一个Github项目学习过程，该项目目的是对Event-based特征追踪算法进行评估，包括轨迹的显示、误差、追踪时间的统计评测等。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="机器人" scheme="http://ttshun.com/categories/%E6%9C%BA%E5%99%A8%E4%BA%BA/"/>
+    
+      <category term="SLAM" scheme="http://ttshun.com/categories/%E6%9C%BA%E5%99%A8%E4%BA%BA/SLAM/"/>
+    
+      <category term="Event Camera" scheme="http://ttshun.com/categories/%E6%9C%BA%E5%99%A8%E4%BA%BA/SLAM/Event-Camera/"/>
+    
+    
+      <category term="Event-based Feature" scheme="http://ttshun.com/tags/Event-based-Feature/"/>
+    
+      <category term="Event Camera" scheme="http://ttshun.com/tags/Event-Camera/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>python学习记录</title>
+    <link href="http://ttshun.com/2019/06/03/python%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
+    <id>http://ttshun.com/2019/06/03/python学习记录/</id>
+    <published>2019-06-03T15:02:49.000Z</published>
+    <updated>2019-08-16T00:50:58.228Z</updated>
+    
+    <content type="html"><![CDATA[<hr><p>-</p><a id="more"></a><p>查看python的路径：</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whereis python</span><br></pre></td></tr></table></figure><p>ubuntu下切换python版本：</p><p><a href="https://blog.csdn.net/beijiu5854/article/details/77897767" target="_blank" rel="noopener">https://blog.csdn.net/beijiu5854/article/details/77897767</a></p><p>anaconda和ROS共存：</p><p><a href="https://www.jianshu.com/p/4e437e25480b" target="_blank" rel="noopener">https://www.jianshu.com/p/4e437e25480b</a></p><p>tensorflow环境搭建过程：</p><ul><li>安装virtualenv：<code>sudo apt-get install python-virtualenv</code></li><li><code>mkdir envs</code></li><li><code>cd evns</code></li><li>创建虚拟环境：<code>virtualenv -p /usr/bin/python3 tensorflow</code></li><li>激活虚拟环境：<code>source ~/envs/tensorflow/bin/activate</code></li><li>安装tensorflow：<code>pip install tensorflow</code></li></ul><p>在<code>~/.bashrc</code>文件中添加命令：</p><p><code>alias tensorflow=&quot;source ~/envs/tensorflow/bin/activate&quot;</code></p><p>这样就可以在shell中使用<code>tensorflow</code>命令激活虚拟环境。</p><p>在tensorflow虚拟环境中搭建Jupyter Notebook环境：</p><ul><li>激活virtualenv：<code>tensorflow</code></li><li>执行：<code>sudo pip3 install jupyter ipython</code></li><li>执行：<code>sudo pip3 install ipykernel</code></li><li>将 Virtualenv 加入IPykernel中：<code>sudo python3 -m ipykernel install --user --name tf1 --display-name &#39;Python(tf1)&#39;</code>，其中<code>--name your-name1</code>是给Jupter启动Kernel使用的名字，<code>--display-name &#39;your-name2&#39;</code>是Jupyter notebook 菜单显示的名字。（不使用<code>sudo</code>可能会出现错误<code>/home/eric/envs/tensorflow/bin/python3: No module named ipykernel</code>）</li><li>启动：<code>jupyter notebook</code>，shell中会有类似提示<code>本程序运行在: http://localhost:8888/?token=xxxxx</code>，点击在浏览器打开，并选择所需要的内核<code>Python(tf1)</code>，即<code>&#39;your-name2&#39;</code>。</li></ul><h2 id="使用Anaconda搭建tensorflow环境"><a href="#使用Anaconda搭建tensorflow环境" class="headerlink" title="使用Anaconda搭建tensorflow环境"></a>使用Anaconda搭建tensorflow环境</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conda create -n EVSegNet python=2.7</span><br><span class="line">pip install tensorflow-gpu==1.11.0</span><br></pre></td></tr></table></figure><h2 id="GPU情况查看"><a href="#GPU情况查看" class="headerlink" title="GPU情况查看"></a>GPU情况查看</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看GPU情况：（找一个空闲GPU→记录id）</span><br><span class="line">nvidia-smi</span><br><span class="line">nvidia-smi -l           # 自动刷新显示</span><br><span class="line">watch -n 1 nvidia-smi   # 动态显示</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;hr&gt;
+&lt;p&gt;-&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="语言" scheme="http://ttshun.com/categories/%E8%AF%AD%E8%A8%80/"/>
+    
+      <category term="Python" scheme="http://ttshun.com/categories/%E8%AF%AD%E8%A8%80/Python/"/>
+    
+    
+      <category term="Python" scheme="http://ttshun.com/tags/Python/"/>
+    
+  </entry>
   
   <entry>
     <title>test</title>

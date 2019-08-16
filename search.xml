@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[Tensorflow学习笔记]]></title>
+    <url>%2F2019%2F06%2F13%2FTensorflow%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%2F</url>
+    <content type="text"><![CDATA[记录学习Tensorflow过程中的一些重要内容。 卷积神经网络图像数据处理虽然，复杂的预处理过程会减慢整个训练过程。但，通过对图像的预处理，可以尽量避免模型收到无关因素的影响。在大部分图像识别问题中，通过图像预处理过程可以提高模型的准确率。Tensorflow中的图像处理函数： 图像解码处理：tf.image.decode_jpeg、tf.image.decode_png 图像编码处理：tf.image.encode_jpeg、tf.image.encode_png 图像大小调整：tf.image.resize_images，可以选择双线性插值、最近邻居法、双三插值法、面积插值法 图像数据转化为实数类型：tf.image.convert_image_dtype 图像裁剪或填充：tf.image.resize_image_with_crop_or_pad 图像大小按比例调整：tf.image.central_crop 图像翻转：tf.image.flip_up_down、tf.image.flip_left_right、tf.image.random_flip_up_down、tf.image.random_flip_left_right 图像色彩调整：tf.image.adjust_brightness、tf.image.random_brightness 图像对比度调整：tf.image.adjust_contrast、tf.image.random_contrast 图像色相调整：tf.image.adjust_hue、tf.image.random_hue 图像饱和度调整：tf.image.adjust_saturation、tf.image.random_saturation 队列Tensorflow提供FIFOQueue、RandomShuffleQueue两种队列，前者是先进先出队列，后者是随机队列，即每次出队列操作得到的是当前队列所有元素中随机选择的一个元素。队列的作用总结如下： 一种数据结构 也是异步计算张量取值的一个重要机制，如多线程可同时向一个队列中写元素，或同时读取一个队列中的元素。]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>Tensorflow</category>
+      </categories>
+      <tags>
+        <tag>Tensorflow</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Event-based特征追踪评估方法]]></title>
+    <url>%2F2019%2F06%2F13%2FEvent-based%E7%89%B9%E5%BE%81%E8%BF%BD%E8%B8%AA%E8%AF%84%E4%BC%B0%E6%96%B9%E6%B3%95%2F</url>
+    <content type="text"><![CDATA[记录UZH机器感知实验室的一个Github项目学习过程，该项目目的是对Event-based特征追踪算法进行评估，包括轨迹的显示、误差、追踪时间的统计评测等。 Github项目地址：https://github.com/uzh-rpg/rpg_feature_tracking_analysis 基于Event的特征追踪算法评估工作流程评估特征追踪轨迹Ground Truth的两个方法 基于同步图像帧和event的KLT特征追踪 基于路标点反投影的特征追踪 算法功能 使用上述方法之一评估用户的特征追踪方法 生成随时间变化的特征追踪误差图（可用于论文插图） 生成特征追踪的三维时空图 生成特征追踪视频 将用户的特征追踪方法与其他方法进行比较 生成单个特征的跟踪误差图 工作原理特征追踪评估两个步骤： Ground Truth Tracker初始化 Tracking 基于KLT追踪方法获取Ground Truth，该算法的输入为测试数据集图像帧序列（以rosbag文件的形式，rostopic为/dvs/image_raw），算法执行步骤： 对于每个特征轨迹，确定其初始时间 在初始化时，或者初始化之后找到第一帧灰度图像 特征的x、y位置坐标插值到轨迹中，对应当前帧的时间戳 KLT方法追踪该特征，直到该特征丢失；对于每一帧图像都要更新模板 在阅读代码后，总结算法执行流程如下： 对于追踪算法得到的特征轨迹，提取每一个特征轨迹的第一个特征的时间戳 根据图像帧时间戳，找到与初始特征时间戳距离最近的图像帧，时间差不超过1e-5，否则选择比初始特征时间戳大的最小时间戳对应的图像 一维线性插值找到图像帧时间戳时刻对应的特征点的坐标，[id, t_image, x_interp, y_interp]组成元组，构成一个图像帧中的特征 收集到所有的初始图像帧特征，保存留作备用 找到初始图像帧特征中的时间戳最小值，选择该值1e-4范围内的所有特征作为初始活跃特征 使用LK光流法在前两帧图像中追踪这些特征 追踪到的特征作为新的特征与收集到的所有初始特征中的部分特征进行合并，参与合并的部分初始特征是第二帧图像周围的特征，然后在第三帧图像中追踪合并的特征 重复上述过程，直到所有图像帧使用完毕 基于Ground Truth的重投影，算法执行步骤： 对于每个特征轨迹，确定初始时间和位置 使用插值方法，确定每次初始化时的深度和位姿 使用位姿、深度、相机标定参数，back-projected特征 对于之后的每个位姿，将路标点重投影至图像帧中，生成特征轨迹 超出图像帧平面范围的特征将被丢弃 基于追踪的重投影过程不支持相机的畸变。 数据输入需要使用.txt文件提供特征轨迹数据，内容包括特征ID（追踪到的属于同一个特征的event使用相同的ID）、特征位置坐标、特征时间戳。如下所示： 1234# feature_id timestamp x y25 1.403636580013555527e+09 125.827 15.615 13 1.403636580015467890e+09 20.453 90.142 ... 用于Ground Truth生成的图像、位姿、深度图、相机参数必须以rosbag的格式提供。各数据的信息格式如下： images: sensor_msgs/Image poses: geometry_msgs/PoseStamped depth maps: sensor_msgs/Image-CV_32F 有关ros话题和rosbag文件信息，使用dataset.yaml文件提供。 12345678910type: bagname: relative/path/to/ros.bag # relative path of bag# For KLT based tracking image_topic: /dvs/image_raw # For reprojection based trackingdepth_map_topic: /dvs/depthmappose_topic: /dvs/posecamera_info_topic: /dvs/camera_info 执行命令测试特征追踪算法需要进行如下步骤： --file /path/to/tracks.txt：给定用户自己的特征追踪算法生成的特征追踪结果 --dataset /path/to/your_dataset.yaml：给定测试数据集的配置文件，文件内容如下 123type: "bag"name: "your_dataset.bag" # 测试数据集rosbag文件名image_topic: "/dvs/image_raw" # rosbag文件图像相关话题（ETH数据集rosbag图像话题都是这个） --root /path/to/bags：测试数据所在路径（到测试数据集rosbag文件的父目录） 测试执行命令举例： 测试1：python evaluate_tracks.py --error_threshold 10 --tracker_type KLT --file ./example/tracks/bicycles_gehrig_eccv_18/tracks.txt --dataset ./example/dataset_params/bicycles.yaml --root ./example/bags --plot_3d --plot_errors --video_preview 测试2：python evaluate_tracks.py --error_threshold 10 --tracker_type KLT --file ./example/tracks/bicycles_kueng_iros_16/tracks.txt --dataset ./example/dataset_params/bicycles.yaml --root ./example/bags --plot_3d --plot_errors --video_preview 执行命令解释： 123456789python evaluate_tracks.py # 评估用户特征追踪算法 --error_threshold 10 # 用在可视化和画图时的阈值，追踪误差超过该阈值的特征将被丢弃 --tracker_type KLT # 特征ground truth追踪方法 --file ./example/tracks/bicycles_gehrig_eccv_18/tracks.txt # 用户特征追踪算法得到的特征轨迹 --dataset ./example/dataset_params/bicycles.yaml # 保存测试数据集的类型、名称、ros话题 --root ./example/bags # 测试数据集保存路径 --plot_3d --plot_errors --video_preview 对比特征追踪方法测试执行命令： 测试1：python compare_tracks.py --error_threshold 10 --root ./example/tracks/ --config ./example/comparison_params/bicycles.yaml --results_directory ./example/comparison_results/bicycles_gehrig_eccv_18_kueng_iros_16 执行命令解释： 12345python compare_tracks.py --error_threshold 10 --root ./example/tracks/ --config ./example/comparison_params/bicycles.yaml --results_directory ./example/comparison_results]]></content>
+      <categories>
+        <category>机器人</category>
+        <category>SLAM</category>
+        <category>Event Camera</category>
+      </categories>
+      <tags>
+        <tag>Event-based Feature</tag>
+        <tag>Event Camera</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[python学习记录]]></title>
+    <url>%2F2019%2F06%2F03%2Fpython%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95%2F</url>
+    <content type="text"><![CDATA[- 查看python的路径： 1whereis python ubuntu下切换python版本： https://blog.csdn.net/beijiu5854/article/details/77897767 anaconda和ROS共存： https://www.jianshu.com/p/4e437e25480b tensorflow环境搭建过程： 安装virtualenv：sudo apt-get install python-virtualenv mkdir envs cd evns 创建虚拟环境：virtualenv -p /usr/bin/python3 tensorflow 激活虚拟环境：source ~/envs/tensorflow/bin/activate 安装tensorflow：pip install tensorflow 在~/.bashrc文件中添加命令： alias tensorflow=&quot;source ~/envs/tensorflow/bin/activate&quot; 这样就可以在shell中使用tensorflow命令激活虚拟环境。 在tensorflow虚拟环境中搭建Jupyter Notebook环境： 激活virtualenv：tensorflow 执行：sudo pip3 install jupyter ipython 执行：sudo pip3 install ipykernel 将 Virtualenv 加入IPykernel中：sudo python3 -m ipykernel install --user --name tf1 --display-name &#39;Python(tf1)&#39;，其中--name your-name1是给Jupter启动Kernel使用的名字，--display-name &#39;your-name2&#39;是Jupyter notebook 菜单显示的名字。（不使用sudo可能会出现错误/home/eric/envs/tensorflow/bin/python3: No module named ipykernel） 启动：jupyter notebook，shell中会有类似提示本程序运行在: http://localhost:8888/?token=xxxxx，点击在浏览器打开，并选择所需要的内核Python(tf1)，即&#39;your-name2&#39;。 使用Anaconda搭建tensorflow环境12conda create -n EVSegNet python=2.7pip install tensorflow-gpu==1.11.0 GPU情况查看1234# 查看GPU情况：（找一个空闲GPU→记录id）nvidia-sminvidia-smi -l # 自动刷新显示watch -n 1 nvidia-smi # 动态显示]]></content>
+      <categories>
+        <category>语言</category>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[test]]></title>
     <url>%2F2019%2F05%2F30%2Ftest%2F</url>
     <content type="text"><![CDATA[-just for test]]></content>
