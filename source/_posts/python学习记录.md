@@ -50,3 +50,24 @@ tensorflow环境搭建过程：
 - 执行：`sudo pip3 install ipykernel`
 - 将 Virtualenv 加入IPykernel中：`sudo python3 -m ipykernel install --user --name tf1 --display-name 'Python(tf1)'`，其中`--name your-name1`是给Jupter启动Kernel使用的名字，`--display-name 'your-name2'`是Jupyter notebook 菜单显示的名字。（不使用`sudo`可能会出现错误`/home/eric/envs/tensorflow/bin/python3: No module named ipykernel`）
 - 启动：`jupyter notebook`，shell中会有类似提示`本程序运行在: http://localhost:8888/?token=xxxxx`，点击在浏览器打开，并选择所需要的内核`Python(tf1)`，即`'your-name2'`。
+
+
+
+## 使用Anaconda搭建tensorflow环境
+
+```shell
+conda create -n EVSegNet python=2.7
+pip install tensorflow-gpu==1.11.0
+```
+
+
+
+## GPU情况查看
+
+```shell
+# 查看GPU情况：（找一个空闲GPU→记录id）
+nvidia-smi
+nvidia-smi -l           # 自动刷新显示
+watch -n 1 nvidia-smi   # 动态显示
+```
+
